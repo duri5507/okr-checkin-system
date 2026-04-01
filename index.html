@@ -723,11 +723,15 @@ async function apiSubmitCheckin(payload) {
 }
 
 // ============================================================
+// CACHE
+// ============================================================
+function cacheSet(key, val) { try { localStorage.setItem('okr_cache_'+key, JSON.stringify(val)); } catch(e){} }
+function cacheGet(key) { try { return JSON.parse(localStorage.getItem('okr_cache_'+key)); } catch(e){ return null; } }
+
+// ============================================================
 // INIT
 // ============================================================
 async function init() {
-  showLoading(true);
-
   // 본부/팀 셀렉트 초기화
   const bunbus = Object.keys(OKR_DATA);
   const sb = document.getElementById('selBunbu');
@@ -737,7 +741,16 @@ async function init() {
     db.innerHTML += `<option value="${b}">${b}</option>`;
   });
 
-  await loadRounds();
+  // 1) 캐시된 데이터로 즉시 화면 표시
+  const cached = cacheGet('rounds');
+  if (cached) {
+    state.rounds = cached;
+    renderRounds();
+    renderDashRounds();
+  }
+
+  // 2) 백그라운드에서 서버 동기화
+  loadRounds();
 }
 
 // ============================================================
@@ -745,19 +758,19 @@ async function init() {
 // ============================================================
 async function loadRounds() {
   try {
-    showLoading(true);
     const rounds = await apiGetRounds();
     state.rounds = rounds || [];
     state.connected = true;
     setConnStatus(true);
+    cacheSet('rounds', state.rounds);
     renderRounds();
     renderDashRounds();
     renderDashboard();
   } catch(e) {
     state.connected = false;
     setConnStatus(false);
-    showToast('연결 오류: ' + e.message, 'error');
-  } finally { showLoading(false); }
+    if (!cacheGet('rounds')) showToast('연결 오류: ' + e.message, 'error');
+  }
 }
 
 function renderRounds() {
@@ -839,16 +852,14 @@ async function onTeamChange() {
   state.bunbu = bunbu;
   state.team  = team;
 
-  // 기존 체크인 로드
-  showLoading(true);
-  try {
-    const all = await apiGetCheckins(state.round);
-    state.checkins = all || {};
-  } catch(e) {
-    state.checkins = {};
-  } finally { showLoading(false); }
-
+  // 캐시 먼저, 서버는 백그라운드
+  const cacheKey = 'checkins_' + state.round;
+  state.checkins = cacheGet(cacheKey) || {};
   const prev = state.checkins[team] || null;
+  apiGetCheckins(state.round).then(all => {
+    state.checkins = all || {};
+    cacheSet(cacheKey, state.checkins);
+  }).catch(() => {});
   document.getElementById('prevCheckinNotice').style.display = prev ? 'block' : 'none';
   renderOkrForm(bunbu, team, prev);
 }
@@ -988,6 +999,7 @@ async function refreshDashboard() {
     if (!round) { showLoading(false); return; }
     const data = await apiGetCheckins(round);
     state.checkins = data || {};
+    cacheSet('checkins_' + round, state.checkins);
     renderDashboard();
   } catch(e) {
     showToast('새로고침 실패: ' + e.message, 'error');
