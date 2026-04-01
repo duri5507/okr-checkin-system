@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>조직 성과 체크인 시스템</title>
+<title>조직 성과 체크인 시스템 - 관리자</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
@@ -17,8 +17,8 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f0
 .conn-dot.ok{background:var(--green);}
 .conn-dot.err{background:var(--red);}
 .conn-label{font-size:12px;color:#93c5fd;}
-.admin-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;}
-.admin-btn:hover{background:rgba(255,255,255,.25);}
+.link-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;}
+.link-btn:hover{background:rgba(255,255,255,.25);}
 
 .nav{background:white;border-bottom:2px solid #e2e8f0;padding:0 32px;display:flex;}
 .nav-btn{padding:14px 24px;font-size:14px;font-weight:600;border:none;background:none;cursor:pointer;color:#64748b;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
@@ -38,68 +38,33 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f0
 .summary-num{font-size:32px;font-weight:800;color:var(--primary);}
 .summary-label{font-size:12px;color:#64748b;margin-top:6px;}
 
-/* Round cards */
-.round-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.round-card{border:2px solid #e2e8f0;border-radius:10px;padding:18px;cursor:pointer;text-align:center;transition:all .2s;position:relative;}
-.round-card.selected{border-color:var(--accent);background:#eff6ff;}
-.round-card:hover{border-color:var(--secondary);}
-.round-card .r-title{font-size:15px;font-weight:700;color:var(--primary);}
-.round-card .r-sub{font-size:12px;color:#64748b;margin-top:4px;}
-.active-badge{position:absolute;top:8px;right:8px;background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}
-
 /* Form */
 select,input[type=text],textarea{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;background:white;color:#1a2332;outline:none;transition:border-color .2s;}
 select:focus,input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.1);}
-textarea{resize:vertical;min-height:72px;}
-.select-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;}
-
-/* Guide */
-.guide-box{border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;line-height:1.7;}
-.guide-box.quan{background:#eff6ff;border:1px solid #bfdbfe;}
-.guide-box.qual{background:#f5f3ff;border:1px solid #ddd6fe;}
-.guide-box h4{font-size:13px;font-weight:700;margin-bottom:8px;}
-.guide-box ul{padding-left:18px;}
-.guide-grade{display:grid;grid-template-columns:80px 1fr;gap:6px 12px;margin-top:8px;}
-.gl{font-weight:700;padding:3px 8px;border-radius:6px;font-size:12px;text-align:center;}
-.gl.arete{background:#fef9c3;color:#713f12;}
-.gl.ee{background:#dcfce7;color:#14532d;}
-.gl.me{background:#dbeafe;color:#1e3a8a;}
-.gl.ni{background:#fee2e2;color:#7f1d1d;}
-.gl.hold{background:#f1f5f9;color:#475569;}
-.gd{font-size:12px;color:#374151;display:flex;align-items:center;}
-
-/* OKR Cards */
-.kpi-list{display:flex;flex-direction:column;gap:16px;}
-.kpi-card{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:white;}
-.kpi-card-header{background:linear-gradient(135deg,#f8fafc,#f1f5f9);padding:16px 20px;border-bottom:1px solid #e2e8f0;}
-.kpi-header-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.okr-num{font-size:11px;font-weight:800;color:white;background:var(--secondary);border-radius:6px;padding:3px 9px;white-space:nowrap;}
-.goal-text{font-size:14px;color:#1a2332;font-weight:700;flex:1;line-height:1.4;}
-.badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;}
-.badge.q{background:#dbeafe;color:#1d4ed8;}
-.badge.s{background:#f3e8ff;color:#7c3aed;}
-.kr-section{margin-top:8px;padding-top:8px;border-top:1px dashed #e2e8f0;}
-.kr-label{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.5px;margin-bottom:4px;}
-.kr-text{font-size:13px;color:#374151;font-weight:600;line-height:1.5;}
-.kr-detail{font-size:12px;color:#64748b;margin-top:3px;}
-.kpi-body{padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.fg{display:flex;flex-direction:column;gap:6px;}
-.issue-detail{display:none;}
-.issue-detail.show{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
 
 /* Btn */
 .btn{padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;}
 .btn-primary{background:var(--primary);color:white;}
 .btn-primary:hover{background:#162d4a;}
-.btn-primary:disabled{background:#94a3b8;cursor:not-allowed;}
 .btn-success{background:var(--green);color:white;}
 .btn-success:hover{background:#16a34a;}
 .btn-outline{background:white;color:var(--primary);border:2px solid var(--primary);}
 .btn-outline:hover{background:#f0f4ff;}
 .btn-danger{background:var(--red);color:white;}
 .btn-sm{padding:7px 14px;font-size:12px;}
-.submit-row{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;}
+
+/* Admin round list */
+.round-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:10px;}
+.round-item .r-info .r-name{font-size:14px;font-weight:700;color:var(--primary);}
+.round-item .r-info .r-period{font-size:12px;color:#64748b;margin-top:2px;}
+.round-actions{display:flex;gap:8px;align-items:center;}
+.toggle-btn{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;border:none;cursor:pointer;}
+.toggle-btn.on{background:#dcfce7;color:#16a34a;}
+.toggle-btn.off{background:#fee2e2;color:#dc2626;}
+.add-form{background:#f8fafc;border-radius:10px;padding:16px;margin-top:16px;border:1px dashed #cbd5e1;}
+.add-form h4{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;}
 
 /* Dashboard */
 .progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
@@ -107,7 +72,6 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 .progress-bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .6s;}
 .progress-pct{font-size:12px;font-weight:700;color:var(--secondary);min-width:34px;text-align:right;}
 .progress-label{font-size:12px;color:#374151;font-weight:600;min-width:130px;}
-
 .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .team-card{background:white;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;transition:all .2s;border:2px solid transparent;}
 .team-card:hover{border-color:var(--accent);transform:translateY(-2px);}
@@ -127,22 +91,17 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 .tag-목표폐기{background:#fee2e2;color:#991b1b;}
 .tag-지원요청{background:#e0e7ff;color:#3730a3;}
 .tag-기타{background:#f1f5f9;color:#475569;}
-
 .issue-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
 .issue-box{background:white;border-radius:10px;padding:14px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.07);}
 .issue-box-num{font-size:24px;font-weight:800;color:var(--primary);}
 .issue-box-label{font-size:11px;color:#64748b;margin-top:4px;}
-
 .filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
 .filter-bar select{width:auto;min-width:150px;}
 .filter-bar label{margin:0;white-space:nowrap;}
 
 /* Notices */
 .notice{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;}
-.notice.warn{background:#fef9c3;border:1px solid #fde68a;color:#854d0e;}
-.notice.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;}
 .notice.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;}
-.notice.err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;}
 
 /* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;}
@@ -161,11 +120,14 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 .okr-cg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;}
 .di span{font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:2px;}
 .di .dv{font-size:13px;color:#1a2332;}
+.okr-num{font-size:11px;font-weight:800;color:white;background:var(--secondary);border-radius:6px;padding:3px 9px;white-space:nowrap;}
+.badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;}
+.badge.q{background:#dbeafe;color:#1d4ed8;}
+.badge.s{background:#f3e8ff;color:#7c3aed;}
 
 /* Loading */
-.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;display:none;}
-.spinner{width:44px;height:44px;border:4px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;}
-.loading-msg{font-size:13px;color:#64748b;font-weight:600;}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.7);z-index:300;display:flex;align-items:center;justify-content:center;display:none;}
+.spinner{width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-overlay.show{display:flex;}
 
@@ -177,94 +139,74 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 
 .empty-state{text-align:center;padding:48px 20px;color:#94a3b8;}
 .empty-icon{font-size:48px;margin-bottom:12px;}
-.no-rounds{text-align:center;padding:40px;color:#94a3b8;}
+
+/* Auth overlay */
+.auth-overlay{position:fixed;inset:0;background:rgba(15,23,42,.85);z-index:500;display:flex;align-items:center;justify-content:center;}
+.auth-box{background:white;border-radius:20px;padding:36px;width:90%;max-width:400px;text-align:center;}
+.auth-box h2{font-size:22px;font-weight:800;color:var(--primary);margin-bottom:8px;}
+.auth-box p{font-size:14px;color:#64748b;margin-bottom:24px;}
+.auth-input-row{display:flex;gap:8px;}
+.auth-input-row input{flex:1;}
 
 @media(max-width:768px){
   .summary-grid{grid-template-columns:repeat(2,1fr);}
   .team-grid{grid-template-columns:repeat(2,1fr);}
-  .select-row,.form-row{grid-template-columns:1fr;}
-  .kpi-body{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
   .section{padding:16px;}
   .issue-summary{grid-template-columns:repeat(3,1fr);}
-  .round-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
 <!-- 로딩 -->
-<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><div class="loading-msg" id="loadingMsg">데이터를 불러오는 중...</div></div>
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+
+<!-- 비밀번호 인증 -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-box">
+    <h2>🔒 관리자 인증</h2>
+    <p>관리자 비밀번호를 입력해주세요.</p>
+    <div class="auth-input-row">
+      <input type="password" id="authPwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')checkAuth()">
+      <button class="btn btn-primary" onclick="checkAuth()">확인</button>
+    </div>
+    <div id="authError" style="font-size:12px;color:var(--red);margin-top:8px;display:none"></div>
+  </div>
+</div>
 
 <!-- Header -->
 <div class="header">
-  <div class="header-title">📊 조직 성과 체크인 시스템 <span>HUNET 2026</span></div>
+  <div class="header-title">📊 조직 성과 체크인 시스템 <span>관리자</span></div>
   <div class="header-right">
     <div><span class="conn-dot" id="connDot"></span><span class="conn-label" id="connLabel">연결 확인 중...</span></div>
-    <a class="admin-btn" id="adminLink" href="admin.html" style="display:none;text-decoration:none">⚙️ 관리자 페이지</a>
+    <a class="link-btn" href="index.html?admin=true">📋 임직원 페이지</a>
   </div>
 </div>
 
 <div class="nav">
-  <button class="nav-btn active" onclick="showSection('checkin',this)">✏️ 체크인 입력</button>
+  <button class="nav-btn active" onclick="showSection('rounds',this)">📅 회차 관리</button>
   <button class="nav-btn" onclick="showSection('dashboard',this)">📈 대시보드</button>
+  <button class="nav-btn" onclick="showSection('settings',this)">⚙️ 설정</button>
 </div>
 
-<!-- ===== CHECKIN ===== -->
-<div class="section active" id="section-checkin">
+<!-- ===== ROUNDS MANAGEMENT ===== -->
+<div class="section active" id="section-rounds">
   <div class="card">
-    <div class="card-title">📅 체크인 회차 선택</div>
-    <div id="roundGrid" class="round-grid"></div>
-    <div id="noRoundsMsg" class="no-rounds" style="display:none">
-      <div style="font-size:36px;margin-bottom:10px">📭</div>
-      <div style="font-size:14px;font-weight:600;color:#64748b">현재 진행 중인 체크인 회차가 없습니다.</div>
-      <div style="font-size:13px;color:#94a3b8;margin-top:6px">관리자에게 회차 생성을 요청해주세요.</div>
-    </div>
-  </div>
-
-  <div class="card" id="teamSelectCard" style="display:none">
-    <div class="card-title">🏢 팀 선택</div>
-    <div class="select-row">
-      <div><label>본부 선택</label>
-        <select id="selBunbu" onchange="onBunbuChange()">
-          <option value="">-- 본부 선택 --</option>
-        </select>
+    <div class="card-title">📅 체크인 회차 관리</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:14px">회차를 생성하고 활성화하면 팀장들의 입력 화면에 표시됩니다.</div>
+    <div id="roundList"></div>
+    <div class="add-form">
+      <h4>➕ 새 회차 추가</h4>
+      <div class="form-row">
+        <div><label>회차명 <span style="color:var(--red)">*</span></label>
+          <input type="text" id="newName" placeholder="예: 2026년 4월 체크인"></div>
+        <div><label>기간/설명</label>
+          <input type="text" id="newPeriod" placeholder="예: 1차 체크인 · 상반기 중간점검"></div>
       </div>
-      <div><label>팀 선택</label>
-        <select id="selTeam" onchange="onTeamChange()">
-          <option value="">-- 팀 선택 --</option>
-        </select>
-      </div>
-    </div>
-    <div id="prevCheckinNotice" class="notice warn" style="display:none">
-      ⚠️ 이미 제출된 체크인이 있습니다. 재제출 시 기존 내용이 덮어쓰기 됩니다.
-    </div>
-  </div>
-
-  <div id="kpiSection" style="display:none">
-    <div class="card">
-      <div class="card-title" id="kpiSectionTitle"></div>
-      <div class="guide-box quan" id="guideQuan">
-        <h4>📏 정량 지표 입력 방법</h4>
-        <ul>
-          <li>달성률 → <b>85%</b>, <b>120%</b> 등 퍼센트로 작성</li>
-          <li>수치 → <b>17방</b>, <b>250억</b>, <b>1,200개</b> 등 실제 수치로 작성</li>
-          <li>현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b>로 입력</li>
-        </ul>
-      </div>
-      <div class="guide-box qual" id="guideQual">
-        <h4>⭐ 정성 지표 등급 기준</h4>
-        <div class="guide-grade">
-          <span class="gl arete">Arete</span><span class="gd">누구나 인정할 만큼 탁월한 성과 창출</span>
-          <span class="gl ee">EE</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>초과</b></span>
-          <span class="gl me">ME</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>충족</b></span>
-          <span class="gl ni">NI</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준 <b>미만</b></span>
-          <span class="gl hold">보류</span><span class="gd">현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b> 선택</span>
-        </div>
-      </div>
-      <div class="kpi-list" id="kpiList"></div>
-      <div class="submit-row">
-        <button class="btn btn-outline" onclick="resetForm()">초기화</button>
-        <button class="btn btn-primary" id="submitBtn" onclick="submitCheckin()">✅ 체크인 제출</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="doAddRound(false)">비활성으로 추가</button>
+        <button class="btn btn-success btn-sm" onclick="doAddRound(true)">✅ 활성으로 즉시 추가</button>
       </div>
     </div>
   </div>
@@ -313,6 +255,19 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
   </div>
 </div>
 
+<!-- ===== SETTINGS ===== -->
+<div class="section" id="section-settings">
+  <div class="card">
+    <div class="card-title">🔑 관리자 비밀번호 변경</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:16px">관리자 페이지 접근 비밀번호를 변경합니다.</div>
+    <div class="form-row">
+      <div><label>현재 비밀번호</label><input type="password" id="oldPw" placeholder="현재 비밀번호"></div>
+      <div><label>새 비밀번호</label><input type="password" id="newPw" placeholder="새 비밀번호"></div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="changePassword()">비밀번호 변경</button>
+  </div>
+</div>
+
 <!-- 팀 상세 Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
@@ -328,7 +283,7 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 
 <script>
 // ============================================================
-// OKR DATA
+// OKR DATA (임직원 페이지와 동일)
 // ============================================================
 const OKR_DATA = {
   "교육사업본부":{
@@ -686,17 +641,47 @@ const SB_URL = 'https://dtivujwdothmjohnimym.supabase.co/rest/v1';
 const SB_KEY = 'sb_publishable_Q9DWpjFNGtgsmIhggeLIBA_7t8OwNmc';
 const SB_HDR = {'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'};
 
+const ADMIN_PW_KEY = 'okr_admin_pw';
+const ADMIN_AUTH_KEY = 'okr_admin_authed';
+const DEFAULT_ADMIN_PW = 'admin1234';
+
 let state = {
-  round: '',
-  bunbu: '',
-  team: '',
   rounds: [],
   checkins: {},
   connected: false
 };
 
+function getAdminPw() { return localStorage.getItem(ADMIN_PW_KEY) || DEFAULT_ADMIN_PW; }
+
 // ============================================================
-// SUPABASE REST API (직접 fetch - CDN 불필요)
+// AUTH
+// ============================================================
+function checkAuth() {
+  const pw = document.getElementById('authPwInput').value;
+  const errEl = document.getElementById('authError');
+  if (pw === getAdminPw()) {
+    sessionStorage.setItem(ADMIN_AUTH_KEY, 'true');
+    document.getElementById('authOverlay').style.display = 'none';
+    init();
+  } else {
+    errEl.textContent = '비밀번호가 올바르지 않습니다.';
+    errEl.style.display = 'block';
+  }
+}
+
+function changePassword() {
+  const oldPw = document.getElementById('oldPw').value;
+  const newPw = document.getElementById('newPw').value;
+  if (oldPw !== getAdminPw()) { showToast('현재 비밀번호가 올바르지 않습니다.', 'error'); return; }
+  if (!newPw || newPw.length < 4) { showToast('새 비밀번호를 4자 이상 입력해주세요.', 'error'); return; }
+  localStorage.setItem(ADMIN_PW_KEY, newPw);
+  document.getElementById('oldPw').value = '';
+  document.getElementById('newPw').value = '';
+  showToast('비밀번호가 변경되었습니다.', 'success');
+}
+
+// ============================================================
+// SUPABASE REST API (직접 fetch)
 // ============================================================
 async function apiGetRounds() {
   const res = await fetch(SB_URL + '/rounds?select=name,period,active&order=created_at', {headers: SB_HDR});
@@ -713,27 +698,41 @@ async function apiGetCheckins(round) {
   return result;
 }
 
-async function apiSubmitCheckin(payload) {
-  const res = await fetch(SB_URL + '/checkins', {
-    method: 'POST', headers: {...SB_HDR, 'Prefer': 'resolution=merge-duplicates,return=minimal'},
-    body: JSON.stringify({round: payload.round, bunbu: payload.bunbu, team: payload.team, submitted_at: payload.submittedAt, okrs: payload.okrs})
+async function apiAddRound(name, period, active) {
+  const res = await fetch(SB_URL + '/rounds', {
+    method: 'POST', headers: SB_HDR,
+    body: JSON.stringify({name, period: period || '', active})
   });
-  if (!res.ok) throw new Error('제출 실패: ' + res.status);
+  if (res.status === 409) return { success: false, error: '동일한 이름의 회차가 이미 있습니다.' };
+  if (!res.ok) throw new Error('추가 실패: ' + res.status);
   return { success: true };
+}
+
+async function apiToggleRound(name, active) {
+  const res = await fetch(SB_URL + '/rounds?name=eq.' + encodeURIComponent(name), {
+    method: 'PATCH', headers: SB_HDR,
+    body: JSON.stringify({active})
+  });
+  if (!res.ok) throw new Error('변경 실패: ' + res.status);
+}
+
+async function apiDeleteRound(name) {
+  const res = await fetch(SB_URL + '/rounds?name=eq.' + encodeURIComponent(name), {
+    method: 'DELETE', headers: SB_HDR
+  });
+  if (!res.ok) throw new Error('삭제 실패: ' + res.status);
 }
 
 // ============================================================
 // INIT
 // ============================================================
 async function init() {
-  showLoading(true);
 
-  // 본부/팀 셀렉트 초기화
+  // 본부 셀렉트 초기화 (대시보드용)
   const bunbus = Object.keys(OKR_DATA);
-  const sb = document.getElementById('selBunbu');
   const db = document.getElementById('dashBunbu');
+  db.innerHTML = '<option value="">전체 본부</option>';
   bunbus.forEach(b => {
-    sb.innerHTML += `<option value="${b}">${b}</option>`;
     db.innerHTML += `<option value="${b}">${b}</option>`;
   });
 
@@ -750,7 +749,7 @@ async function loadRounds() {
     state.rounds = rounds || [];
     state.connected = true;
     setConnStatus(true);
-    renderRounds();
+    renderRoundList();
     renderDashRounds();
     renderDashboard();
   } catch(e) {
@@ -760,222 +759,89 @@ async function loadRounds() {
   } finally { showLoading(false); }
 }
 
-function renderRounds() {
-  const active = state.rounds.filter(r => r.active);
-  const grid   = document.getElementById('roundGrid');
-  const noMsg  = document.getElementById('noRoundsMsg');
-  grid.innerHTML = '';
-  if (!active.length) {
-    grid.style.display = 'none';
-    noMsg.style.display = 'block'; return;
+function renderRoundList() {
+  const list = document.getElementById('roundList');
+  const rounds = state.rounds;
+  if (!rounds.length) {
+    list.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:13px">생성된 회차가 없습니다.</div>';
+    return;
   }
-  grid.style.display = 'grid';
-  noMsg.style.display = 'none';
-  active.forEach(r => {
-    grid.innerHTML += `
-      <div class="round-card ${state.round===r.name?'selected':''}" onclick="selectRound('${esc(r.name)}')">
-        <div class="r-title">${esc(r.name)}</div>
-        ${r.period ? `<div class="r-sub">${esc(r.period)}</div>` : ''}
-        <span class="active-badge">진행 중</span>
+  let html = '';
+  rounds.forEach((r) => {
+    html += `
+      <div class="round-item">
+        <div class="r-info">
+          <div class="r-name">${esc(r.name)}</div>
+          ${r.period ? `<div class="r-period">📅 ${esc(r.period)}</div>` : ''}
+        </div>
+        <div class="round-actions">
+          <button class="toggle-btn ${r.active ? 'on' : 'off'}" onclick="doToggleRound('${esc(r.name)}',${!r.active})">
+            ${r.active ? '✅ 활성' : '⏸ 비활성'}
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="doDeleteRound('${esc(r.name)}')">삭제</button>
+        </div>
       </div>`;
   });
+  list.innerHTML = html;
 }
 
 function renderDashRounds() {
   const sel = document.getElementById('dashRound');
   const prev = sel.value;
   sel.innerHTML = '<option value="">-- 회차 선택 --</option>';
-  state.rounds.forEach(r => sel.innerHTML += `<option value="${esc(r.name)}">${esc(r.name)}</option>`);
-  if (prev && state.rounds.find(r=>r.name===prev)) sel.value = prev;
-  else if (state.rounds.length) sel.value = state.rounds[state.rounds.length-1].name;
+  state.rounds.forEach(r => {
+    sel.innerHTML += `<option value="${r.name}"${r.active ? ' selected' : ''}>${r.name}${r.active ? ' (활성)' : ''}</option>`;
+  });
+  if (prev) sel.value = prev;
+  if (!sel.value && state.rounds.length) {
+    const active = state.rounds.find(r => r.active);
+    if (active) sel.value = active.name;
+  }
+  if (sel.value) refreshDashboard();
 }
 
 function setConnStatus(ok) {
-  document.getElementById('connDot').className = 'conn-dot ' + (ok?'ok':'err');
-  document.getElementById('connLabel').textContent = ok ? '실시간 연동 중' : '연결 끊김';
+  document.getElementById('connDot').className = 'conn-dot ' + (ok ? 'ok' : 'err');
+  document.getElementById('connLabel').textContent = ok ? '연결됨' : '연결 안됨';
 }
 
 // ============================================================
-// SECTION NAV
+// ADMIN ACTIONS
 // ============================================================
-function showSection(name, btn) {
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('section-'+name).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (name==='dashboard') refreshDashboard();
-}
-
-// ============================================================
-// ROUND SELECT
-// ============================================================
-function selectRound(name) {
-  state.round = name;
-  state.checkins = {};
-  renderRounds();
-  document.getElementById('teamSelectCard').style.display = 'block';
-  document.getElementById('kpiSection').style.display = 'none';
-  document.getElementById('selBunbu').value = '';
-  document.getElementById('selTeam').innerHTML = '<option value="">-- 팀 선택 --</option>';
-  document.getElementById('prevCheckinNotice').style.display = 'none';
-}
-
-// ============================================================
-// TEAM SELECT
-// ============================================================
-function onBunbuChange() {
-  const bunbu = document.getElementById('selBunbu').value;
-  const sel = document.getElementById('selTeam');
-  sel.innerHTML = '<option value="">-- 팀 선택 --</option>';
-  if (!bunbu) return;
-  Object.keys(OKR_DATA[bunbu]||{}).forEach(t=>sel.innerHTML+=`<option value="${t}">${t}</option>`);
-  document.getElementById('kpiSection').style.display = 'none';
-}
-
-async function onTeamChange() {
-  const bunbu = document.getElementById('selBunbu').value;
-  const team  = document.getElementById('selTeam').value;
-  if (!bunbu||!team) return;
-  state.bunbu = bunbu;
-  state.team  = team;
-
-  // 기존 체크인 로드
+async function doAddRound(active) {
+  const name = document.getElementById('newName')?.value.trim();
+  if (!name) { showToast('회차명을 입력해주세요.', 'error'); return; }
+  const period = document.getElementById('newPeriod')?.value.trim() || '';
   showLoading(true);
   try {
-    const all = await apiGetCheckins(state.round);
-    state.checkins = all || {};
-  } catch(e) {
-    state.checkins = {};
-  } finally { showLoading(false); }
-
-  const prev = state.checkins[team] || null;
-  document.getElementById('prevCheckinNotice').style.display = prev ? 'block' : 'none';
-  renderOkrForm(bunbu, team, prev);
+    const res = await apiAddRound(name, period, active);
+    if (!res.success) { showToast(res.error || '추가 실패', 'error'); return; }
+    showToast(`"${name}" 회차가 추가되었습니다.`, 'success');
+    document.getElementById('newName').value = '';
+    document.getElementById('newPeriod').value = '';
+    await loadRounds();
+  } catch(e) { showToast('오류: ' + e.message, 'error'); }
+  finally { showLoading(false); }
 }
 
-// ============================================================
-// OKR FORM
-// ============================================================
-function renderOkrForm(bunbu, team, prevData) {
-  const okrs = OKR_DATA[bunbu][team];
-  const hasQ = okrs.some(o=>o.type==='정량');
-  const hasS = okrs.some(o=>o.type==='정성');
-  document.getElementById('kpiSectionTitle').textContent = `📋 ${team} — OKR 성과 체크인 (${state.round})`;
-  document.getElementById('guideQuan').style.display = hasQ ? 'block' : 'none';
-  document.getElementById('guideQual').style.display = hasS ? 'block' : 'none';
-
-  const list = document.getElementById('kpiList');
-  list.innerHTML = '';
-  okrs.forEach((okr, i) => {
-    const prev = prevData ? prevData.okrs[i] : null;
-    const isQ  = okr.type==='정량';
-    let ci = '';
-    if (isQ) {
-      ci = `<input type="text" id="ci_${i}" placeholder="달성률 또는 수치 (예: 85%, 17방) — 어려우면 체크인 보류" value="${prev?esc(prev.checkin):''}">`;
-    } else {
-      const gs = ['Arete','EE','ME','NI','체크인 보류'];
-      ci = `<select id="ci_${i}"><option value="">등급 선택</option>${gs.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
-    }
-    const iopts = ['없음','목표조정','신규목표','목표폐기','지원요청','기타'];
-    const showDet = prev && prev.issue && prev.issue!=='없음';
-    list.innerHTML += `
-      <div class="kpi-card">
-        <div class="kpi-card-header">
-          <div class="kpi-header-top">
-            <span class="okr-num">OKR ${i+1}</span>
-            <div class="goal-text">${esc(okr.goal)}</div>
-            <span class="badge ${isQ?'q':'s'}">${okr.type}</span>
-          </div>
-          <div class="kr-section">
-            <div class="kr-label">핵심성과지표 (Key Result)</div>
-            <div class="kr-text">📌 ${esc(okr.kr)}</div>
-            ${okr.detail?`<div class="kr-detail">💬 ${esc(okr.detail)}</div>`:''}
-          </div>
-        </div>
-        <div class="kpi-body">
-          <div class="fg">
-            <label>① 성과 체크인 ${isQ?'<small style="color:#64748b;font-weight:400">(달성률/수치)</small>':'<small style="color:#64748b;font-weight:400">(등급 선택)</small>'}</label>
-            ${ci}
-          </div>
-          <div class="fg">
-            <label>③ 이슈 체크인</label>
-            <select id="issue_${i}" onchange="toggleDet(${i})">
-              ${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}
-            </select>
-          </div>
-          <div class="fg" style="grid-column:span 2">
-            <label>② 성과 체크인 관련 코멘트</label>
-            <textarea id="comment_${i}" placeholder="체크인 등급/수치 선택 이유, 현황, 추가 코멘트를 작성해주세요">${prev?esc(prev.comment):''}</textarea>
-          </div>
-          <div class="issue-detail ${showDet?'show':''}" id="det_${i}" style="grid-column:span 2">
-            <label>④ 상세 이슈 작성 <span style="color:var(--red);font-weight:400;font-size:12px">*없음 외 선택 시 반드시 작성</span></label>
-            <textarea id="detText_${i}" placeholder="이슈에 대한 상세 내용을 작성해주세요">${prev?esc(prev.issueText):''}</textarea>
-          </div>
-        </div>
-      </div>`;
-  });
-  document.getElementById('kpiSection').style.display = 'block';
-  setTimeout(()=>document.getElementById('kpiSection').scrollIntoView({behavior:'smooth',block:'start'}),100);
-}
-
-function toggleDet(i) {
-  const v = document.getElementById('issue_'+i).value;
-  document.getElementById('det_'+i).classList.toggle('show', v&&v!=='없음');
-}
-
-// ============================================================
-// SUBMIT
-// ============================================================
-async function submitCheckin() {
-  if (!state.round) { showToast('체크인 회차를 선택해주세요.', 'error'); return; }
-  if (!state.team)  { showToast('팀을 선택해주세요.', 'error'); return; }
-
-  const okrs = OKR_DATA[state.bunbu][state.team];
-  const result = [];
-  let hasError = false;
-
-  okrs.forEach((okr, i) => {
-    const el  = document.getElementById('ci_'+i);
-    const ci  = (el?.value||'').trim();
-    const cmt = (document.getElementById('comment_'+i)?.value||'').trim();
-    const iss = document.getElementById('issue_'+i)?.value||'없음';
-    const det = (document.getElementById('detText_'+i)?.value||'').trim();
-    if (!ci) { hasError=true; if(el) el.style.borderColor='var(--red)'; }
-    else      { if(el) el.style.borderColor=''; }
-    if (iss!=='없음'&&!det) {
-      hasError=true;
-      const it=document.getElementById('detText_'+i);
-      if(it) it.style.borderColor='var(--red)';
-    }
-    result.push({checkin:ci, comment:cmt, issue:iss, issueText:det});
-  });
-  if (hasError) { showToast('⚠️ 모든 필수 항목을 입력해주세요.', 'error'); return; }
-
-  const payload = {
-    round: state.round, bunbu: state.bunbu, team: state.team,
-    submittedAt: new Date().toLocaleString('ko-KR'),
-    okrs: result
-  };
-
+async function doToggleRound(name, active) {
   showLoading(true);
-  document.getElementById('submitBtn').disabled = true;
   try {
-    await apiSubmitCheckin(payload);
-    state.checkins[state.team] = payload;
-    showToast(`✅ ${state.team} 체크인이 제출되었습니다!`, 'success');
-    document.getElementById('prevCheckinNotice').style.display = 'block';
-    window.scrollTo({top:0,behavior:'smooth'});
-  } catch(e) {
-    showToast('❌ 제출 실패: ' + e.message, 'error');
-  } finally {
-    showLoading(false);
-    document.getElementById('submitBtn').disabled = false;
-  }
+    await apiToggleRound(name, active);
+    await loadRounds();
+  } catch(e) { showToast('오류: ' + e.message, 'error'); }
+  finally { showLoading(false); }
 }
 
-function resetForm() {
-  if (!confirm('입력한 내용을 초기화하겠습니까?')) return;
-  renderOkrForm(state.bunbu, state.team, state.checkins[state.team]||null);
+async function doDeleteRound(name) {
+  if (!confirm(`"${name}" 회차를 삭제하겠습니까?\n(제출된 체크인 데이터는 유지됩니다)`)) return;
+  showLoading(true);
+  try {
+    await apiDeleteRound(name);
+    await loadRounds();
+    showToast('회차가 삭제되었습니다.', '');
+  } catch(e) { showToast('오류: ' + e.message, 'error'); }
+  finally { showLoading(false); }
 }
 
 // ============================================================
@@ -1001,38 +867,37 @@ function renderDashboard() {
 
   const allTeams = [];
   Object.entries(OKR_DATA).forEach(([b, teams]) => {
-    if (filter && b!==filter) return;
-    Object.keys(teams).forEach(t => allTeams.push({bunbu:b, team:t}));
+    if (filter && b !== filter) return;
+    Object.keys(teams).forEach(t => allTeams.push({bunbu: b, team: t}));
   });
 
-  const done   = allTeams.filter(t=>data[t.team]).length;
-  const issues = allTeams.filter(t=>{
-    const d=data[t.team]; return d&&d.okrs.some(k=>k.issue&&k.issue!=='없음');
+  const done   = allTeams.filter(t => data[t.team]).length;
+  const issues = allTeams.filter(t => {
+    const d = data[t.team]; return d && d.okrs.some(k => k.issue && k.issue !== '없음');
   }).length;
 
   document.getElementById('dTotal').textContent   = allTeams.length;
   document.getElementById('dDone').textContent    = done;
-  document.getElementById('dPending').textContent = allTeams.length-done;
+  document.getElementById('dPending').textContent = allTeams.length - done;
   document.getElementById('dIssue').textContent   = issues;
 
-  const ic={목표조정:0,신규목표:0,목표폐기:0,지원요청:0,기타:0};
-  allTeams.forEach(t=>{
-    const d=data[t.team]; if(!d) return;
-    d.okrs.forEach(k=>{ if(k.issue&&ic[k.issue]!==undefined) ic[k.issue]++; });
+  const ic = {목표조정: 0, 신규목표: 0, 목표폐기: 0, 지원요청: 0, 기타: 0};
+  allTeams.forEach(t => {
+    const d = data[t.team]; if (!d) return;
+    d.okrs.forEach(k => { if (k.issue && ic[k.issue] !== undefined) ic[k.issue]++; });
   });
-  ['목표조정','신규목표','목표폐기','지원요청','기타'].forEach((k,i)=>{
-    document.getElementById('ic'+(i+1)).textContent=ic[k];
+  ['목표조정','신규목표','목표폐기','지원요청','기타'].forEach((k, i) => {
+    document.getElementById('ic' + (i + 1)).textContent = ic[k];
   });
 
-  // 본부별 진행률
   const bunbuList = filter ? [filter] : Object.keys(OKR_DATA);
   const prog = document.getElementById('bunbuProgress');
   prog.innerHTML = '';
-  bunbuList.forEach(b=>{
-    const teams=Object.keys(OKR_DATA[b]);
-    const dc=teams.filter(t=>data[t]).length;
-    const pct=Math.round(dc/teams.length*100);
-    prog.innerHTML+=`
+  bunbuList.forEach(b => {
+    const teams = Object.keys(OKR_DATA[b]);
+    const dc = teams.filter(t => data[t]).length;
+    const pct = Math.round(dc / teams.length * 100);
+    prog.innerHTML += `
       <div class="progress-row">
         <div class="progress-label">${b}</div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
@@ -1041,26 +906,25 @@ function renderDashboard() {
       </div>`;
   });
 
-  // 팀 카드
-  const grid=document.getElementById('teamGrid');
-  grid.innerHTML='';
+  const grid = document.getElementById('teamGrid');
+  grid.innerHTML = '';
   if (!allTeams.length) {
-    grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div>팀이 없습니다.</div></div>'; return;
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div>팀이 없습니다.</div></div>'; return;
   }
-  allTeams.forEach(({bunbu,team})=>{
-    const d=data[team];
-    const iss=d?d.okrs.filter(k=>k.issue&&k.issue!=='없음'):[];
-    const tags=[...new Set(iss.map(k=>k.issue))].map(v=>`<span class="issue-tag tag-${v}">${v}</span>`).join('');
-    grid.innerHTML+=`
-      <div class="team-card ${d?'done':'pending'}" onclick="showTeamDetail('${esc(bunbu)}','${esc(team)}')">
+  allTeams.forEach(({bunbu, team}) => {
+    const d = data[team];
+    const iss = d ? d.okrs.filter(k => k.issue && k.issue !== '없음') : [];
+    const tags = [...new Set(iss.map(k => k.issue))].map(v => `<span class="issue-tag tag-${v}">${v}</span>`).join('');
+    grid.innerHTML += `
+      <div class="team-card ${d ? 'done' : 'pending'}" onclick="showTeamDetail('${esc(bunbu)}','${esc(team)}')">
         <div class="team-card-name">${team}</div>
         <div class="team-card-bunbu">${bunbu}</div>
         <div class="team-card-status">
-          <span class="sdot ${d?'g':'gr'}"></span>
-          <span class="status-text">${d?'✅ 완료':'⏳ 미완료'}</span>
+          <span class="sdot ${d ? 'g' : 'gr'}"></span>
+          <span class="status-text">${d ? '✅ 완료' : '⏳ 미완료'}</span>
         </div>
-        ${d?`<div style="font-size:11px;color:#94a3b8;margin-top:4px">${d.submittedAt}</div>`:''}
-        ${tags?`<div class="issue-tags">${tags}</div>`:''}
+        ${d ? `<div style="font-size:11px;color:#94a3b8;margin-top:4px">${d.submittedAt}</div>` : ''}
+        ${tags ? `<div class="issue-tags">${tags}</div>` : ''}
       </div>`;
   });
 }
@@ -1074,55 +938,62 @@ function showTeamDetail(bunbu, team) {
   document.getElementById('modalTitle').textContent = `${team} — ${document.getElementById('dashRound').value} 체크인 상세`;
   let html = '';
   if (!d) {
-    html='<div class="empty-state"><div class="empty-icon">📭</div><div>아직 체크인이 제출되지 않았습니다.</div></div>';
+    html = '<div class="empty-state"><div class="empty-icon">📭</div><div>아직 체크인이 제출되지 않았습니다.</div></div>';
   } else {
-    html=`<div class="notice ok">제출일시: ${d.submittedAt}</div>`;
-    okrs.forEach((okr,i)=>{
-      const r=d.okrs[i]||{};
-      const ib=r.issue&&r.issue!=='없음'?`<span class="issue-tag tag-${r.issue}">${r.issue}</span>`:'';
-      html+=`
+    html = `<div class="notice ok">제출일시: ${d.submittedAt}</div>`;
+    okrs.forEach((okr, i) => {
+      const r = d.okrs[i] || {};
+      const ib = r.issue && r.issue !== '없음' ? `<span class="issue-tag tag-${r.issue}">${r.issue}</span>` : '';
+      html += `
         <div class="okr-dr">
-          <div class="okr-dh"><span class="okr-num">OKR ${i+1}</span><span class="badge ${okr.type==='정량'?'q':'s'}">${okr.type}</span>${ib}</div>
+          <div class="okr-dh"><span class="okr-num">OKR ${i + 1}</span><span class="badge ${okr.type === '정량' ? 'q' : 's'}">${okr.type}</span>${ib}</div>
           <div class="okr-obj">${esc(okr.goal)}</div>
           <div class="okr-kr">📌 ${esc(okr.kr)}</div>
-          ${okr.detail?`<div class="okr-krd">💬 ${esc(okr.detail)}</div>`:''}
+          ${okr.detail ? `<div class="okr-krd">💬 ${esc(okr.detail)}</div>` : ''}
           <div class="okr-cg">
-            <div class="di"><span>성과 체크인</span><div class="dv">${esc(r.checkin)||'-'}</div></div>
-            <div class="di"><span>이슈</span><div class="dv">${esc(r.issue)||'-'}</div></div>
-            ${r.comment?`<div class="di" style="grid-column:span 2"><span>코멘트</span><div class="dv">${esc(r.comment)}</div></div>`:''}
-            ${r.issueText?`<div class="di" style="grid-column:span 2"><span>상세 이슈</span><div class="dv">${esc(r.issueText)}</div></div>`:''}
+            <div class="di"><span>성과 체크인</span><div class="dv">${esc(r.checkin) || '-'}</div></div>
+            <div class="di"><span>이슈</span><div class="dv">${esc(r.issue) || '-'}</div></div>
+            ${r.comment ? `<div class="di" style="grid-column:span 2"><span>코멘트</span><div class="dv">${esc(r.comment)}</div></div>` : ''}
+            ${r.issueText ? `<div class="di" style="grid-column:span 2"><span>상세 이슈</span><div class="dv">${esc(r.issueText)}</div></div>` : ''}
           </div>
         </div>`;
     });
   }
-  document.getElementById('modalBody').innerHTML=html;
+  document.getElementById('modalBody').innerHTML = html;
   document.getElementById('modalOverlay').classList.add('open');
 }
 
 // ============================================================
 // HELPERS
 // ============================================================
-function esc(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  btn.classList.add('active');
 }
-function showLoading(v, msg) {
-  document.getElementById('loadingOverlay').classList.toggle('show',v);
-  if (msg) document.getElementById('loadingMsg').textContent = msg;
+
+function esc(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function showLoading(v) {
+  document.getElementById('loadingOverlay').classList.toggle('show', v);
 }
 function showToast(msg, type='') {
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast '+(type?type:'')+' show';
-  setTimeout(()=>t.classList.remove('show'),3500);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + (type ? type : '') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
 // ============================================================
 // START
 // ============================================================
-// 관리자 모드: ?admin=true 파라미터가 있으면 관리자 페이지 버튼 표시
-if (new URLSearchParams(location.search).get('admin') === 'true') {
-  document.getElementById('adminLink').style.display = 'inline-block';
+if (sessionStorage.getItem(ADMIN_AUTH_KEY) === 'true') {
+  document.getElementById('authOverlay').style.display = 'none';
+  init();
+} else {
+  document.getElementById('authPwInput').focus();
 }
-init();
 </script>
 </body>
 </html>
