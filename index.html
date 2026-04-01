@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>조직 성과 체크인 시스템</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
@@ -163,8 +164,9 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 .di .dv{font-size:13px;color:#1a2332;}
 
 /* Loading */
-.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.7);z-index:300;display:flex;align-items:center;justify-content:center;display:none;}
-.spinner{width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;display:none;}
+.spinner{width:44px;height:44px;border:4px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;}
+.loading-msg{font-size:13px;color:#64748b;font-weight:600;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-overlay.show{display:flex;}
 
@@ -192,7 +194,7 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 <body>
 
 <!-- 로딩 -->
-<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><div class="loading-msg" id="loadingMsg">데이터를 불러오는 중...</div></div>
 
 <!-- Header -->
 <div class="header">
@@ -681,66 +683,50 @@ const OKR_DATA = {
 // ============================================================
 // CONFIG & STATE
 // ============================================================
-const SCRIPT_URL_KEY = 'okr_script_url';
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJXzie4qb-QRaKtSMsqmVUDzl0DkPQeBb3Q2Y_owxwFnDkU81cWV4-Ivw5NTDOapL-/exec';
+const SUPABASE_URL = 'https://dtivujwdothmjohnimym.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Q9DWpjFNGtgsmIhggeLIBA_7t8OwNmc';
+const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 let state = {
   round: '',
   bunbu: '',
   team: '',
   rounds: [],
-  checkins: {},   // team -> data (for current round)
+  checkins: {},
   connected: false
 };
 
-function getUrl() { return localStorage.getItem(SCRIPT_URL_KEY) || DEFAULT_SCRIPT_URL; }
-
 // ============================================================
-// API LAYER
+// SUPABASE API LAYER
 // ============================================================
-// GET via JSONP (avoids CORS preflight)
-function apiGet(action, params={}) {
-  return new Promise((resolve, reject) => {
-    const url = getUrl();
-    if (!url) { reject(new Error('URL 미설정')); return; }
-    const cbName = '_gc_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-    const timer = setTimeout(() => {
-      cleanup(); reject(new Error('요청 시간 초과 (15초). 네트워크를 확인해주세요.'));
-    }, 15000);
-    function cleanup() {
-      clearTimeout(timer);
-      delete window[cbName];
-      document.getElementById(cbName)?.remove();
-    }
-    window[cbName] = (data) => { cleanup(); resolve(data); };
-    const sp = new URLSearchParams({action, callback: cbName, ...params});
-    const s = document.createElement('script');
-    s.id = cbName;
-    s.src = url + '?' + sp.toString();
-    s.onerror = () => { cleanup(); reject(new Error('네트워크 오류')); };
-    document.head.appendChild(s);
-  });
+async function apiGetRounds() {
+  const { data, error } = await _sb.from('rounds').select('name, period, active').order('created_at');
+  if (error) throw new Error(error.message);
+  return data;
 }
 
-// POST via fetch with text/plain (avoids CORS preflight OPTIONS)
-async function apiPost(data) {
-  const url = getUrl();
-  if (!url) throw new Error('URL 미설정');
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {'Content-Type': 'text/plain'},
-    body: JSON.stringify(data),
-    redirect: 'follow'
-  });
-  if (!res.ok) throw new Error('서버 오류: ' + res.status);
-  return res.json();
+async function apiGetCheckins(round) {
+  const { data, error } = await _sb.from('checkins').select('*').eq('round', round);
+  if (error) throw new Error(error.message);
+  const result = {};
+  data.forEach(r => { result[r.team] = { round: r.round, bunbu: r.bunbu, team: r.team, submittedAt: r.submitted_at, okrs: r.okrs }; });
+  return result;
+}
+
+async function apiSubmitCheckin(payload) {
+  const { error } = await _sb.from('checkins').upsert({
+    round: payload.round, bunbu: payload.bunbu, team: payload.team,
+    submitted_at: payload.submittedAt, okrs: payload.okrs
+  }, { onConflict: 'round,team' });
+  if (error) throw new Error(error.message);
+  return { success: true };
 }
 
 // ============================================================
 // INIT
 // ============================================================
 async function init() {
-  const url = getUrl();
-  if (!url) { showToast('연결 URL이 설정되지 않았습니다. 관리자에게 문의하세요.', 'error'); return; }
+  showLoading(true);
 
   // 본부/팀 셀렉트 초기화
   const bunbus = Object.keys(OKR_DATA);
@@ -760,7 +746,7 @@ async function init() {
 async function loadRounds() {
   try {
     showLoading(true);
-    const rounds = await apiGet('getRounds');
+    const rounds = await apiGetRounds();
     state.rounds = rounds || [];
     state.connected = true;
     setConnStatus(true);
@@ -856,7 +842,7 @@ async function onTeamChange() {
   // 기존 체크인 로드
   showLoading(true);
   try {
-    const all = await apiGet('getCheckins', {round: state.round});
+    const all = await apiGetCheckins(state.round);
     state.checkins = all || {};
   } catch(e) {
     state.checkins = {};
@@ -974,7 +960,7 @@ async function submitCheckin() {
   showLoading(true);
   document.getElementById('submitBtn').disabled = true;
   try {
-    await apiPost({action:'submitCheckin', data:payload});
+    await apiSubmitCheckin(payload);
     state.checkins[state.team] = payload;
     showToast(`✅ ${state.team} 체크인이 제출되었습니다!`, 'success');
     document.getElementById('prevCheckinNotice').style.display = 'block';
@@ -1000,7 +986,7 @@ async function refreshDashboard() {
   try {
     const round = document.getElementById('dashRound').value;
     if (!round) { showLoading(false); return; }
-    const data = await apiGet('getCheckins', {round});
+    const data = await apiGetCheckins(round);
     state.checkins = data || {};
     renderDashboard();
   } catch(e) {
@@ -1119,8 +1105,9 @@ function showTeamDetail(bunbu, team) {
 function esc(s) {
   return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function showLoading(v) {
+function showLoading(v, msg) {
   document.getElementById('loadingOverlay').classList.toggle('show',v);
+  if (msg) document.getElementById('loadingMsg').textContent = msg;
 }
 function showToast(msg, type='') {
   const t=document.getElementById('toast');
