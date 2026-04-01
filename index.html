@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조직 성과 체크인 시스템</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f0f4f8;color:#1a2332;min-height:100vh;}
+:root{--primary:#1e3a5f;--secondary:#2d6a9f;--accent:#3b82f6;--green:#22c55e;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;}
+
+.header{background:var(--primary);color:white;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.header-title{font-size:17px;font-weight:700;}
+.header-title span{color:#93c5fd;margin-left:8px;font-size:13px;font-weight:400;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:#64748b;display:inline-block;margin-right:4px;}
+.conn-dot.ok{background:var(--green);}
+.conn-dot.err{background:var(--red);}
+.conn-label{font-size:12px;color:#93c5fd;}
+.admin-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;}
+.admin-btn:hover{background:rgba(255,255,255,.25);}
+
+.nav{background:white;border-bottom:2px solid #e2e8f0;padding:0 32px;display:flex;}
+.nav-btn{padding:14px 24px;font-size:14px;font-weight:600;border:none;background:none;cursor:pointer;color:#64748b;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.nav-btn.active{color:var(--primary);border-bottom-color:var(--accent);}
+
+.section{display:none;padding:28px 32px;max-width:1200px;margin:0 auto;}
+.section.active{display:block;}
+.card{background:white;border-radius:12px;padding:24px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:20px;}
+.card-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:16px;}
+
+/* Summary */
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.summary-card{background:white;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-left:4px solid var(--accent);}
+.summary-card.green{border-left-color:var(--green);}
+.summary-card.orange{border-left-color:var(--orange);}
+.summary-card.red{border-left-color:var(--red);}
+.summary-num{font-size:32px;font-weight:800;color:var(--primary);}
+.summary-label{font-size:12px;color:#64748b;margin-top:6px;}
+
+/* Round cards */
+.round-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.round-card{border:2px solid #e2e8f0;border-radius:10px;padding:18px;cursor:pointer;text-align:center;transition:all .2s;position:relative;}
+.round-card.selected{border-color:var(--accent);background:#eff6ff;}
+.round-card:hover{border-color:var(--secondary);}
+.round-card .r-title{font-size:15px;font-weight:700;color:var(--primary);}
+.round-card .r-sub{font-size:12px;color:#64748b;margin-top:4px;}
+.active-badge{position:absolute;top:8px;right:8px;background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}
+
+/* Form */
+select,input[type=text],textarea{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;background:white;color:#1a2332;outline:none;transition:border-color .2s;}
+select:focus,input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.1);}
+textarea{resize:vertical;min-height:72px;}
+.select-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;}
+
+/* Guide */
+.guide-box{border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;line-height:1.7;}
+.guide-box.quan{background:#eff6ff;border:1px solid #bfdbfe;}
+.guide-box.qual{background:#f5f3ff;border:1px solid #ddd6fe;}
+.guide-box h4{font-size:13px;font-weight:700;margin-bottom:8px;}
+.guide-box ul{padding-left:18px;}
+.guide-grade{display:grid;grid-template-columns:80px 1fr;gap:6px 12px;margin-top:8px;}
+.gl{font-weight:700;padding:3px 8px;border-radius:6px;font-size:12px;text-align:center;}
+.gl.arete{background:#fef9c3;color:#713f12;}
+.gl.ee{background:#dcfce7;color:#14532d;}
+.gl.me{background:#dbeafe;color:#1e3a8a;}
+.gl.ni{background:#fee2e2;color:#7f1d1d;}
+.gl.hold{background:#f1f5f9;color:#475569;}
+.gd{font-size:12px;color:#374151;display:flex;align-items:center;}
+
+/* OKR Cards */
+.kpi-list{display:flex;flex-direction:column;gap:16px;}
+.kpi-card{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:white;}
+.kpi-card-header{background:linear-gradient(135deg,#f8fafc,#f1f5f9);padding:16px 20px;border-bottom:1px solid #e2e8f0;}
+.kpi-header-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.okr-num{font-size:11px;font-weight:800;color:white;background:var(--secondary);border-radius:6px;padding:3px 9px;white-space:nowrap;}
+.goal-text{font-size:14px;color:#1a2332;font-weight:700;flex:1;line-height:1.4;}
+.badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;}
+.badge.q{background:#dbeafe;color:#1d4ed8;}
+.badge.s{background:#f3e8ff;color:#7c3aed;}
+.kr-section{margin-top:8px;padding-top:8px;border-top:1px dashed #e2e8f0;}
+.kr-label{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.5px;margin-bottom:4px;}
+.kr-text{font-size:13px;color:#374151;font-weight:600;line-height:1.5;}
+.kr-detail{font-size:12px;color:#64748b;margin-top:3px;}
+.kpi-body{padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{display:flex;flex-direction:column;gap:6px;}
+.issue-detail{display:none;}
+.issue-detail.show{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+
+/* Btn */
+.btn{padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;}
+.btn-primary{background:var(--primary);color:white;}
+.btn-primary:hover{background:#162d4a;}
+.btn-primary:disabled{background:#94a3b8;cursor:not-allowed;}
+.btn-success{background:var(--green);color:white;}
+.btn-success:hover{background:#16a34a;}
+.btn-outline{background:white;color:var(--primary);border:2px solid var(--primary);}
+.btn-outline:hover{background:#f0f4ff;}
+.btn-danger{background:var(--red);color:white;}
+.btn-sm{padding:7px 14px;font-size:12px;}
+.submit-row{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;}
+
+/* Dashboard */
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.progress-bar-bg{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:4px;background:var(--accent);transition:width .6s;}
+.progress-pct{font-size:12px;font-weight:700;color:var(--secondary);min-width:34px;text-align:right;}
+.progress-label{font-size:12px;color:#374151;font-weight:600;min-width:130px;}
+
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.team-card{background:white;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;transition:all .2s;border:2px solid transparent;}
+.team-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.team-card.done{border-left:4px solid var(--green);}
+.team-card.pending{border-left:4px solid #e2e8f0;}
+.team-card-name{font-size:14px;font-weight:700;margin-bottom:3px;}
+.team-card-bunbu{font-size:11px;color:#64748b;}
+.team-card-status{margin-top:10px;display:flex;align-items:center;}
+.sdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
+.sdot.g{background:var(--green);}
+.sdot.gr{background:#cbd5e1;}
+.status-text{font-size:12px;font-weight:600;}
+.issue-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.issue-tag{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;}
+.tag-목표조정{background:#fef3c7;color:#92400e;}
+.tag-신규목표{background:#d1fae5;color:#065f46;}
+.tag-목표폐기{background:#fee2e2;color:#991b1b;}
+.tag-지원요청{background:#e0e7ff;color:#3730a3;}
+.tag-기타{background:#f1f5f9;color:#475569;}
+
+.issue-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px;}
+.issue-box{background:white;border-radius:10px;padding:14px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.issue-box-num{font-size:24px;font-weight:800;color:var(--primary);}
+.issue-box-label{font-size:11px;color:#64748b;margin-top:4px;}
+
+.filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-bar select{width:auto;min-width:150px;}
+.filter-bar label{margin:0;white-space:nowrap;}
+
+/* Notices */
+.notice{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;}
+.notice.warn{background:#fef9c3;border:1px solid #fde68a;color:#854d0e;}
+.notice.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;}
+.notice.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;}
+.notice.err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:16px;width:90%;max-width:680px;max-height:88vh;overflow-y:auto;padding:28px;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.modal-title{font-size:18px;font-weight:800;color:var(--primary);}
+.modal-close{font-size:22px;cursor:pointer;color:#64748b;border:none;background:none;}
+
+/* OKR detail modal */
+.okr-dr{border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:10px;}
+.okr-dh{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.okr-obj{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:3px;}
+.okr-kr{font-size:12px;color:#374151;}
+.okr-krd{font-size:12px;color:#64748b;}
+.okr-cg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0;}
+.di span{font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:2px;}
+.di .dv{font-size:13px;color:#1a2332;}
+
+/* Loading */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.7);z-index:300;display:flex;align-items:center;justify-content:center;display:none;}
+.spinner{width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-overlay.show{display:flex;}
+
+/* Toast */
+.toast{position:fixed;bottom:32px;right:32px;background:#1a2332;color:white;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:340px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:#16a34a;}
+.toast.error{background:var(--red);}
+
+.empty-state{text-align:center;padding:48px 20px;color:#94a3b8;}
+.empty-icon{font-size:48px;margin-bottom:12px;}
+.no-rounds{text-align:center;padding:40px;color:#94a3b8;}
+
+@media(max-width:768px){
+  .summary-grid{grid-template-columns:repeat(2,1fr);}
+  .team-grid{grid-template-columns:repeat(2,1fr);}
+  .select-row,.form-row{grid-template-columns:1fr;}
+  .kpi-body{grid-template-columns:1fr;}
+  .section{padding:16px;}
+  .issue-summary{grid-template-columns:repeat(3,1fr);}
+  .round-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- 로딩 -->
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-title">📊 조직 성과 체크인 시스템 <span>HUNET 2026</span></div>
+  <div class="header-right">
+    <div><span class="conn-dot" id="connDot"></span><span class="conn-label" id="connLabel">연결 확인 중...</span></div>
+    <a class="admin-btn" id="adminLink" href="admin.html" style="display:none;text-decoration:none">⚙️ 관리자 페이지</a>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showSection('checkin',this)">✏️ 체크인 입력</button>
+  <button class="nav-btn" onclick="showSection('dashboard',this)">📈 대시보드</button>
+</div>
+
+<!-- ===== CHECKIN ===== -->
+<div class="section active" id="section-checkin">
+  <div class="card">
+    <div class="card-title">📅 체크인 회차 선택</div>
+    <div id="roundGrid" class="round-grid"></div>
+    <div id="noRoundsMsg" class="no-rounds" style="display:none">
+      <div style="font-size:36px;margin-bottom:10px">📭</div>
+      <div style="font-size:14px;font-weight:600;color:#64748b">현재 진행 중인 체크인 회차가 없습니다.</div>
+      <div style="font-size:13px;color:#94a3b8;margin-top:6px">관리자에게 회차 생성을 요청해주세요.</div>
+    </div>
+  </div>
+
+  <div class="card" id="teamSelectCard" style="display:none">
+    <div class="card-title">🏢 팀 선택</div>
+    <div class="select-row">
+      <div><label>본부 선택</label>
+        <select id="selBunbu" onchange="onBunbuChange()">
+          <option value="">-- 본부 선택 --</option>
+        </select>
+      </div>
+      <div><label>팀 선택</label>
+        <select id="selTeam" onchange="onTeamChange()">
+          <option value="">-- 팀 선택 --</option>
+        </select>
+      </div>
+    </div>
+    <div id="prevCheckinNotice" class="notice warn" style="display:none">
+      ⚠️ 이미 제출된 체크인이 있습니다. 재제출 시 기존 내용이 덮어쓰기 됩니다.
+    </div>
+  </div>
+
+  <div id="kpiSection" style="display:none">
+    <div class="card">
+      <div class="card-title" id="kpiSectionTitle"></div>
+      <div class="guide-box quan" id="guideQuan">
+        <h4>📏 정량 지표 입력 방법</h4>
+        <ul>
+          <li>달성률 → <b>85%</b>, <b>120%</b> 등 퍼센트로 작성</li>
+          <li>수치 → <b>17방</b>, <b>250억</b>, <b>1,200개</b> 등 실제 수치로 작성</li>
+          <li>현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b>로 입력</li>
+        </ul>
+      </div>
+      <div class="guide-box qual" id="guideQual">
+        <h4>⭐ 정성 지표 등급 기준</h4>
+        <div class="guide-grade">
+          <span class="gl arete">Arete</span><span class="gd">누구나 인정할 만큼 탁월한 성과 창출</span>
+          <span class="gl ee">EE</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>초과</b></span>
+          <span class="gl me">ME</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>충족</b></span>
+          <span class="gl ni">NI</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준 <b>미만</b></span>
+          <span class="gl hold">보류</span><span class="gd">현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b> 선택</span>
+        </div>
+      </div>
+      <div class="kpi-list" id="kpiList"></div>
+      <div class="submit-row">
+        <button class="btn btn-outline" onclick="resetForm()">초기화</button>
+        <button class="btn btn-primary" id="submitBtn" onclick="submitCheckin()">✅ 체크인 제출</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="section" id="section-dashboard">
+  <div class="filter-bar">
+    <label>회차:</label>
+    <select id="dashRound" onchange="renderDashboard()">
+      <option value="">-- 회차 선택 --</option>
+    </select>
+    <label style="margin-left:8px">본부:</label>
+    <select id="dashBunbu" onchange="renderDashboard()">
+      <option value="">전체 본부</option>
+    </select>
+    <button class="btn btn-outline btn-sm" onclick="refreshDashboard()">🔄 새로고침</button>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card"><div class="summary-num" id="dTotal">-</div><div class="summary-label">전체 팀 수</div></div>
+    <div class="summary-card green"><div class="summary-num" id="dDone">-</div><div class="summary-label">체크인 완료</div></div>
+    <div class="summary-card orange"><div class="summary-num" id="dPending">-</div><div class="summary-label">체크인 미완료</div></div>
+    <div class="summary-card red"><div class="summary-num" id="dIssue">-</div><div class="summary-label">이슈 있는 팀</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚠️ 이슈 현황</div>
+    <div class="issue-summary">
+      <div class="issue-box"><div class="issue-box-num" id="ic1">-</div><div class="issue-box-label">목표조정</div></div>
+      <div class="issue-box"><div class="issue-box-num" id="ic2">-</div><div class="issue-box-label">신규목표</div></div>
+      <div class="issue-box"><div class="issue-box-num" id="ic3">-</div><div class="issue-box-label">목표폐기</div></div>
+      <div class="issue-box"><div class="issue-box-num" id="ic4">-</div><div class="issue-box-label">지원요청</div></div>
+      <div class="issue-box"><div class="issue-box-num" id="ic5">-</div><div class="issue-box-label">기타</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏢 본부별 체크인 현황</div>
+    <div id="bunbuProgress"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👥 팀별 체크인 현황</div>
+    <div class="team-grid" id="teamGrid"></div>
+  </div>
+</div>
+
+<!-- 팀 상세 Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// OKR DATA
+// ============================================================
+const OKR_DATA = {
+  "교육사업본부":{
+    "기업교육1팀":[
+      {type:"정량",goal:"지속성장가능구조(1천명)",kr:"구독서비스 체험형 100명/인당",detail:""},
+      {type:"정량",goal:"영업대표 활동 극대화",kr:"매월 방문 20방/개별 달성",detail:"CRM 기준"},
+      {type:"정량",goal:"320억 목표달성",kr:"전년대비 120%성장 (B2C 바이패스 제외 258억)",detail:"인당 3억 (25년 이후 입사자 2억)"},
+      {type:"정량",goal:"320억 목표달성",kr:"신규매출 달성(50억)",detail:"전년대비 실질적 성장"},
+      {type:"정량",goal:"상품중심 세일즈 역량 강화(30억 달성)",kr:"러닝메이커, 솔루션, 멤버십, 상품 서비스 판매",detail:""},
+    ],
+    "기업교육2팀":[
+      {type:"정량",goal:"지속성장 가능구조 기반 마련",kr:"구독서비스 체험형 100명/인당",detail:""},
+      {type:"정량",goal:"영업대표 활동 극대화",kr:"매월 방문 20방 달성",detail:""},
+      {type:"정량",goal:"240억 목표달성",kr:"전년대비 120%달성",detail:""},
+      {type:"정량",goal:"240억 목표달성",kr:"신규 개별 달성(40억)",detail:""},
+      {type:"정량",goal:"상품중심 세일즈 역량 강화(25억 달성)",kr:"상품 및 솔루션 판매",detail:""},
+    ],
+    "기업교육3팀":[
+      {type:"정량",goal:"지속성장가능구조(1천명)",kr:"1인당 100명 구독서비스 체험 목표",detail:""},
+      {type:"정량",goal:"영업대표 활동 극대화",kr:"월 방문 20방",detail:""},
+      {type:"정량",goal:"상품 및 솔루션 세일즈 역량 강화(25억 달성)",kr:"상품 및 솔루션 판매",detail:""},
+      {type:"정량",goal:"220억 목표",kr:"Seed 기준 전년대비 120% 달성",detail:""},
+      {type:"정량",goal:"220억 목표",kr:"신규 개별 달성",detail:""},
+    ],
+    "프런티어세일즈1팀":[
+      {type:"정량",goal:"신규 고객 확대",kr:"주 5방, 매출 고객사 수 750개 초과, 침투율 35% 초과",detail:""},
+      {type:"정량",goal:"구독 상품 매출 목표 달성",kr:"휴넷 구독 상품 연간 매출 10억 달성",detail:""},
+      {type:"정량",goal:"2026 목표 달성",kr:"팀 매출액 70억 달성",detail:""},
+    ],
+    "프런티어세일즈2팀":[
+      {type:"정성",goal:"자율/신뢰/책임 기반 실행력 높은 팀",kr:"분기별 성장 리뷰 실시",detail:""},
+      {type:"정량",goal:"자율/신뢰/책임 기반",kr:"사내 교육/러닝 참여율 80% 이상",detail:""},
+      {type:"정량",goal:"통합위탁 및 입찰제안서 참여",kr:"제안참여 건수 50건",detail:""},
+      {type:"정량",goal:"주 5방 필달",kr:"고객 방문건수",detail:""},
+      {type:"정량",goal:"매출 40억 달성",kr:"3월 말 시드매출 18억, 6월 말 확정 매출 32억",detail:""},
+    ],
+    "프런티어세일즈3팀":[
+      {type:"정성",goal:"최강 영업대표 되기",kr:"HRD전문성, 상품전문성",detail:""},
+      {type:"정량",goal:"최강 영업대표 되기",kr:"주5방",detail:""},
+      {type:"정량",goal:"5천대 침투",kr:"5천대 침투율 1000개",detail:""},
+      {type:"정량",goal:"[상/하반기] 매출목표 45억 달성",kr:"매출성장율 100%",detail:""},
+    ],
+    "그로스세일즈팀":[
+      {type:"정성",goal:"최강 영업대표 되기",kr:"HRD전문성, 상품전문성 강화",detail:""},
+      {type:"정량",goal:"최강 영업대표 되기",kr:"주5방",detail:""},
+      {type:"정량",goal:"[상/하반기] 매출목표 60억 달성",kr:"매출 성장율 40%",detail:""},
+    ],
+    "L&D마케팅팀":[
+      {type:"정량",goal:"RS 기업 매출 전년 대비 50% 증가",kr:"RS 매출 전년 대비 50% 증가",detail:""},
+      {type:"정량",goal:"멤버십 구독 체험 1만건 달성",kr:"멤버십 구독 체험 건수",detail:""},
+      {type:"정량",goal:"LABS 기반 베스트 프랙티스 스토리 5건 이상 축적",kr:"스토리 축적 건수",detail:""},
+      {type:"정량",goal:"1만대 기업 마케팅 DB 확보율 50% 달성",kr:"마케팅 DB 확보율",detail:""},
+      {type:"정량",goal:"뉴스레터 오픈대비 클릭률 3%P 상승",kr:"클릭률 상승",detail:""},
+      {type:"정량",goal:"광고 유입 리드 중 비법정 카테고리 문의 비중 8%P 확대",kr:"비법정 카테고리 비중",detail:""},
+      {type:"정량",goal:"월간 인바운드 기여 비중 10%P 증가",kr:"인바운드 기여 비중",detail:""},
+      {type:"정량",goal:"LIVE 콘텐츠 평균 소비 지표 전년 대비 100% 성장",kr:"LIVE 콘텐츠 소비 지표",detail:""},
+      {type:"정량",goal:"포럼 참석자의 SQL 전환율 10% 달성",kr:"SQL 전환율",detail:""},
+    ],
+    "HU사업팀":[
+      {type:"정성",goal:"HU플랫폼 런칭 및 초기 운영 안정화",kr:"HU 플랫폼 런칭",detail:""},
+      {type:"정량",goal:"(B2C) HU사업 10억 매출 달성",kr:"HU사업 매출",detail:""},
+    ],
+    "사업전략팀":[
+      {type:"정량",goal:"전략 과제 실행 완결력 강화",kr:"On-time 완료율 95% 이상",detail:""},
+      {type:"정량",goal:"전략 제안 실행 반영률 70% 이상",kr:"전략 제안 반영률",detail:""},
+      {type:"정량",goal:"데이터 기반 전략 산출물 전환",kr:"단순 집계 보고 비율 30% 이하",detail:""},
+      {type:"정성",goal:"세일즈 CRM시스템 설계·구축 및 전사 운영체계 정립",kr:"CRM 시스템 구축",detail:""},
+      {type:"정성",goal:"매출 예측(Pipeline·Forecast) 기반 영업운영 체계 구축",kr:"영업운영 체계 구축",detail:""},
+      {type:"정성",goal:"전사 Revenue 협업 Operating Model 정립 및 정착",kr:"Operating Model 정착",detail:""},
+      {type:"정량",goal:"2026년 1000억 매출 달성",kr:"B2B·HU사업 1000억 매출(전년 대비 22% 성장)",detail:""},
+      {type:"정량",goal:"1만대 기업 침투율 30% 달성",kr:"1만대 기업 침투율",detail:""},
+      {type:"정량",goal:"구독 서비스 상품별 1만 명 체험 달성",kr:"구독 서비스 체험 달성",detail:""},
+    ],
+  },
+  "교육서비스본부":{
+    "교육운영1팀":[
+      {type:"정성",goal:"표준 운영 모델 완성",kr:"업무 전문성 Lv.UP",detail:"Best Practice 아카이빙, 필드앤포럼, 온보딩"},
+      {type:"정성",goal:"운영 Playbook 완성",kr:"운영 Playbook 완성",detail:""},
+      {type:"정성",goal:"New EDMS 고도화",kr:"관리자 대시보드, 학습자 관리, AI 기반 콘텐츠 추천",detail:""},
+      {type:"정성",goal:"연수원 아이런 확산",kr:"아이런 확산 진행",detail:""},
+      {type:"정성",goal:"에듀매니저 아이런 적용 완료",kr:"아이런 적용 완료",detail:""},
+      {type:"정량",goal:"주요RS 고객사 매출 20% 향상",kr:"RS 고객사 매출 향상",detail:""},
+      {type:"정량",goal:"MAU/DAU 20% 향상",kr:"MAU/DAU 향상",detail:""},
+      {type:"정량",goal:"교육담당자 NPS 65점",kr:"NPS 65점",detail:""},
+    ],
+    "교육운영2팀":[
+      {type:"정성",goal:"No.1 운영조직 구축",kr:"업무 전문성 Lv.UP",detail:""},
+      {type:"정성",goal:"핵심 업무 생산성 향상",kr:"AI 기반 생산성 향상",detail:""},
+      {type:"정성",goal:"연수원 아이런 확산",kr:"아이런 확산",detail:""},
+      {type:"정성",goal:"AI 결과보고서 적용 완료",kr:"AI 결과보고서 적용",detail:""},
+      {type:"정량",goal:"주요RS 고객사 매출 20% 향상",kr:"RS 고객사 매출 향상",detail:""},
+      {type:"정량",goal:"MAU/DAU 20% 향상",kr:"MAU/DAU 향상",detail:""},
+      {type:"정량",goal:"교육담당자 NPS 65점",kr:"NPS 65점",detail:""},
+    ],
+    "교육운영3팀":[
+      {type:"정량",goal:"AI를 통한 운영 생산성 20% 혁신",kr:"운영 생산성 향상",detail:""},
+      {type:"정성",goal:"레벨 기반 운영 인재 육성 모델 정립",kr:"인재 육성 모델",detail:""},
+      {type:"정성",goal:"최강팀 달성",kr:"팀 성과 지표",detail:""},
+      {type:"정량",goal:"정부사업 컨트롤 타워",kr:"아카이브 평가 A등급 달성",detail:""},
+      {type:"정성",goal:"신) AI과정 효과적 운영",kr:"AI과정 운영",detail:""},
+      {type:"정량",goal:"안전보건교육과정 A등급 달성",kr:"A등급 달성",detail:""},
+      {type:"정량",goal:"교육담당자 NPS 65점 달성",kr:"NPS 65점",detail:""},
+      {type:"정성",goal:"아이런 활용도 100% 달성",kr:"아이런 활용도",detail:""},
+      {type:"정성",goal:"성과중심의 운영리포트 제공",kr:"운영리포트 제공",detail:""},
+      {type:"정량",goal:"연수원 MAU/DAU 20% 향상",kr:"MAU/DAU 향상",detail:""},
+      {type:"정량",goal:"데이터 기반의 RS 매출 20% 향상",kr:"RS 매출 향상",detail:""},
+      {type:"정성",goal:"플랫폼 서비스 모델 확립",kr:"서비스 모델 확립",detail:""},
+    ],
+    "컨텐츠매니지먼트팀":[
+      {type:"정량",goal:"AI 활용 업무 효율화 30% 향상",kr:"업무 효율화",detail:""},
+      {type:"정량",goal:"시스템화로 업무 효율화 30% 향상",kr:"시스템 업무 효율화",detail:""},
+      {type:"정성",goal:"AI 매핑 자동화",kr:"AI 매핑 자동화",detail:""},
+      {type:"정량",goal:"도입수수료 원가절감(5.9억)",kr:"고객사별 R/S판매데이터 기반 1.7억 절감",detail:""},
+      {type:"정량",goal:"전화외국어 수수료 조정",kr:"1.5억 절감",detail:""},
+      {type:"정량",goal:"독서통신 내부 상품 전이",kr:"1.2억 절감",detail:""},
+      {type:"정량",goal:"턴키 과금 방식 설계",kr:"1.5억 절감",detail:""},
+      {type:"정성",goal:"전사 단일 콘텐츠 관리 컨트롤타워 구축",kr:"컨트롤타워 구축",detail:""},
+      {type:"정성",goal:"콘텐츠 활용/성과 중심의 대시보드 제작",kr:"대시보드 제작",detail:""},
+      {type:"정성",goal:"데이터 기반 품질관리(콘텐츠 수명 주기) 실행",kr:"품질관리 실행",detail:""},
+      {type:"정성",goal:"과정(상품) 운영의 고도화",kr:"운영 고도화",detail:""},
+      {type:"정성",goal:"전사 콘텐츠 포트폴리오 대시보드 제공",kr:"포트폴리오 대시보드",detail:""},
+      {type:"정성",goal:"수익성 높은 교육 상품 제휴 및 관리",kr:"교육 상품 제휴",detail:""},
+      {type:"정성",goal:"독점 컨텐츠 제휴",kr:"독점 컨텐츠 제휴",detail:""},
+    ],
+    "하이브리드러닝운영팀":[
+      {type:"정량",goal:"팀 개선 추진셀 활동 실행 월 3회 이상",kr:"월 3회 이상 실행",detail:""},
+      {type:"정량",goal:"외부 생태계 확장 연간 10개 이상",kr:"10개 이상 확보 및 100% 검증 완료",detail:""},
+      {type:"정량",goal:"팀단위 월 1회 Fri-day 실시",kr:"월 1회 Fri-day",detail:""},
+      {type:"정량",goal:"AI/운영 자동화 과제 도입 팀 10개 이상",kr:"자동화 도입 팀 수",detail:""},
+      {type:"정량",goal:"운영 데이터 활용 진행 건수 팀 50개 이상",kr:"데이터 활용 건수",detail:""},
+      {type:"정량",goal:"공헌이익률 33% 달성",kr:"운영원가 손익절감 0.7억 이상",detail:""},
+      {type:"정량",goal:"저수익 프로젝트 운영 구조 개선 100%",kr:"저수익 구조 개선",detail:""},
+      {type:"정량",goal:"손익구조 변화 활동 분기 1회 이상",kr:"분기 1회 이상 활동",detail:""},
+      {type:"정량",goal:"하이브리드러닝 170억 매출 목표 기여",kr:"매출 목표 기여",detail:""},
+      {type:"정량",goal:"고도화 운영 모델 적용 비율 50% 이상 확대",kr:"운영 모델 적용 비율",detail:""},
+      {type:"정량",goal:"교육 운영 만족도 4.8이상 달성",kr:"만족도 4.8이상",detail:""},
+    ],
+    "교육지원팀":[
+      {type:"정성",goal:"AI툴 활용을 통한 업무 생산성 2배 향상",kr:"업무 생산성 향상",detail:""},
+      {type:"정량",goal:"협업 만족도 9.0달성",kr:"협업 만족도",detail:""},
+    ],
+    "고객행복팀":[
+      {type:"정성",goal:"표준기업운영 안정화",kr:"운영 안정화",detail:""},
+      {type:"정량",goal:"업무 오류 Zero화",kr:"업무 오류 건수",detail:""},
+      {type:"정성",goal:"AI툴 활용을 통한 업무 생산성 2배 향상",kr:"업무 생산성",detail:""},
+      {type:"정량",goal:"아이런 학습자 답변 오류 Zero화",kr:"답변 오류 건수",detail:""},
+      {type:"정량",goal:"대표번호 응대율 95% 달성",kr:"응대율 95%",detail:""},
+      {type:"정성",goal:"전사 CX보고서 공유",kr:"CX보고서 공유",detail:""},
+      {type:"정성",goal:"고객문의 자동응대 시나리오 구축",kr:"자동응대 시나리오",detail:""},
+      {type:"정성",goal:"중장기 AICC에 대한 벤치마킹 실시",kr:"AICC 벤치마킹",detail:""},
+    ],
+  },
+  "L&D테크본부":{
+    "러닝메이커솔루션팀":[
+      {type:"정성",goal:"AI 활용 스킬 강화",kr:"팀 내재화",detail:""},
+      {type:"정성",goal:"Learning Foundation System 연동 및 개발",kr:"LFS 연동",detail:""},
+      {type:"정성",goal:"하이브리드 러닝 경쟁력 강화",kr:"경쟁력 강화",detail:""},
+      {type:"정성",goal:"강사 중심 기능 확장",kr:"기능 확장",detail:""},
+      {type:"정성",goal:"학습 운영 관리 효율 강화",kr:"운영 관리 효율",detail:""},
+      {type:"정성",goal:"러닝메이커&O-LMS - LMS3.0 적용",kr:"LMS3.0 적용",detail:""},
+    ],
+    "AI LAB":[
+      {type:"정성",goal:"직무별 개발자 Up-Skilling",kr:"개발자 역량 강화",detail:""},
+      {type:"정성",goal:"AI/AX 전략 수립 및 시행",kr:"전략 시행",detail:""},
+      {type:"정성",goal:"AI 분석 및 리포팅 (CRM on AI)",kr:"CRM on AI",detail:""},
+      {type:"정성",goal:"개인 주제별 챗봇 런칭",kr:"챗봇 런칭",detail:""},
+      {type:"정성",goal:"교담자용 챗봇 개발",kr:"챗봇 개발",detail:""},
+      {type:"정성",goal:"HU 온톨로지 기반 서비스 런칭",kr:"온톨로지 서비스",detail:""},
+      {type:"정성",goal:"연수원 3.0 검색 개발 완료",kr:"검색 개발",detail:""},
+      {type:"정성",goal:"HU 검색 개발 완료",kr:"HU 검색",detail:""},
+    ],
+    "공통플랫폼팀":[
+      {type:"정성",goal:"AI Coding Agent 도입 및 개발 생산성 100% 이상 향상",kr:"개발 생산성 향상",detail:""},
+      {type:"정성",goal:"연 4개 이상의 전사적 라이브러리 발굴 및 개발",kr:"라이브러리 발굴",detail:""},
+      {type:"정성",goal:"통합 API 관리 시스템 구축",kr:"API 관리 시스템",detail:""},
+      {type:"정량",goal:"게이미피케이션 엔진 최소 2개 이상 사이트 적용",kr:"2개 이상 적용",detail:""},
+      {type:"정성",goal:"ERS(Event Relay Server) 구축",kr:"ERS 구축",detail:""},
+      {type:"정성",goal:"인증 서버 / 멤버 API / 본인 인증 서버 구축",kr:"서버 구축",detail:""},
+    ],
+    "FRONT개발팀":[
+      {type:"정성",goal:"마이크로 솔루션 개발",kr:"마이크로 솔루션",detail:""},
+      {type:"정성",goal:"커리업 문화 정착",kr:"커리업 문화",detail:""},
+      {type:"정성",goal:"개발 구조 재설계",kr:"구조 재설계",detail:""},
+      {type:"정성",goal:"Working Rule 전환",kr:"Working Rule",detail:""},
+      {type:"정성",goal:"연수원 3.0 구축 (1단계 3/26, 2단계 상반기)",kr:"연수원 3.0 구축",detail:""},
+      {type:"정성",goal:"Hunet University 구축",kr:"HU 구축",detail:""},
+      {type:"정성",goal:"리더십저니 2.0 연내 구축",kr:"리더십저니 2.0",detail:""},
+    ],
+    "HU플랫폼팀":[
+      {type:"정성",goal:"AI Powered Workflow 구축",kr:"AI 워크플로우",detail:""},
+      {type:"정성",goal:"구독 서비스별 목표 AU 달성",kr:"구독 서비스 AU",detail:""},
+      {type:"정성",goal:"Hunet University 런칭 목표 AU 달성",kr:"HU AU 달성",detail:""},
+      {type:"정성",goal:"구독 서비스 Architecture 전환",kr:"Architecture 전환",detail:""},
+      {type:"정성",goal:"구독서비스 Noti-Centre 적용",kr:"Noti-Centre 적용",detail:""},
+      {type:"정성",goal:"Gamification Engine Target Service 적용",kr:"게이미피케이션 적용",detail:""},
+    ],
+    "LMS솔루션팀":[
+      {type:"정성",goal:"타서비스 Benchmark Report 작성",kr:"Benchmark Report",detail:""},
+      {type:"정성",goal:"기획 내부지식 구축용 ChatGPT",kr:"내부지식 ChatGPT",detail:""},
+      {type:"정성",goal:"지식&정보 공유 체계 구축",kr:"공유 체계 구축",detail:""},
+      {type:"정성",goal:"신규 학습창/컨텐츠창 구현",kr:"학습창 구현",detail:""},
+      {type:"정성",goal:"신규 학습창/컨텐츠창 용 API 개발",kr:"API 개발",detail:""},
+      {type:"정성",goal:"맞춤형 LMS API 확대",kr:"LMS API 확대",detail:""},
+      {type:"정성",goal:"API 안정성 유지",kr:"API 안정성",detail:""},
+    ],
+    "IT인프라팀":[
+      {type:"정성",goal:"비인가 S/W 차단",kr:"S/W 차단",detail:""},
+      {type:"정성",goal:"위수탁 보안 셀프점검 사이트 신규 구축",kr:"보안 점검 사이트",detail:""},
+      {type:"정량",goal:"클라우드 비용 적정성 유지",kr:"클라우드 비용",detail:""},
+      {type:"정성",goal:"지식공유 아티클 작성",kr:"아티클 작성",detail:""},
+      {type:"정성",goal:"AI 보안 지침 수립",kr:"보안 지침",detail:""},
+      {type:"정성",goal:"시스템인프라 통합 모니터링 대시보드 구축",kr:"모니터링 대시보드",detail:""},
+    ],
+    "CMS솔루션팀":[
+      {type:"정성",goal:"컨텐츠 엔지니어 직군 전환 기반 마련",kr:"직군 전환",detail:""},
+      {type:"정성",goal:"맞춤형 CMS 고도화",kr:"CMS 고도화",detail:""},
+      {type:"정성",goal:"인코딩 체계 확립",kr:"인코딩 체계",detail:""},
+      {type:"정성",goal:"매출통합관리 시스템 고도화",kr:"매출관리 시스템",detail:""},
+      {type:"정성",goal:"CMS 구축 (상반기)",kr:"CMS 구축",detail:""},
+      {type:"정성",goal:"Product 구축 (상반기)",kr:"Product 구축",detail:""},
+    ],
+    "디자인팀":[
+      {type:"정성",goal:"LABSfolio 기획 및 디자인 구현",kr:"LABSfolio 구현",detail:""},
+      {type:"정성",goal:"AI 활용 운영 프로세스 최적화 및 인터랙션 디자인 강화",kr:"AI 디자인 강화",detail:""},
+      {type:"정성",goal:"팀 자체 프로젝트 발의를 통한 서비스 디자인 고도화",kr:"서비스 디자인",detail:""},
+      {type:"정성",goal:"표준 템플릿 라이브러리 구축",kr:"템플릿 라이브러리",detail:""},
+      {type:"정량",goal:"리더십저니 2.0 연내 구축",kr:"리더십저니 2.0",detail:""},
+      {type:"정량",goal:"HU 사이트 연내 구축",kr:"HU 사이트 구축",detail:""},
+      {type:"정성",goal:"Skill Ontology 기반 True Skill Based Learning 서비스 구성",kr:"스킬 온톨로지",detail:""},
+      {type:"정성",goal:"LABS 맞춤형 고도화",kr:"LABS 고도화",detail:""},
+      {type:"정성",goal:"레고형 모듈 시스템 도입",kr:"모듈 시스템",detail:""},
+      {type:"정성",goal:"1단계 오픈 이후 UI 사용성 개선",kr:"UI 사용성 개선",detail:""},
+      {type:"정성",goal:"2단계 서비스 디자인 및 안정적 오픈",kr:"2단계 디자인",detail:""},
+    ],
+    "LABS플랫폼팀":[
+      {type:"정성",goal:"AI Powered Workflow 구현",kr:"AI 워크플로우",detail:""},
+      {type:"정성",goal:"기업 맞춤형 경쟁력 강화 (마이크로러닝 전용 서비스)",kr:"마이크로러닝 서비스",detail:""},
+      {type:"정성",goal:"Architecture 개선 (모놀리식 탈피, API-First)",kr:"Architecture 개선",detail:""},
+      {type:"정성",goal:"연수원 3.0 일정 내 구축",kr:"연수원 3.0 구축",detail:""},
+    ],
+    "IT전략기획팀":[
+      {type:"정성",goal:"Tech 기반 역량 확보",kr:"역량 확보",detail:""},
+      {type:"정성",goal:"전사 AX 전략 실행 (레벨1~3)",kr:"AX 전략 실행",detail:""},
+      {type:"정성",goal:"매출통합관리시스템 고도화",kr:"매출관리 고도화",detail:""},
+      {type:"정성",goal:"CRM on AI 구축",kr:"CRM on AI",detail:""},
+      {type:"정량",goal:"프로젝트 수행률 100% 및 품질 확보",kr:"수행률 100%",detail:""},
+      {type:"정성",goal:"연수원 3.0 프로젝트 PMO 수행",kr:"PMO 수행",detail:""},
+    ],
+  },
+  "휴넷L&D연구원":{
+    "리더스아카데미팀":[
+      {type:"정량",goal:"고객재구매율 90% 달성",kr:"재구매율 90%",detail:""},
+      {type:"정량",goal:"하이브리드러닝 매출목표 200억 달성",kr:"매출 200억",detail:""},
+      {type:"정성",goal:"AI Powered DC 및 AC 등 기획 및 개발",kr:"AI Powered DC/AC",detail:""},
+    ],
+    "휴넷리더십센터":[
+      {type:"정성",goal:"포사이트 코리아 2027 성공적 개최",kr:"행사 개최",detail:""},
+      {type:"정성",goal:"차이나 인사이트 투어 개최",kr:"투어 개최",detail:""},
+      {type:"정성",goal:"리더십 페스타 기획",kr:"페스타 기획",detail:""},
+      {type:"정성",goal:"리더십센터 비전 및 정체성 확립",kr:"비전 확립",detail:""},
+      {type:"정성",goal:"리더십 토탈 솔루션 라인업 정비",kr:"라인업 정비",detail:""},
+      {type:"정성",goal:"리더십 연구활동 강화",kr:"연구활동 강화",detail:""},
+      {type:"정성",goal:"터닝포인트 큐브 진단 운영 및 고도화",kr:"큐브 진단",detail:""},
+      {type:"정성",goal:"휴넷CEO 서비스 압도적 진화",kr:"CEO 서비스",detail:""},
+      {type:"정성",goal:"리더십저니 생태계 확장 및 2.0 론칭",kr:"리더십저니 2.0",detail:""},
+      {type:"정성",goal:"위즈덤스프링 성공적 론칭",kr:"위즈덤스프링",detail:""},
+      {type:"정성",goal:"구독 지표 기반 운영 관리 체계 확립",kr:"운영 관리 체계",detail:""},
+    ],
+    "탤런트아카데미팀":[
+      {type:"정량",goal:"[AI 칼리지] AI 칼리지 매출 100억 달성",kr:"AI 칼리지 매출",detail:""},
+      {type:"정량",goal:"[MBA 7.0] MBA 매출 목표 10억 달성",kr:"MBA 매출",detail:""},
+      {type:"정량",goal:"[핵심가치] 핵심가치 교육 매출 5억 달성",kr:"핵심가치 매출",detail:""},
+      {type:"정량",goal:"[직무 칼리지] 직무 칼리지 매출 3억 달성",kr:"직무 칼리지 매출",detail:""},
+      {type:"정량",goal:"[글로벌 칼리지] 글로벌 컨텐츠 매출 2억 달성",kr:"글로벌 매출",detail:""},
+    ],
+    "L&D혁신팀":[
+      {type:"정성",goal:"PMO 운영안 설계",kr:"PMO 운영안",detail:""},
+      {type:"정성",goal:"Lead-Help-Check 프로세스 운영",kr:"LHC 프로세스",detail:""},
+      {type:"정성",goal:"연말 리뷰 및 결과물 자산화",kr:"결과물 자산화",detail:""},
+      {type:"정량",goal:"Hunet POV 분기별 발행 (연 4회 이상)",kr:"POV 발행",detail:""},
+      {type:"정성",goal:"내외부 연구 리포트 발간 및 기고",kr:"리포트 발간",detail:""},
+      {type:"정성",goal:"Preview Session 개최 (ATD 관련)",kr:"Preview Session",detail:""},
+      {type:"정성",goal:"Debriefing Session 운영",kr:"Debriefing Session",detail:""},
+      {type:"정성",goal:"ATD 현장 스케치",kr:"ATD 스케치",detail:""},
+      {type:"정성",goal:"ATD 2026 분석 리포트 발간",kr:"ATD 분석 리포트",detail:""},
+      {type:"정성",goal:"AI 시대 교육의 Future map 도출",kr:"Future map",detail:""},
+      {type:"정성",goal:"휴넷형 AI Powered Learning Blueprint",kr:"APL Blueprint",detail:""},
+      {type:"정성",goal:"휴넷 상품/서비스 개발 로드맵",kr:"개발 로드맵",detail:""},
+    ],
+    "컨텐츠혁신팀":[
+      {type:"정량",goal:"연간 총 250개 이상 신규 과정 및 마이크로러닝 1,200개 오픈",kr:"신규 과정 오픈",detail:""},
+      {type:"정성",goal:"영업 지원 강화를 통한 온라인 과정 목표 매출 달성",kr:"목표 매출 달성",detail:""},
+      {type:"정성",goal:"AI를 통한 학습경험 강화를 위한 APL 설계안 도출",kr:"APL 설계안",detail:""},
+      {type:"정성",goal:"AI 제작 Tool 분석 및 현업 적용 프로세스 구축",kr:"AI Tool 프로세스",detail:""},
+      {type:"정성",goal:"베셀(정량/정성) 기준 수립 및 협의체 구축 및 운영",kr:"베셀 기준",detail:""},
+      {type:"정성",goal:"콘텐츠 수명주기 관리 체계(반기별) 정착",kr:"수명주기 관리",detail:""},
+    ],
+  },
+  "인재경영실":{
+    "인재경영실":[
+      {type:"정성",goal:"엄격한 소수정예 인재관리",kr:"인재관리",detail:""},
+      {type:"정성",goal:"전략적 인력계획 수립: 어쏘시에이트 그룹",kr:"인력계획",detail:""},
+      {type:"정량",goal:"영업대표 88워리어 프로젝트 완수",kr:"88워리어 완수",detail:""},
+      {type:"정성",goal:"직무별 워크플로우 분석(BPR) 및 재설계",kr:"BPR 재설계",detail:""},
+      {type:"정성",goal:"사내 AI에이전트 구축 확산",kr:"AI 에이전트 확산",detail:""},
+      {type:"정성",goal:"AX 경영체계 구축",kr:"AX 경영체계",detail:""},
+      {type:"정성",goal:"아레테 핵심가치 내재화",kr:"핵심가치 내재화",detail:""},
+      {type:"정성",goal:"커리어 레벨제 고도화",kr:"레벨제 고도화",detail:""},
+      {type:"정성",goal:"보상체계 리인벤팅",kr:"보상체계",detail:""},
+      {type:"정성",goal:"지라, 슬랙, 컨플루언스 통한 일하는 방식 변화관리 가속화",kr:"변화관리",detail:""},
+      {type:"정성",goal:"협업 프로토콜 재정비",kr:"협업 프로토콜",detail:""},
+      {type:"정성",goal:"아레테 몰입지수 점수 60점",kr:"몰입지수 60점",detail:""},
+      {type:"정성",goal:"세일즈 칼리지 성공적 운영 통한 세일즈 역량 강화",kr:"세일즈 칼리지",detail:""},
+      {type:"정성",goal:"조직 성과관리 강화",kr:"성과관리 강화",detail:""},
+      {type:"정성",goal:"전략적 학습문화 구축 통한 비즈니스 실행력 극대화",kr:"학습문화 구축",detail:""},
+      {type:"정성",goal:"전사 전략적 이슈 공유와 소통 강화",kr:"이슈 소통",detail:""},
+    ],
+  },
+  "전략경영실":{
+    "전략경영실":[
+      {type:"정량",goal:"공헌이익율 26년 사업계획 대비 2% 이상 개선",kr:"공헌이익율 개선",detail:""},
+      {type:"정성",goal:"원가/비용 통제 관리 프로세스 개선",kr:"원가 통제",detail:""},
+      {type:"정성",goal:"현금흐름예측 정교화 및 자금운용 전략적 관리",kr:"현금흐름 관리",detail:""},
+      {type:"정량",goal:"당기순이익률과 매출성장률의 합이 40% 이상",kr:"Rule of 40+",detail:""},
+      {type:"정성",goal:"사내 경영정보 시스템 구축 개선",kr:"경영정보 시스템",detail:"매출관리시스템, BI 시스템"},
+      {type:"정성",goal:"손익분석 관리 강화",kr:"손익분석 강화",detail:""},
+      {type:"정성",goal:"다양한 경영정보 제공 통한 전략적 의사결정 파트너 역할 강화",kr:"의사결정 파트너",detail:""},
+      {type:"정성",goal:"회계결산 성공적 완수",kr:"회계결산",detail:""},
+      {type:"정성",goal:"정기 세무조사 철저한 대응 준비 및 마무리",kr:"세무조사 대응",detail:""},
+      {type:"정성",goal:"계열사 관리 및 정례적 회계/자금 감사 진행",kr:"계열사 감사",detail:""},
+      {type:"정성",goal:"다양한 리스크 선제적 관리",kr:"리스크 관리",detail:""},
+      {type:"정성",goal:"AI 활용한 다양한 업무 적용 시도",kr:"AI 업무 적용",detail:""},
+      {type:"정성",goal:"AI 에이전트 활용 시도",kr:"AI 에이전트",detail:""},
+    ],
+  },
+  "커뮤니케이션실":{
+    "커뮤니케이션실":[
+      {type:"정량",goal:"언론 기사 수 달성(질적&양적)",kr:"언론 기사 수",detail:""},
+      {type:"정량",goal:"유튜브 실버버튼 획득",kr:"유튜브 실버버튼",detail:""},
+      {type:"정량",goal:"블로그 방문자 수 달성",kr:"블로그 방문자",detail:""},
+      {type:"정량",goal:"인스타그램 목표 달성",kr:"인스타그램 지표",detail:""},
+      {type:"정성",goal:"L&D 대표기업 리드 기업 인지도 강화",kr:"기업 인지도",detail:""},
+      {type:"정성",goal:"프리미엄 브랜드/메가상품 비즈니스 성과 지원",kr:"브랜드 지원",detail:""},
+      {type:"정성",goal:"아레테 휴넷 기업문화 홍보 통한 기업 브랜딩 강화",kr:"기업 브랜딩",detail:""},
+      {type:"정성",goal:"GEO 기반 컨텐츠 운영체계 구축",kr:"GEO 운영체계",detail:""},
+      {type:"정성",goal:"AI 활용한 컨텐츠 제작 확대 및 업무생산성 강화",kr:"AI 컨텐츠 제작",detail:""},
+    ],
+  },
+};
+
+// ============================================================
+// CONFIG & STATE
+// ============================================================
+const SCRIPT_URL_KEY = 'okr_script_url';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJXzie4qb-QRaKtSMsqmVUDzl0DkPQeBb3Q2Y_owxwFnDkU81cWV4-Ivw5NTDOapL-/exec';
+let state = {
+  round: '',
+  bunbu: '',
+  team: '',
+  rounds: [],
+  checkins: {},   // team -> data (for current round)
+  connected: false
+};
+
+function getUrl() { return localStorage.getItem(SCRIPT_URL_KEY) || DEFAULT_SCRIPT_URL; }
+
+// ============================================================
+// API LAYER
+// ============================================================
+// GET via JSONP (avoids CORS preflight)
+function apiGet(action, params={}) {
+  return new Promise((resolve, reject) => {
+    const url = getUrl();
+    if (!url) { reject(new Error('URL 미설정')); return; }
+    const cbName = '_gc_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const timer = setTimeout(() => {
+      cleanup(); reject(new Error('요청 시간 초과 (15초). 네트워크를 확인해주세요.'));
+    }, 15000);
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cbName];
+      document.getElementById(cbName)?.remove();
+    }
+    window[cbName] = (data) => { cleanup(); resolve(data); };
+    const sp = new URLSearchParams({action, callback: cbName, ...params});
+    const s = document.createElement('script');
+    s.id = cbName;
+    s.src = url + '?' + sp.toString();
+    s.onerror = () => { cleanup(); reject(new Error('네트워크 오류')); };
+    document.head.appendChild(s);
+  });
+}
+
+// POST via fetch with text/plain (avoids CORS preflight OPTIONS)
+async function apiPost(data) {
+  const url = getUrl();
+  if (!url) throw new Error('URL 미설정');
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain'},
+    body: JSON.stringify(data),
+    redirect: 'follow'
+  });
+  if (!res.ok) throw new Error('서버 오류: ' + res.status);
+  return res.json();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  const url = getUrl();
+  if (!url) { showToast('연결 URL이 설정되지 않았습니다. 관리자에게 문의하세요.', 'error'); return; }
+
+  // 본부/팀 셀렉트 초기화
+  const bunbus = Object.keys(OKR_DATA);
+  const sb = document.getElementById('selBunbu');
+  const db = document.getElementById('dashBunbu');
+  bunbus.forEach(b => {
+    sb.innerHTML += `<option value="${b}">${b}</option>`;
+    db.innerHTML += `<option value="${b}">${b}</option>`;
+  });
+
+  await loadRounds();
+}
+
+// ============================================================
+// ROUNDS
+// ============================================================
+async function loadRounds() {
+  try {
+    showLoading(true);
+    const rounds = await apiGet('getRounds');
+    state.rounds = rounds || [];
+    state.connected = true;
+    setConnStatus(true);
+    renderRounds();
+    renderDashRounds();
+    renderDashboard();
+  } catch(e) {
+    state.connected = false;
+    setConnStatus(false);
+    showToast('연결 오류: ' + e.message, 'error');
+  } finally { showLoading(false); }
+}
+
+function renderRounds() {
+  const active = state.rounds.filter(r => r.active);
+  const grid   = document.getElementById('roundGrid');
+  const noMsg  = document.getElementById('noRoundsMsg');
+  grid.innerHTML = '';
+  if (!active.length) {
+    grid.style.display = 'none';
+    noMsg.style.display = 'block'; return;
+  }
+  grid.style.display = 'grid';
+  noMsg.style.display = 'none';
+  active.forEach(r => {
+    grid.innerHTML += `
+      <div class="round-card ${state.round===r.name?'selected':''}" onclick="selectRound('${esc(r.name)}')">
+        <div class="r-title">${esc(r.name)}</div>
+        ${r.period ? `<div class="r-sub">${esc(r.period)}</div>` : ''}
+        <span class="active-badge">진행 중</span>
+      </div>`;
+  });
+}
+
+function renderDashRounds() {
+  const sel = document.getElementById('dashRound');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">-- 회차 선택 --</option>';
+  state.rounds.forEach(r => sel.innerHTML += `<option value="${esc(r.name)}">${esc(r.name)}</option>`);
+  if (prev && state.rounds.find(r=>r.name===prev)) sel.value = prev;
+  else if (state.rounds.length) sel.value = state.rounds[state.rounds.length-1].name;
+}
+
+function setConnStatus(ok) {
+  document.getElementById('connDot').className = 'conn-dot ' + (ok?'ok':'err');
+  document.getElementById('connLabel').textContent = ok ? '실시간 연동 중' : '연결 끊김';
+}
+
+// ============================================================
+// SECTION NAV
+// ============================================================
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name==='dashboard') refreshDashboard();
+}
+
+// ============================================================
+// ROUND SELECT
+// ============================================================
+function selectRound(name) {
+  state.round = name;
+  state.checkins = {};
+  renderRounds();
+  document.getElementById('teamSelectCard').style.display = 'block';
+  document.getElementById('kpiSection').style.display = 'none';
+  document.getElementById('selBunbu').value = '';
+  document.getElementById('selTeam').innerHTML = '<option value="">-- 팀 선택 --</option>';
+  document.getElementById('prevCheckinNotice').style.display = 'none';
+}
+
+// ============================================================
+// TEAM SELECT
+// ============================================================
+function onBunbuChange() {
+  const bunbu = document.getElementById('selBunbu').value;
+  const sel = document.getElementById('selTeam');
+  sel.innerHTML = '<option value="">-- 팀 선택 --</option>';
+  if (!bunbu) return;
+  Object.keys(OKR_DATA[bunbu]||{}).forEach(t=>sel.innerHTML+=`<option value="${t}">${t}</option>`);
+  document.getElementById('kpiSection').style.display = 'none';
+}
+
+async function onTeamChange() {
+  const bunbu = document.getElementById('selBunbu').value;
+  const team  = document.getElementById('selTeam').value;
+  if (!bunbu||!team) return;
+  state.bunbu = bunbu;
+  state.team  = team;
+
+  // 기존 체크인 로드
+  showLoading(true);
+  try {
+    const all = await apiGet('getCheckins', {round: state.round});
+    state.checkins = all || {};
+  } catch(e) {
+    state.checkins = {};
+  } finally { showLoading(false); }
+
+  const prev = state.checkins[team] || null;
+  document.getElementById('prevCheckinNotice').style.display = prev ? 'block' : 'none';
+  renderOkrForm(bunbu, team, prev);
+}
+
+// ============================================================
+// OKR FORM
+// ============================================================
+function renderOkrForm(bunbu, team, prevData) {
+  const okrs = OKR_DATA[bunbu][team];
+  const hasQ = okrs.some(o=>o.type==='정량');
+  const hasS = okrs.some(o=>o.type==='정성');
+  document.getElementById('kpiSectionTitle').textContent = `📋 ${team} — OKR 성과 체크인 (${state.round})`;
+  document.getElementById('guideQuan').style.display = hasQ ? 'block' : 'none';
+  document.getElementById('guideQual').style.display = hasS ? 'block' : 'none';
+
+  const list = document.getElementById('kpiList');
+  list.innerHTML = '';
+  okrs.forEach((okr, i) => {
+    const prev = prevData ? prevData.okrs[i] : null;
+    const isQ  = okr.type==='정량';
+    let ci = '';
+    if (isQ) {
+      ci = `<input type="text" id="ci_${i}" placeholder="달성률 또는 수치 (예: 85%, 17방) — 어려우면 체크인 보류" value="${prev?esc(prev.checkin):''}">`;
+    } else {
+      const gs = ['Arete','EE','ME','NI','체크인 보류'];
+      ci = `<select id="ci_${i}"><option value="">등급 선택</option>${gs.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
+    }
+    const iopts = ['없음','목표조정','신규목표','목표폐기','지원요청','기타'];
+    const showDet = prev && prev.issue && prev.issue!=='없음';
+    list.innerHTML += `
+      <div class="kpi-card">
+        <div class="kpi-card-header">
+          <div class="kpi-header-top">
+            <span class="okr-num">OKR ${i+1}</span>
+            <div class="goal-text">${esc(okr.goal)}</div>
+            <span class="badge ${isQ?'q':'s'}">${okr.type}</span>
+          </div>
+          <div class="kr-section">
+            <div class="kr-label">핵심성과지표 (Key Result)</div>
+            <div class="kr-text">📌 ${esc(okr.kr)}</div>
+            ${okr.detail?`<div class="kr-detail">💬 ${esc(okr.detail)}</div>`:''}
+          </div>
+        </div>
+        <div class="kpi-body">
+          <div class="fg">
+            <label>① 성과 체크인 ${isQ?'<small style="color:#64748b;font-weight:400">(달성률/수치)</small>':'<small style="color:#64748b;font-weight:400">(등급 선택)</small>'}</label>
+            ${ci}
+          </div>
+          <div class="fg">
+            <label>③ 이슈 체크인</label>
+            <select id="issue_${i}" onchange="toggleDet(${i})">
+              ${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}
+            </select>
+          </div>
+          <div class="fg" style="grid-column:span 2">
+            <label>② 성과 체크인 관련 코멘트</label>
+            <textarea id="comment_${i}" placeholder="체크인 등급/수치 선택 이유, 현황, 추가 코멘트를 작성해주세요">${prev?esc(prev.comment):''}</textarea>
+          </div>
+          <div class="issue-detail ${showDet?'show':''}" id="det_${i}" style="grid-column:span 2">
+            <label>④ 상세 이슈 작성 <span style="color:var(--red);font-weight:400;font-size:12px">*없음 외 선택 시 반드시 작성</span></label>
+            <textarea id="detText_${i}" placeholder="이슈에 대한 상세 내용을 작성해주세요">${prev?esc(prev.issueText):''}</textarea>
+          </div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('kpiSection').style.display = 'block';
+  setTimeout(()=>document.getElementById('kpiSection').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function toggleDet(i) {
+  const v = document.getElementById('issue_'+i).value;
+  document.getElementById('det_'+i).classList.toggle('show', v&&v!=='없음');
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+async function submitCheckin() {
+  if (!state.round) { showToast('체크인 회차를 선택해주세요.', 'error'); return; }
+  if (!state.team)  { showToast('팀을 선택해주세요.', 'error'); return; }
+
+  const okrs = OKR_DATA[state.bunbu][state.team];
+  const result = [];
+  let hasError = false;
+
+  okrs.forEach((okr, i) => {
+    const el  = document.getElementById('ci_'+i);
+    const ci  = (el?.value||'').trim();
+    const cmt = (document.getElementById('comment_'+i)?.value||'').trim();
+    const iss = document.getElementById('issue_'+i)?.value||'없음';
+    const det = (document.getElementById('detText_'+i)?.value||'').trim();
+    if (!ci) { hasError=true; if(el) el.style.borderColor='var(--red)'; }
+    else      { if(el) el.style.borderColor=''; }
+    if (iss!=='없음'&&!det) {
+      hasError=true;
+      const it=document.getElementById('detText_'+i);
+      if(it) it.style.borderColor='var(--red)';
+    }
+    result.push({checkin:ci, comment:cmt, issue:iss, issueText:det});
+  });
+  if (hasError) { showToast('⚠️ 모든 필수 항목을 입력해주세요.', 'error'); return; }
+
+  const payload = {
+    round: state.round, bunbu: state.bunbu, team: state.team,
+    submittedAt: new Date().toLocaleString('ko-KR'),
+    okrs: result
+  };
+
+  showLoading(true);
+  document.getElementById('submitBtn').disabled = true;
+  try {
+    await apiPost({action:'submitCheckin', data:payload});
+    state.checkins[state.team] = payload;
+    showToast(`✅ ${state.team} 체크인이 제출되었습니다!`, 'success');
+    document.getElementById('prevCheckinNotice').style.display = 'block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch(e) {
+    showToast('❌ 제출 실패: ' + e.message, 'error');
+  } finally {
+    showLoading(false);
+    document.getElementById('submitBtn').disabled = false;
+  }
+}
+
+function resetForm() {
+  if (!confirm('입력한 내용을 초기화하겠습니까?')) return;
+  renderOkrForm(state.bunbu, state.team, state.checkins[state.team]||null);
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+async function refreshDashboard() {
+  showLoading(true);
+  try {
+    const round = document.getElementById('dashRound').value;
+    if (!round) { showLoading(false); return; }
+    const data = await apiGet('getCheckins', {round});
+    state.checkins = data || {};
+    renderDashboard();
+  } catch(e) {
+    showToast('새로고침 실패: ' + e.message, 'error');
+  } finally { showLoading(false); }
+}
+
+function renderDashboard() {
+  const round  = document.getElementById('dashRound').value;
+  const filter = document.getElementById('dashBunbu').value;
+  const data   = state.checkins;
+
+  const allTeams = [];
+  Object.entries(OKR_DATA).forEach(([b, teams]) => {
+    if (filter && b!==filter) return;
+    Object.keys(teams).forEach(t => allTeams.push({bunbu:b, team:t}));
+  });
+
+  const done   = allTeams.filter(t=>data[t.team]).length;
+  const issues = allTeams.filter(t=>{
+    const d=data[t.team]; return d&&d.okrs.some(k=>k.issue&&k.issue!=='없음');
+  }).length;
+
+  document.getElementById('dTotal').textContent   = allTeams.length;
+  document.getElementById('dDone').textContent    = done;
+  document.getElementById('dPending').textContent = allTeams.length-done;
+  document.getElementById('dIssue').textContent   = issues;
+
+  const ic={목표조정:0,신규목표:0,목표폐기:0,지원요청:0,기타:0};
+  allTeams.forEach(t=>{
+    const d=data[t.team]; if(!d) return;
+    d.okrs.forEach(k=>{ if(k.issue&&ic[k.issue]!==undefined) ic[k.issue]++; });
+  });
+  ['목표조정','신규목표','목표폐기','지원요청','기타'].forEach((k,i)=>{
+    document.getElementById('ic'+(i+1)).textContent=ic[k];
+  });
+
+  // 본부별 진행률
+  const bunbuList = filter ? [filter] : Object.keys(OKR_DATA);
+  const prog = document.getElementById('bunbuProgress');
+  prog.innerHTML = '';
+  bunbuList.forEach(b=>{
+    const teams=Object.keys(OKR_DATA[b]);
+    const dc=teams.filter(t=>data[t]).length;
+    const pct=Math.round(dc/teams.length*100);
+    prog.innerHTML+=`
+      <div class="progress-row">
+        <div class="progress-label">${b}</div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+        <div class="progress-pct">${pct}%</div>
+        <div style="font-size:12px;color:#64748b;min-width:40px">${dc}/${teams.length}</div>
+      </div>`;
+  });
+
+  // 팀 카드
+  const grid=document.getElementById('teamGrid');
+  grid.innerHTML='';
+  if (!allTeams.length) {
+    grid.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div>팀이 없습니다.</div></div>'; return;
+  }
+  allTeams.forEach(({bunbu,team})=>{
+    const d=data[team];
+    const iss=d?d.okrs.filter(k=>k.issue&&k.issue!=='없음'):[];
+    const tags=[...new Set(iss.map(k=>k.issue))].map(v=>`<span class="issue-tag tag-${v}">${v}</span>`).join('');
+    grid.innerHTML+=`
+      <div class="team-card ${d?'done':'pending'}" onclick="showTeamDetail('${esc(bunbu)}','${esc(team)}')">
+        <div class="team-card-name">${team}</div>
+        <div class="team-card-bunbu">${bunbu}</div>
+        <div class="team-card-status">
+          <span class="sdot ${d?'g':'gr'}"></span>
+          <span class="status-text">${d?'✅ 완료':'⏳ 미완료'}</span>
+        </div>
+        ${d?`<div style="font-size:11px;color:#94a3b8;margin-top:4px">${d.submittedAt}</div>`:''}
+        ${tags?`<div class="issue-tags">${tags}</div>`:''}
+      </div>`;
+  });
+}
+
+// ============================================================
+// TEAM DETAIL
+// ============================================================
+function showTeamDetail(bunbu, team) {
+  const d    = state.checkins[team];
+  const okrs = OKR_DATA[bunbu][team];
+  document.getElementById('modalTitle').textContent = `${team} — ${document.getElementById('dashRound').value} 체크인 상세`;
+  let html = '';
+  if (!d) {
+    html='<div class="empty-state"><div class="empty-icon">📭</div><div>아직 체크인이 제출되지 않았습니다.</div></div>';
+  } else {
+    html=`<div class="notice ok">제출일시: ${d.submittedAt}</div>`;
+    okrs.forEach((okr,i)=>{
+      const r=d.okrs[i]||{};
+      const ib=r.issue&&r.issue!=='없음'?`<span class="issue-tag tag-${r.issue}">${r.issue}</span>`:'';
+      html+=`
+        <div class="okr-dr">
+          <div class="okr-dh"><span class="okr-num">OKR ${i+1}</span><span class="badge ${okr.type==='정량'?'q':'s'}">${okr.type}</span>${ib}</div>
+          <div class="okr-obj">${esc(okr.goal)}</div>
+          <div class="okr-kr">📌 ${esc(okr.kr)}</div>
+          ${okr.detail?`<div class="okr-krd">💬 ${esc(okr.detail)}</div>`:''}
+          <div class="okr-cg">
+            <div class="di"><span>성과 체크인</span><div class="dv">${esc(r.checkin)||'-'}</div></div>
+            <div class="di"><span>이슈</span><div class="dv">${esc(r.issue)||'-'}</div></div>
+            ${r.comment?`<div class="di" style="grid-column:span 2"><span>코멘트</span><div class="dv">${esc(r.comment)}</div></div>`:''}
+            ${r.issueText?`<div class="di" style="grid-column:span 2"><span>상세 이슈</span><div class="dv">${esc(r.issueText)}</div></div>`:''}
+          </div>
+        </div>`;
+    });
+  }
+  document.getElementById('modalBody').innerHTML=html;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showLoading(v) {
+  document.getElementById('loadingOverlay').classList.toggle('show',v);
+}
+function showToast(msg, type='') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type?type:'')+' show';
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+// ============================================================
+// START
+// ============================================================
+// 관리자 모드: ?admin=true 파라미터가 있으면 관리자 페이지 버튼 표시
+if (new URLSearchParams(location.search).get('admin') === 'true') {
+  document.getElementById('adminLink').style.display = 'inline-block';
+}
+init();
+</script>
+</body>
+</html>
