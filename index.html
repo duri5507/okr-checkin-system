@@ -38,14 +38,14 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f0
 .summary-num{font-size:32px;font-weight:800;color:var(--primary);}
 .summary-label{font-size:12px;color:#64748b;margin-top:6px;}
 
-/* Round cards */
-.round-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
-.round-card{border:2px solid #e2e8f0;border-radius:10px;padding:18px;cursor:pointer;text-align:center;transition:all .2s;position:relative;}
+/* Round cards - 좌측 세로 리스트 */
+.round-grid{display:flex;flex-direction:column;gap:8px;}
+.round-card{border:2px solid #e2e8f0;border-radius:10px;padding:14px 18px;cursor:pointer;text-align:left;transition:all .2s;position:relative;display:flex;align-items:center;gap:12px;}
 .round-card.selected{border-color:var(--accent);background:#eff6ff;}
 .round-card:hover{border-color:var(--secondary);}
-.round-card .r-title{font-size:15px;font-weight:700;color:var(--primary);}
-.round-card .r-sub{font-size:12px;color:#64748b;margin-top:4px;}
-.active-badge{position:absolute;top:8px;right:8px;background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;}
+.round-card .r-title{font-size:14px;font-weight:700;color:var(--primary);}
+.round-card .r-sub{font-size:12px;color:#64748b;}
+.active-badge{background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:auto;white-space:nowrap;}
 
 /* Form */
 select,input[type=text],textarea{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;background:white;color:#1a2332;outline:none;transition:border-color .2s;}
@@ -54,8 +54,9 @@ textarea{resize:vertical;min-height:72px;}
 .select-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;}
 
-/* Guide */
-.guide-box{border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:13px;line-height:1.7;}
+/* Guide - 좌우 나란히 */
+.guide-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.guide-box{border-radius:10px;padding:16px 20px;font-size:13px;line-height:1.7;}
 .guide-box.quan{background:#eff6ff;border:1px solid #bfdbfe;}
 .guide-box.qual{background:#f5f3ff;border:1px solid #ddd6fe;}
 .guide-box h4{font-size:13px;font-weight:700;margin-bottom:8px;}
@@ -83,10 +84,14 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 .kr-label{font-size:11px;font-weight:700;color:#64748b;letter-spacing:.5px;margin-bottom:4px;}
 .kr-text{font-size:13px;color:#374151;font-weight:600;line-height:1.5;}
 .kr-detail{font-size:12px;color:#64748b;margin-top:3px;}
-.kpi-body{padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.kpi-body{padding:16px 20px;display:flex;flex-direction:column;gap:14px;}
 .fg{display:flex;flex-direction:column;gap:6px;}
 .issue-detail{display:none;}
 .issue-detail.show{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+
+/* Add OKR btn */
+.add-okr-btn{border:2px dashed #cbd5e1;border-radius:12px;padding:18px;text-align:center;cursor:pointer;color:#64748b;font-size:14px;font-weight:600;transition:all .2s;background:white;}
+.add-okr-btn:hover{border-color:var(--accent);color:var(--accent);background:#f0f7ff;}
 
 /* Btn */
 .btn{padding:11px 24px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:all .2s;}
@@ -186,7 +191,8 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
   .kpi-body{grid-template-columns:1fr;}
   .section{padding:16px;}
   .issue-summary{grid-template-columns:repeat(3,1fr);}
-  .round-grid{grid-template-columns:1fr;}
+  .round-grid{flex-direction:column;}
+  .guide-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -222,7 +228,7 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
   </div>
 
   <div class="card" id="teamSelectCard" style="display:none">
-    <div class="card-title">🏢 팀 선택</div>
+    <div class="card-title">🏢 본부 및 팀 선택</div>
     <div class="select-row">
       <div><label>본부 선택</label>
         <select id="selBunbu" onchange="onBunbuChange()">
@@ -240,28 +246,32 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
     </div>
   </div>
 
+  <div class="guide-row">
+    <div class="guide-box quan">
+      <h4>📏 정량 지표 입력 방법</h4>
+      <ul>
+        <li>달성률 → <b>85%</b>, <b>120%</b> 등 퍼센트로 작성</li>
+        <li>수치 → <b>17방</b>, <b>250억</b>, <b>1,200개</b> 등 실제 수치로 작성</li>
+        <li>현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b>로 입력</li>
+      </ul>
+    </div>
+    <div class="guide-box qual">
+      <h4>⭐ 정성 지표 등급 기준</h4>
+      <div class="guide-grade">
+        <span class="gl arete">Arete</span><span class="gd">누구나 인정할 만큼 탁월한 성과 창출</span>
+        <span class="gl ee">EE</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>초과</b></span>
+        <span class="gl me">ME</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>충족</b></span>
+        <span class="gl ni">NI</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준 <b>미만</b></span>
+        <span class="gl hold">보류</span><span class="gd">현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b> 선택</span>
+      </div>
+    </div>
+  </div>
+
   <div id="kpiSection" style="display:none">
     <div class="card">
       <div class="card-title" id="kpiSectionTitle"></div>
-      <div class="guide-box quan" id="guideQuan">
-        <h4>📏 정량 지표 입력 방법</h4>
-        <ul>
-          <li>달성률 → <b>85%</b>, <b>120%</b> 등 퍼센트로 작성</li>
-          <li>수치 → <b>17방</b>, <b>250억</b>, <b>1,200개</b> 등 실제 수치로 작성</li>
-          <li>현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b>로 입력</li>
-        </ul>
-      </div>
-      <div class="guide-box qual" id="guideQual">
-        <h4>⭐ 정성 지표 등급 기준</h4>
-        <div class="guide-grade">
-          <span class="gl arete">Arete</span><span class="gd">누구나 인정할 만큼 탁월한 성과 창출</span>
-          <span class="gl ee">EE</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>초과</b></span>
-          <span class="gl me">ME</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>충족</b></span>
-          <span class="gl ni">NI</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준 <b>미만</b></span>
-          <span class="gl hold">보류</span><span class="gd">현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b> 선택</span>
-        </div>
-      </div>
       <div class="kpi-list" id="kpiList"></div>
+      <div id="addOkrArea"></div>
       <div class="submit-row">
         <button class="btn btn-outline" onclick="resetForm()">초기화</button>
         <button class="btn btn-primary" id="submitBtn" onclick="submitCheckin()">✅ 체크인 제출</button>
@@ -851,6 +861,7 @@ async function onTeamChange() {
   if (!bunbu||!team) return;
   state.bunbu = bunbu;
   state.team  = team;
+  extraOkrs = [];
 
   // 캐시 먼저, 서버는 백그라운드
   const cacheKey = 'checkins_' + state.round;
@@ -867,19 +878,19 @@ async function onTeamChange() {
 // ============================================================
 // OKR FORM
 // ============================================================
+let extraOkrs = []; // 신규 추가된 목표
+
 function renderOkrForm(bunbu, team, prevData) {
-  const okrs = OKR_DATA[bunbu][team];
-  const hasQ = okrs.some(o=>o.type==='정량');
-  const hasS = okrs.some(o=>o.type==='정성');
+  const baseOkrs = OKR_DATA[bunbu][team];
+  const allOkrs = [...baseOkrs, ...extraOkrs];
   document.getElementById('kpiSectionTitle').textContent = `📋 ${team} — OKR 성과 체크인 (${state.round})`;
-  document.getElementById('guideQuan').style.display = hasQ ? 'block' : 'none';
-  document.getElementById('guideQual').style.display = hasS ? 'block' : 'none';
 
   const list = document.getElementById('kpiList');
   list.innerHTML = '';
-  okrs.forEach((okr, i) => {
+  allOkrs.forEach((okr, i) => {
     const prev = prevData ? prevData.okrs[i] : null;
     const isQ  = okr.type==='정량';
+    const isExtra = i >= baseOkrs.length;
     let ci = '';
     if (isQ) {
       ci = `<input type="text" id="ci_${i}" placeholder="달성률 또는 수치 (예: 85%, 17방) — 어려우면 체크인 보류" value="${prev?esc(prev.checkin):''}">`;
@@ -896,8 +907,11 @@ function renderOkrForm(bunbu, team, prevData) {
             <span class="okr-num">OKR ${i+1}</span>
             <div class="goal-text">${esc(okr.goal)}</div>
             <span class="badge ${isQ?'q':'s'}">${okr.type}</span>
+            ${isExtra?`<button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px" onclick="removeExtraOkr(${i - baseOkrs.length})">✕</button>`:''}
           </div>
           <div class="kr-section">
+            <div class="kr-label">목표 (Objective)</div>
+            <div class="kr-text" style="margin-bottom:6px">🎯 ${esc(okr.goal)}</div>
             <div class="kr-label">핵심성과지표 (Key Result)</div>
             <div class="kr-text">📌 ${esc(okr.kr)}</div>
             ${okr.detail?`<div class="kr-detail">💬 ${esc(okr.detail)}</div>`:''}
@@ -909,24 +923,62 @@ function renderOkrForm(bunbu, team, prevData) {
             ${ci}
           </div>
           <div class="fg">
+            <label>② 성과 체크인 관련 코멘트</label>
+            <textarea id="comment_${i}" placeholder="체크인 등급/수치 선택 이유, 현황, 추가 코멘트를 작성해주세요">${prev?esc(prev.comment):''}</textarea>
+          </div>
+          <div class="fg">
             <label>③ 이슈 체크인</label>
             <select id="issue_${i}" onchange="toggleDet(${i})">
               ${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}
             </select>
           </div>
-          <div class="fg" style="grid-column:span 2">
-            <label>② 성과 체크인 관련 코멘트</label>
-            <textarea id="comment_${i}" placeholder="체크인 등급/수치 선택 이유, 현황, 추가 코멘트를 작성해주세요">${prev?esc(prev.comment):''}</textarea>
-          </div>
-          <div class="issue-detail ${showDet?'show':''}" id="det_${i}" style="grid-column:span 2">
+          <div class="issue-detail ${showDet?'show':''}" id="det_${i}">
             <label>④ 상세 이슈 작성 <span style="color:var(--red);font-weight:400;font-size:12px">*없음 외 선택 시 반드시 작성</span></label>
             <textarea id="detText_${i}" placeholder="이슈에 대한 상세 내용을 작성해주세요">${prev?esc(prev.issueText):''}</textarea>
           </div>
         </div>
       </div>`;
   });
+
+  // 신규목표 추가 버튼
+  document.getElementById('addOkrArea').innerHTML = `
+    <div class="add-okr-btn" onclick="showAddOkrForm()">+ 신규목표 추가</div>
+    <div id="addOkrForm" style="display:none;margin-top:12px;padding:16px;background:#f8fafc;border-radius:10px;border:1px dashed #cbd5e1;">
+      <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px">신규 목표 생성</div>
+      <div style="display:flex;gap:12px;margin-bottom:10px">
+        <select id="newOkrType" style="width:120px"><option value="정량">정량</option><option value="정성">정성</option></select>
+      </div>
+      <div style="margin-bottom:10px"><label>목표 (Objective)</label><input type="text" id="newOkrGoal" placeholder="목표를 입력하세요"></div>
+      <div style="margin-bottom:10px"><label>핵심성과지표 (Key Result)</label><input type="text" id="newOkrKr" placeholder="핵심성과지표를 입력하세요"></div>
+      <div style="margin-bottom:10px"><label>상세 설명 (선택)</label><input type="text" id="newOkrDetail" placeholder="상세 설명"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="addExtraOkr()">추가</button>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('addOkrForm').style.display='none'">취소</button>
+      </div>
+    </div>`;
+
   document.getElementById('kpiSection').style.display = 'block';
   setTimeout(()=>document.getElementById('kpiSection').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function showAddOkrForm() {
+  document.getElementById('addOkrForm').style.display = 'block';
+}
+
+function addExtraOkr() {
+  const type = document.getElementById('newOkrType').value;
+  const goal = document.getElementById('newOkrGoal').value.trim();
+  const kr = document.getElementById('newOkrKr').value.trim();
+  const detail = document.getElementById('newOkrDetail').value.trim();
+  if (!goal || !kr) { showToast('목표와 핵심성과지표를 입력해주세요.', 'error'); return; }
+  extraOkrs.push({type, goal, kr, detail});
+  renderOkrForm(state.bunbu, state.team, state.checkins[state.team] || null);
+  showToast('신규 목표가 추가되었습니다.', 'success');
+}
+
+function removeExtraOkr(idx) {
+  extraOkrs.splice(idx, 1);
+  renderOkrForm(state.bunbu, state.team, state.checkins[state.team] || null);
 }
 
 function toggleDet(i) {
@@ -941,7 +993,7 @@ async function submitCheckin() {
   if (!state.round) { showToast('체크인 회차를 선택해주세요.', 'error'); return; }
   if (!state.team)  { showToast('팀을 선택해주세요.', 'error'); return; }
 
-  const okrs = OKR_DATA[state.bunbu][state.team];
+  const okrs = [...OKR_DATA[state.bunbu][state.team], ...extraOkrs];
   const result = [];
   let hasError = false;
 
