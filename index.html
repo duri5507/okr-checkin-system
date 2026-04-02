@@ -44,13 +44,13 @@ body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f0
 .summary-label{font-size:12px;color:#64748b;margin-top:6px;}
 
 /* Round cards - 좌측 세로 리스트 */
-.round-grid{display:flex;flex-direction:column;gap:8px;}
-.round-card{border:2px solid #e2e8f0;border-radius:10px;padding:14px 18px;cursor:pointer;text-align:left;transition:all .2s;position:relative;display:flex;align-items:center;gap:12px;}
+.round-grid{display:flex;flex-direction:column;gap:6px;}
+.round-card{border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 12px;cursor:pointer;text-align:left;transition:all .2s;position:relative;display:flex;flex-direction:column;gap:2px;}
 .round-card.selected{border-color:var(--accent);background:#eff6ff;}
 .round-card:hover{border-color:var(--secondary);}
-.round-card .r-title{font-size:14px;font-weight:700;color:var(--primary);}
-.round-card .r-sub{font-size:12px;color:#64748b;}
-.active-badge{background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:auto;white-space:nowrap;}
+.round-card .r-title{font-size:12px;font-weight:700;color:var(--primary);line-height:1.3;word-break:keep-all;}
+.round-card .r-sub{font-size:10px;color:#64748b;}
+.active-badge{background:var(--green);color:white;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;position:absolute;top:6px;right:6px;}
 
 /* Form */
 select,input[type=text],textarea{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;background:white;color:#1a2332;outline:none;transition:border-color .2s;}
@@ -80,7 +80,7 @@ label{font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6
 .kpi-card{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:white;}
 .kpi-card-header{background:linear-gradient(135deg,#f8fafc,#f1f5f9);padding:16px 20px;border-bottom:1px solid #e2e8f0;}
 .kpi-header-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.okr-num{font-size:11px;font-weight:800;color:white;background:var(--secondary);border-radius:6px;padding:3px 9px;white-space:nowrap;}
+.okr-num{font-size:11px;font-weight:800;color:white;background:var(--secondary);border-radius:6px;padding:3px 10px;white-space:nowrap;letter-spacing:0.3px;}
 .goal-text{font-size:14px;color:#1a2332;font-weight:700;flex:1;line-height:1.4;}
 .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;}
 .badge.q{background:#dbeafe;color:#1d4ed8;}
@@ -918,17 +918,15 @@ function renderOkrForm(bunbu, team, prevData) {
       <div class="kpi-card">
         <div class="kpi-card-header">
           <div class="kpi-header-top">
-            <span class="okr-num">OKR ${i+1}</span>
+            <span class="okr-num">${i+1}. 목표(Objective)</span>
             <div class="goal-text">${esc(okr.goal)}</div>
             <span class="badge ${isQ?'q':'s'}">${okr.type}</span>
             ${isExtra?`<button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px" onclick="removeExtraOkr(${i - baseOkrs.length})">✕</button>`:''}
           </div>
           <div class="kr-section">
-            <div class="kr-label">목표 (Objective)</div>
-            <div class="kr-text" style="margin-bottom:6px">🎯 ${esc(okr.goal)}</div>
             <div class="kr-label">핵심성과지표 (Key Result)</div>
             <div class="kr-text">📌 ${esc(okr.kr)}</div>
-            ${okr.detail?`<div class="kr-detail">💬 ${esc(okr.detail)}</div>`:''}
+            ${okr.detail?`<div class="kr-detail" style="font-size:11px;color:#64748b;margin-top:4px;padding-left:22px">└ ${esc(okr.detail)}</div>`:''}
           </div>
         </div>
         <div class="kpi-body">
