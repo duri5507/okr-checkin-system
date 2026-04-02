@@ -1214,7 +1214,7 @@ label {
       <option value="PWC">PWC</option>
     </select>
     <label style="margin-left:8px">주요 핵심지표:</label>
-    <select id="dashMajor" onchange="renderDashboard()">
+    <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()">
       <option value="">전체</option>
       <option value="매출">매출</option>
       <option value="성장">성장</option>
@@ -1998,7 +1998,7 @@ async function submitCheckin() {
 
   const okrs = [...OKR_DATA[state.bunbu][state.team], ...extraOkrs];
   const result = [];
-  let hasError = false;
+  let firstErrorEl = null;
 
   okrs.forEach((okr, i) => {
     const el  = document.getElementById('ci_'+i);
@@ -2006,16 +2006,20 @@ async function submitCheckin() {
     const cmt = (document.getElementById('comment_'+i)?.value||'').trim();
     const iss = document.getElementById('issue_'+i)?.value||'없음';
     const det = (document.getElementById('detText_'+i)?.value||'').trim();
-    if (!ci) { hasError=true; if(el) el.style.borderColor='var(--red)'; }
+    if (!ci) { if(el) { el.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=el; } }
     else      { if(el) el.style.borderColor=''; }
     if (iss!=='없음'&&!det) {
-      hasError=true;
       const it=document.getElementById('detText_'+i);
-      if(it) it.style.borderColor='var(--red)';
+      if(it) { it.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=it; }
     }
     result.push({checkin:ci, comment:cmt, issue:iss, issueText:det});
   });
-  if (hasError) { showToast('모든 필수 항목을 입력해주세요.', 'error'); return; }
+  if (firstErrorEl) {
+    firstErrorEl.scrollIntoView({behavior:'smooth',block:'center'});
+    firstErrorEl.focus();
+    showToast('미입력 항목이 있습니다. 해당 항목으로 이동했습니다.', 'error');
+    return;
+  }
 
   const payload = {
     round: state.round, bunbu: state.bunbu, team: state.team,
@@ -2087,17 +2091,26 @@ function calcTeamAvgRate(bunbu, team, data) {
 }
 
 function initDetailKpiOptions() {
+  updateDetailKpiOptions();
+}
+
+function updateDetailKpiOptions() {
+  const majorFilter = document.getElementById('dashMajor').value;
   const allDetails = new Set();
   Object.values(OKR_DATA).forEach(teams => {
     Object.values(teams).forEach(okrs => {
-      okrs.forEach(okr => { if (okr.detailKpi) allDetails.add(okr.detailKpi); });
+      okrs.forEach(okr => {
+        if (okr.detailKpi && (!majorFilter || okr.major === majorFilter)) allDetails.add(okr.detailKpi);
+      });
     });
   });
   const sel = document.getElementById('dashDetail');
+  const prev = sel.value;
   sel.innerHTML = '<option value="">전체</option>';
   [...allDetails].sort().forEach(v => {
     sel.innerHTML += `<option value="${esc(v)}">${esc(v)}</option>`;
   });
+  if (prev && allDetails.has(prev)) sel.value = prev;
 }
 
 async function refreshDashboard() {
