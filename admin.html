@@ -466,8 +466,10 @@ label {
   width: 90%;
   max-width: 680px;
   max-height: 88vh;
-  overflow-y: auto;
-  padding: 28px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
   border-radius: 20px;
   border: none;
   background: var(--surface);
@@ -477,6 +479,14 @@ label {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+.modal-body-wrap {
+  overflow-y: auto;
+  padding: 20px 28px 28px;
+  flex: 1;
   margin-bottom: 20px;
 }
 .modal-title {
@@ -740,7 +750,7 @@ label {
   .insight-num { font-size: 22px; }
   .insight-card { padding: 14px; }
   .progress-label { min-width: 80px; font-size: 11px; }
-  .modal { width: 95%; padding: 20px; max-height: 92vh; }
+  .modal { width: 95%; max-height: 92vh; }
   .btn { min-height: 44px; }
   select, input[type=text], input[type=date], input[type=password], textarea { min-height: 44px; }
   .nav-btn { min-height: 44px; }
@@ -935,7 +945,7 @@ label {
       <div class="modal-title" id="modalTitle"></div>
       <button class="modal-close" onclick="document.getElementById('modalOverlay').classList.remove('open')">&#10005;</button>
     </div>
-    <div id="modalBody"></div>
+    <div class="modal-body-wrap"><div id="modalBody"></div></div>
   </div>
 </div>
 
@@ -2042,12 +2052,11 @@ function exportPPT() {
 function showTeamDetail(bunbu, team) {
   const d    = state.checkins[team];
   const okrs = OKR_DATA[bunbu][team];
-  document.getElementById('modalTitle').textContent = `${team} — ${document.getElementById('dashRound').value} 체크인 상세`;
+  document.getElementById('modalTitle').innerHTML = `${esc(team)} <span style="font-size:13px;font-weight:400;color:var(--muted);margin-left:8px">${document.getElementById('dashRound').value}</span>` + (d ? `<span style="font-size:12px;font-weight:400;color:var(--subtle);margin-left:12px">제출: ${esc(d.submittedAt)}</span>` : '');
   let html = '';
   if (!d) {
     html='<div class="empty-state"><div class="empty-icon"><span class="material-icons-outlined" style="font-size:48px">inbox</span></div><div>아직 체크인이 제출되지 않았습니다.</div></div>';
   } else {
-    html=`<div class="notice ok">제출일시: ${d.submittedAt}</div>`;
     okrs.forEach((okr,i)=>{
       const r=d.okrs[i]||{};
       const ib=r.issue&&r.issue!=='없음'?`<span class="issue-tag tag-${r.issue}">${r.issue}</span>`:'';
