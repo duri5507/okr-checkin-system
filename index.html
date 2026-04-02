@@ -20,29 +20,31 @@
   --red: #ef4444;
   --purple: #8b5cf6;
 
-  /* Neutral palette (warm) */
-  --ink: #1a2332;
+  /* Neutral palette (minimal clean) */
+  --ink: #111827;
   --ink-light: #374151;
-  --muted: #64748b;
-  --subtle: #94a3b8;
-  --border: #e2e8f0;
+  --muted: #6b7280;
+  --subtle: #9ca3af;
+  --border: #f3f4f6;
   --surface: #ffffff;
+  --bg: #fafafa;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
-  --shadow-hover: 0 6px 16px rgba(0,0,0,.1);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.08);
+  --shadow-hover: 0 6px 16px rgba(0,0,0,.08);
 
   /* Focus */
-  --focus-ring: 0 0 0 3px rgba(185,28,28,.15);
-  --focus-outline: 2px solid var(--primary);
+  --focus-ring: 0 0 0 3px rgba(17,24,39,.06);
+  --focus-outline: 2px solid var(--ink);
 }
 
 /* ============================================================
    RESET & BASE
    ============================================================ */
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;}
+body{font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
 
 /* Material Icons helper */
 .material-icons-outlined.mi{font-size:18px;vertical-align:middle;margin-right:4px;}
@@ -78,22 +80,24 @@ textarea:focus-visible {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 60px;
+  height: 56px;
   padding: 0 40px;
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  background: #ffffff;
+  color: var(--ink);
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: none;
 }
 .header-title {
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: var(--ink);
 }
 .header-title span {
   margin-left: 8px;
   font-size: 12px;
   font-weight: 400;
-  color: #fca5a5;
+  color: var(--muted);
 }
 .header-right {
   display: flex;
@@ -112,21 +116,21 @@ textarea:focus-visible {
 .conn-dot.err { background: var(--red); }
 .conn-label {
   font-size: 12px;
-  color: #fca5a5;
+  color: var(--muted);
 }
 .admin-btn {
   padding: 8px 16px;
-  border: 1px solid rgba(255,255,255,.3);
+  border: 1.5px solid #e5e7eb;
   border-radius: 8px;
-  background: rgba(255,255,255,.15);
+  background: transparent;
   font-size: 12px;
   font-weight: 600;
-  color: white;
+  color: var(--ink);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .admin-btn:hover {
-  background: rgba(255,255,255,.25);
+  background: var(--bg);
   transform: translateY(-1px);
 }
 
@@ -135,15 +139,17 @@ textarea:focus-visible {
    ============================================================ */
 .nav {
   display: flex;
-  padding: 0 40px;
-  background: white;
-  border-bottom: 2px solid var(--border);
+  padding: 8px 40px;
+  background: transparent;
+  border-bottom: none;
+  gap: 4px;
 }
 .nav-btn {
-  padding: 16px 24px;
-  margin-bottom: -2px;
+  padding: 10px 20px;
+  margin-bottom: 0;
   border: none;
-  border-bottom: 3px solid transparent;
+  border-bottom: none;
+  border-radius: 8px;
   background: none;
   font-size: 14px;
   font-weight: 600;
@@ -153,10 +159,12 @@ textarea:focus-visible {
 }
 .nav-btn:hover {
   color: var(--ink);
+  background: rgba(0,0,0,.03);
 }
 .nav-btn.active {
-  color: var(--primary);
-  border-bottom-color: var(--primary);
+  color: white;
+  background: var(--ink);
+  border-bottom-color: transparent;
 }
 
 /* ============================================================
@@ -190,10 +198,10 @@ textarea:focus-visible {
    ============================================================ */
 .card {
   margin-bottom: 20px;
-  padding: 24px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
+  padding: 28px;
+  border: none;
+  border-radius: 16px;
+  background: #ffffff;
   box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
 }
@@ -205,9 +213,10 @@ textarea:focus-visible {
   align-items: center;
   gap: 6px;
   margin-bottom: 16px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--ink);
+  letter-spacing: -0.3px;
 }
 
 /* ============================================================
@@ -221,8 +230,8 @@ textarea:focus-visible {
 }
 .summary-card {
   padding: 20px;
-  border: 1px solid var(--border);
-  border-left: 4px solid var(--accent);
+  border: none;
+  border-left: 3px solid var(--accent);
   border-radius: 12px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
@@ -235,9 +244,10 @@ textarea:focus-visible {
 .summary-card.orange { border-left-color: var(--orange); }
 .summary-card.red { border-left-color: var(--red); }
 .summary-num {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
   color: var(--ink);
+  letter-spacing: -1px;
 }
 .summary-label {
   margin-top: 8px;
@@ -257,24 +267,22 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 12px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: white;
+  box-shadow: var(--shadow-sm);
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .round-card:hover {
-  border-color: var(--secondary);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
 .round-card.selected {
-  border-color: var(--accent);
-  border-left: 3px solid var(--primary);
   background: #fef2f2;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 0 2px var(--primary);
 }
 .round-card .r-title {
   font-size: 12px;
@@ -306,8 +314,8 @@ input[type=text],
 textarea {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
   background: white;
   font-size: 14px;
   font-family: inherit;
@@ -318,8 +326,8 @@ textarea {
 select:focus,
 input:focus,
 textarea:focus {
-  border-color: var(--accent);
-  box-shadow: var(--focus-ring);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(17,24,39,.06);
 }
 textarea {
   resize: vertical;
@@ -351,9 +359,9 @@ label {
 }
 .guide-box {
   padding: 16px 20px;
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 12px;
-  background: var(--surface);
+  background: var(--bg);
   font-size: 13px;
   line-height: 1.7;
 }
@@ -402,8 +410,8 @@ label {
 }
 .kpi-card {
   overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border: none;
+  border-radius: 16px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
@@ -413,8 +421,8 @@ label {
 }
 .kpi-card-header {
   padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  background: #fafafa;
+  border-bottom: 1px solid #f3f4f6;
+  background: white;
 }
 .kpi-header-top {
   display: flex;
@@ -495,7 +503,7 @@ label {
    ============================================================ */
 .add-okr-btn {
   padding: 20px;
-  border: 2px dashed #cbd5e1;
+  border: 1.5px dashed #e5e7eb;
   border-radius: 12px;
   background: var(--surface);
   font-size: 14px;
@@ -506,9 +514,9 @@ label {
   transition: all 0.2s ease;
 }
 .add-okr-btn:hover {
-  border-color: var(--accent);
-  background: #fef2f2;
-  color: var(--accent);
+  border-color: #d1d5db;
+  background: var(--bg);
+  color: var(--ink);
   transform: translateY(-1px);
 }
 
@@ -518,12 +526,13 @@ label {
 .btn {
   padding: 12px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.2s ease;
+  letter-spacing: -0.2px;
 }
 .btn:hover {
   transform: translateY(-1px);
@@ -558,12 +567,12 @@ label {
   background: #16a34a;
 }
 .btn-outline {
-  background: white;
-  border: 1.5px solid #d1d5db;
-  color: var(--ink-light);
+  background: transparent;
+  border: 1.5px solid #e5e7eb;
+  color: var(--ink);
 }
 .btn-outline:hover {
-  background: #f8fafc;
+  background: var(--bg);
 }
 .btn-danger {
   background: var(--red);
@@ -591,14 +600,14 @@ label {
 }
 .progress-bar-bg {
   flex: 1;
-  height: 8px;
+  height: 6px;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 3px;
   background: var(--border);
 }
 .progress-bar-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 3px;
   background: var(--accent);
   transition: width .6s ease;
 }
@@ -606,7 +615,7 @@ label {
   min-width: 36px;
   font-size: 12px;
   font-weight: 700;
-  color: var(--secondary);
+  color: var(--ink);
   text-align: right;
 }
 .progress-label {
@@ -626,7 +635,7 @@ label {
 }
 .team-card {
   padding: 16px;
-  border: 2px solid transparent;
+  border: none;
   border-radius: 12px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
@@ -634,12 +643,11 @@ label {
   transition: all 0.2s ease;
 }
 .team-card:hover {
-  border-color: var(--accent);
-  box-shadow: var(--shadow-hover);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
-.team-card.done { border-left: 4px solid var(--green); }
-.team-card.pending { border-left: 4px solid var(--border); }
+.team-card.done { border-left: 3px solid var(--green); }
+.team-card.pending { border-left: 3px solid #e5e7eb; }
 .team-card-name {
   margin-bottom: 4px;
   font-size: 14px;
@@ -700,7 +708,7 @@ label {
 }
 .issue-box {
   padding: 16px;
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 12px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
@@ -743,10 +751,10 @@ label {
   border-radius: 8px;
   font-size: 13px;
 }
-.notice.warn { background: #fef9c3; border: 1px solid #fde68a; color: #854d0e; }
-.notice.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
-.notice.ok   { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
-.notice.err  { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+.notice.warn { background: #fefce8; border: none; color: #854d0e; }
+.notice.info { background: #eff6ff; border: none; color: #1e40af; }
+.notice.ok   { background: #f0fdf4; border: none; color: #166534; }
+.notice.err  { background: #fef2f2; border: none; color: #991b1b; }
 
 /* ============================================================
    COMPONENT: Modal
@@ -758,7 +766,7 @@ label {
   z-index: 200;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.3);
 }
 .modal-overlay.open { display: flex; }
 .modal {
@@ -767,8 +775,10 @@ label {
   max-height: 88vh;
   overflow-y: auto;
   padding: 28px;
-  border-radius: 16px;
+  border-radius: 20px;
+  border: none;
   background: var(--surface);
+  box-shadow: var(--shadow-lg);
 }
 .modal-header {
   display: flex;
@@ -779,7 +789,7 @@ label {
 .modal-title {
   font-size: 18px;
   font-weight: 800;
-  color: var(--primary);
+  color: var(--ink);
   letter-spacing: -0.3px;
 }
 .modal-close {
@@ -800,8 +810,9 @@ label {
 .okr-dr {
   margin-bottom: 12px;
   padding: 16px;
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 12px;
+  background: var(--bg);
 }
 .okr-dh {
   display: flex;
@@ -813,7 +824,7 @@ label {
   margin-bottom: 4px;
   font-size: 13px;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--ink);
 }
 .okr-kr {
   font-size: 12px;
@@ -891,6 +902,7 @@ label {
   opacity: 0;
   transform: translateY(80px);
   transition: all .3s ease;
+  box-shadow: var(--shadow-lg);
 }
 .toast.show { transform: translateY(0); opacity: 1; }
 .toast.success { background: #16a34a; }
@@ -992,10 +1004,10 @@ label {
 
 /* OKR Category Badges */
 .okr-categories{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
-.cat-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;letter-spacing:0.3px;}
-.cat-badge.hai{background:#fef2f2;color:#B91C1C;border:1px solid #fecaca;}
-.cat-badge.major{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;}
-.cat-badge.detail-kpi{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;}
+.cat-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:6px;letter-spacing:0.3px;border:none;}
+.cat-badge.hai{background:#fef2f2;color:#991b1b;}
+.cat-badge.major{background:#f0fdf4;color:#166534;}
+.cat-badge.detail-kpi{background:#eff6ff;color:#1e40af;}
 
 /* ============================================================
    COMPONENT: Insight Panel
@@ -1008,9 +1020,9 @@ label {
 }
 .insight-card {
   padding: 20px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #fef2f2 0%, #fff1f2 50%, #ffe4e6 100%);
-  border: 1px solid #fecaca;
+  border-radius: 14px;
+  background: white;
+  border: none;
   box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
 }
@@ -1024,14 +1036,15 @@ label {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: rgba(185, 28, 28, 0.1);
+  background: var(--bg);
   margin-bottom: 10px;
-  color: var(--primary);
+  color: var(--ink);
 }
 .insight-num {
   font-size: 28px;
   font-weight: 800;
-  color: var(--primary);
+  color: var(--ink);
+  letter-spacing: -1px;
 }
 .insight-label {
   margin-top: 4px;
@@ -1062,8 +1075,8 @@ label {
 }
 .chart-card {
   padding: 24px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border: none;
+  border-radius: 16px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
 }
@@ -1158,7 +1171,7 @@ label {
 <!-- Header -->
 <div class="header">
   <div style="display:flex;align-items:center;gap:12px;">
-    <img id="companyLogo" src="logo.png" alt="HUNET" style="height:28px;filter:brightness(0) invert(1);">
+    <img id="companyLogo" src="logo.png" alt="HUNET" style="height:28px;">
     <div class="header-title">조직 성과 체크인</div>
   </div>
   <div class="header-right">
