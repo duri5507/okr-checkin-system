@@ -6,6 +6,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>조직 성과 체크인 시스템</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 /* ============================================================
    DESIGN TOKENS
@@ -955,6 +956,146 @@ label {
 .cat-badge.hai{background:#fef2f2;color:#B91C1C;border:1px solid #fecaca;}
 .cat-badge.major{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;}
 .cat-badge.detail-kpi{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;}
+
+/* ============================================================
+   COMPONENT: Insight Panel
+   ============================================================ */
+.insight-panel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.insight-card {
+  padding: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fef2f2 0%, #fff1f2 50%, #ffe4e6 100%);
+  border: 1px solid #fecaca;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+.insight-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.insight-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(185, 28, 28, 0.1);
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+.insight-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+}
+.insight-label {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ============================================================
+   COMPONENT: Summary grid 5 columns
+   ============================================================ */
+.summary-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.summary-grid-5 .summary-card { margin: 0; }
+.summary-card.purple { border-left-color: var(--purple); }
+
+/* ============================================================
+   COMPONENT: Chart area
+   ============================================================ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.chart-card {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.chart-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.chart-container {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+}
+
+/* ============================================================
+   COMPONENT: Category filter
+   ============================================================ */
+.filter-bar .filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============================================================
+   COMPONENT: Gauge bar in modal
+   ============================================================ */
+.gauge-bar-wrap {
+  margin-top: 8px;
+}
+.gauge-bar-bg {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--border);
+  overflow: hidden;
+}
+.gauge-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.6s ease;
+}
+.gauge-bar-fill.high { background: var(--green); }
+.gauge-bar-fill.mid { background: var(--orange); }
+.gauge-bar-fill.low { background: var(--red); }
+.gauge-label {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* ============================================================
+   COMPONENT: Team card rate
+   ============================================================ */
+.team-card-rate {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--purple);
+}
+
+/* ============================================================
+   RESPONSIVE: Dashboard charts
+   ============================================================ */
+@media (max-width: 768px) {
+  .insight-panel { grid-template-columns: repeat(2, 1fr); }
+  .summary-grid-5 { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -1054,6 +1195,7 @@ label {
 
 <!-- ===== DASHBOARD ===== -->
 <div class="section" id="section-dashboard">
+  <!-- Filter Bar -->
   <div class="filter-bar">
     <label>회차:</label>
     <select id="dashRound" onchange="renderDashboard()">
@@ -1063,16 +1205,89 @@ label {
     <select id="dashBunbu" onchange="renderDashboard()">
       <option value="">전체 본부</option>
     </select>
-    <button class="btn btn-outline btn-sm" onclick="refreshDashboard()"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:2px">refresh</span> 새로고침</button>
+    <label style="margin-left:8px">HAI:</label>
+    <select id="dashHai" onchange="renderDashboard()">
+      <option value="">전체</option>
+      <option value="비즈니스 성과">비즈니스 성과</option>
+      <option value="비즈니스 혁신">비즈니스 혁신</option>
+      <option value="고객행복">고객행복</option>
+      <option value="PWC">PWC</option>
+    </select>
+    <label style="margin-left:8px">주요 핵심지표:</label>
+    <select id="dashMajor" onchange="renderDashboard()">
+      <option value="">전체</option>
+      <option value="매출">매출</option>
+      <option value="성장">성장</option>
+      <option value="이익">이익</option>
+      <option value="솔루션&서비스">솔루션&서비스</option>
+      <option value="R&D">R&D</option>
+      <option value="AX">AX</option>
+      <option value="고객경험">고객경험</option>
+      <option value="인재밀도">인재밀도</option>
+      <option value="조직문화">조직문화</option>
+      <option value="인사체계">인사체계</option>
+      <option value="브랜드">브랜드</option>
+      <option value="신사업&신상품">신사업&신상품</option>
+    </select>
+    <label style="margin-left:8px">세부 핵심지표:</label>
+    <select id="dashDetail" onchange="renderDashboard()">
+      <option value="">전체</option>
+    </select>
+    <button class="btn btn-outline btn-sm" onclick="refreshDashboard()" style="margin-left:8px"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:2px">refresh</span> 새로고침</button>
   </div>
 
-  <div class="summary-grid">
+  <!-- Insight Panel -->
+  <div class="insight-panel" id="insightPanel">
+    <div class="insight-card">
+      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">check_circle</span></div>
+      <div class="insight-num" id="insightRate">-</div>
+      <div class="insight-label">체크인 완료율</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">speed</span></div>
+      <div class="insight-num" id="insightAvg">-</div>
+      <div class="insight-label">평균 달성률 (정량)</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">emoji_events</span></div>
+      <div class="insight-num" id="insightHigh">-</div>
+      <div class="insight-label">고성과 팀 (80%+)</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">report_problem</span></div>
+      <div class="insight-num" id="insightIssueBunbu">-</div>
+      <div class="insight-label">이슈 집중 본부</div>
+    </div>
+  </div>
+
+  <!-- Summary Cards (5 columns) -->
+  <div class="summary-grid-5">
     <div class="summary-card"><div class="summary-num" id="dTotal">-</div><div class="summary-label">전체 팀 수</div></div>
     <div class="summary-card green"><div class="summary-num" id="dDone">-</div><div class="summary-label">체크인 완료</div></div>
     <div class="summary-card orange"><div class="summary-num" id="dPending">-</div><div class="summary-label">체크인 미완료</div></div>
     <div class="summary-card red"><div class="summary-num" id="dIssue">-</div><div class="summary-label">이슈 있는 팀</div></div>
+    <div class="summary-card purple"><div class="summary-num" id="dAvgRate">-</div><div class="summary-label">평균 달성률</div></div>
   </div>
 
+  <!-- Chart Area -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-card-title"><span class="material-icons-outlined mi">bar_chart</span> 본부별 평균 달성률</div>
+      <div class="chart-container"><canvas id="chartBarBunbu"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title"><span class="material-icons-outlined mi">donut_large</span> 정성 등급 분포</div>
+      <div class="chart-container"><canvas id="chartDoughnut"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Bunbu Progress -->
+  <div class="card">
+    <div class="card-title"><span class="material-icons-outlined mi">business</span> 본부별 체크인 현황</div>
+    <div id="bunbuProgress"></div>
+  </div>
+
+  <!-- Issue Summary -->
   <div class="card">
     <div class="card-title"><span class="material-icons-outlined mi">warning</span> 이슈 현황</div>
     <div class="issue-summary">
@@ -1084,11 +1299,7 @@ label {
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title"><span class="material-icons-outlined mi">business</span> 본부별 체크인 현황</div>
-    <div id="bunbuProgress"></div>
-  </div>
-
+  <!-- Team Grid -->
   <div class="card">
     <div class="card-title"><span class="material-icons-outlined mi">groups</span> 팀별 체크인 현황</div>
     <div class="team-grid" id="teamGrid"></div>
@@ -1523,6 +1734,9 @@ async function init() {
     db.innerHTML += `<option value="${b}">${b}</option>`;
   });
 
+  // 세부 핵심지표 옵션 초기화
+  initDetailKpiOptions();
+
   // 1) 캐시된 데이터로 즉시 화면 표시
   const cached = cacheGet('rounds');
   if (cached) {
@@ -1815,6 +2029,59 @@ function resetForm() {
 // ============================================================
 // DASHBOARD
 // ============================================================
+let chartBarBunbu = null;
+let chartDoughnut = null;
+
+function parseRate(val) {
+  if (!val) return null;
+  const m = val.match(/(\d+\.?\d*)%/);
+  return m ? parseFloat(m[1]) : null;
+}
+
+function getFilteredOkrIndices(bunbu, team) {
+  const hai = document.getElementById('dashHai').value;
+  const major = document.getElementById('dashMajor').value;
+  const detail = document.getElementById('dashDetail').value;
+  const okrs = OKR_DATA[bunbu][team];
+  const indices = [];
+  okrs.forEach((okr, i) => {
+    if (hai && okr.hai !== hai) return;
+    if (major && okr.major !== major) return;
+    if (detail && okr.detailKpi !== detail) return;
+    indices.push(i);
+  });
+  return indices;
+}
+
+function calcTeamAvgRate(bunbu, team, data) {
+  const d = data[team];
+  if (!d) return null;
+  const okrs = OKR_DATA[bunbu][team];
+  const indices = getFilteredOkrIndices(bunbu, team);
+  const rates = [];
+  indices.forEach(i => {
+    if (okrs[i].type === '정량' && d.okrs[i]) {
+      const r = parseRate(d.okrs[i].checkin);
+      if (r !== null) rates.push(r);
+    }
+  });
+  return rates.length ? rates.reduce((a,b)=>a+b,0)/rates.length : null;
+}
+
+function initDetailKpiOptions() {
+  const allDetails = new Set();
+  Object.values(OKR_DATA).forEach(teams => {
+    Object.values(teams).forEach(okrs => {
+      okrs.forEach(okr => { if (okr.detailKpi) allDetails.add(okr.detailKpi); });
+    });
+  });
+  const sel = document.getElementById('dashDetail');
+  sel.innerHTML = '<option value="">전체</option>';
+  [...allDetails].sort().forEach(v => {
+    sel.innerHTML += `<option value="${esc(v)}">${esc(v)}</option>`;
+  });
+}
+
 async function refreshDashboard() {
   showLoading(true);
   try {
@@ -1845,11 +2112,59 @@ function renderDashboard() {
     const d=data[t.team]; return d&&d.okrs.some(k=>k.issue&&k.issue!=='없음');
   }).length;
 
+  // Summary Cards
   document.getElementById('dTotal').textContent   = allTeams.length;
   document.getElementById('dDone').textContent    = done;
   document.getElementById('dPending').textContent = allTeams.length-done;
   document.getElementById('dIssue').textContent   = issues;
 
+  // Average rate across all teams
+  const allRates = [];
+  allTeams.forEach(({bunbu, team}) => {
+    const r = calcTeamAvgRate(bunbu, team, data);
+    if (r !== null) allRates.push(r);
+  });
+  const globalAvg = allRates.length ? Math.round(allRates.reduce((a,b)=>a+b,0)/allRates.length) : 0;
+  document.getElementById('dAvgRate').textContent = allRates.length ? globalAvg + '%' : '-';
+
+  // Insight Panel
+  const completionRate = allTeams.length ? Math.round(done / allTeams.length * 100) : 0;
+  document.getElementById('insightRate').textContent = allTeams.length ? completionRate + '%' : '-';
+  document.getElementById('insightAvg').textContent = allRates.length ? globalAvg + '%' : '-';
+
+  // High performance teams (avg >= 80%)
+  const highTeams = allTeams.filter(({bunbu, team}) => {
+    const r = calcTeamAvgRate(bunbu, team, data);
+    return r !== null && r >= 80;
+  }).length;
+  document.getElementById('insightHigh').textContent = highTeams + '개';
+
+  // Issue concentrated bunbu
+  const bunbuIssueCount = {};
+  allTeams.forEach(({bunbu, team}) => {
+    const d = data[team];
+    if (!d) return;
+    d.okrs.forEach(k => {
+      if (k.issue && k.issue !== '없음') {
+        bunbuIssueCount[bunbu] = (bunbuIssueCount[bunbu] || 0) + 1;
+      }
+    });
+  });
+  let topIssueBunbu = '-';
+  let topIssueCount = 0;
+  Object.entries(bunbuIssueCount).forEach(([b, c]) => {
+    if (c > topIssueCount) { topIssueBunbu = b; topIssueCount = c; }
+  });
+  const issueBunbuEl = document.getElementById('insightIssueBunbu');
+  if (topIssueCount > 0) {
+    issueBunbuEl.textContent = topIssueBunbu.replace('본부','').replace('실','');
+    issueBunbuEl.style.fontSize = '18px';
+  } else {
+    issueBunbuEl.textContent = '-';
+    issueBunbuEl.style.fontSize = '';
+  }
+
+  // Issue counts
   const ic={목표조정:0,신규목표:0,목표폐기:0,지원요청:0,기타:0};
   allTeams.forEach(t=>{
     const d=data[t.team]; if(!d) return;
@@ -1859,7 +2174,7 @@ function renderDashboard() {
     document.getElementById('ic'+(i+1)).textContent=ic[k];
   });
 
-  // 본부별 진행률
+  // Bunbu progress
   const bunbuList = filter ? [filter] : Object.keys(OKR_DATA);
   const prog = document.getElementById('bunbuProgress');
   prog.innerHTML = '';
@@ -1876,7 +2191,11 @@ function renderDashboard() {
       </div>`;
   });
 
-  // 팀 카드
+  // ---- Charts ----
+  renderBarChart(bunbuList, data);
+  renderDoughnutChart(allTeams, data);
+
+  // Team cards
   const grid=document.getElementById('teamGrid');
   grid.innerHTML='';
   if (!allTeams.length) {
@@ -1886,6 +2205,8 @@ function renderDashboard() {
     const d=data[team];
     const iss=d?d.okrs.filter(k=>k.issue&&k.issue!=='없음'):[];
     const tags=[...new Set(iss.map(k=>k.issue))].map(v=>`<span class="issue-tag tag-${v}">${v}</span>`).join('');
+    const avg = calcTeamAvgRate(bunbu, team, data);
+    const rateHtml = avg !== null ? `<div class="team-card-rate">달성률 ${Math.round(avg)}%</div>` : '';
     grid.innerHTML+=`
       <div class="team-card ${d?'done':'pending'}" onclick="showTeamDetail('${esc(bunbu)}','${esc(team)}')">
         <div class="team-card-name">${team}</div>
@@ -1894,9 +2215,111 @@ function renderDashboard() {
           <span class="sdot ${d?'g':'gr'}"></span>
           <span class="status-text">${d?'<span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;margin-right:2px">check_circle</span>완료':'<span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;margin-right:2px">hourglass_empty</span>미완료'}</span>
         </div>
+        ${rateHtml}
         ${d?`<div style="font-size:11px;color:#94a3b8;margin-top:4px">${d.submittedAt}</div>`:''}
         ${tags?`<div class="issue-tags">${tags}</div>`:''}
       </div>`;
+  });
+}
+
+// ============================================================
+// CHARTS
+// ============================================================
+function renderBarChart(bunbuList, data) {
+  const labels = [];
+  const values = [];
+  const colors = [];
+  const palette = ['#B91C1C','#DC2626','#EF4444','#f97316','#f59e0b','#22c55e','#8b5cf6'];
+  bunbuList.forEach((b, idx) => {
+    const teams = Object.keys(OKR_DATA[b]);
+    const rates = [];
+    teams.forEach(t => {
+      const r = calcTeamAvgRate(b, t, data);
+      if (r !== null) rates.push(r);
+    });
+    const avg = rates.length ? Math.round(rates.reduce((a,c)=>a+c,0)/rates.length) : 0;
+    labels.push(b.replace('본부','').replace('실',''));
+    values.push(avg);
+    colors.push(palette[idx % palette.length]);
+  });
+
+  if (chartBarBunbu) { chartBarBunbu.destroy(); chartBarBunbu = null; }
+  const ctx = document.getElementById('chartBarBunbu');
+  if (!ctx) return;
+  chartBarBunbu = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: '평균 달성률 (%)',
+        data: values,
+        backgroundColor: colors.map(c => c + 'CC'),
+        borderColor: colors,
+        borderWidth: 1,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.parsed.x + '%' } }
+      },
+      scales: {
+        x: { beginAtZero: true, max: 150, ticks: { callback: v => v + '%' }, grid: { color: '#f1f5f9' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderDoughnutChart(allTeams, data) {
+  const dist = { Arete: 0, EE: 0, ME: 0, NI: 0, '체크인 보류': 0 };
+  allTeams.forEach(({bunbu, team}) => {
+    const d = data[team];
+    if (!d) return;
+    const okrs = OKR_DATA[bunbu][team];
+    const indices = getFilteredOkrIndices(bunbu, team);
+    indices.forEach(i => {
+      if (okrs[i].type === '정성' && d.okrs[i]) {
+        const v = d.okrs[i].checkin;
+        if (dist[v] !== undefined) dist[v]++;
+      }
+    });
+  });
+
+  if (chartDoughnut) { chartDoughnut.destroy(); chartDoughnut = null; }
+  const ctx = document.getElementById('chartDoughnut');
+  if (!ctx) return;
+  const labels = Object.keys(dist);
+  const values = Object.values(dist);
+  const bgColors = ['#fef9c3','#dcfce7','#dbeafe','#fee2e2','#f1f5f9'];
+  const bdColors = ['#fde68a','#bbf7d0','#93c5fd','#fca5a5','#cbd5e1'];
+
+  chartDoughnut = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: bgColors,
+        borderColor: bdColors,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { padding: 16, usePointStyle: true, pointStyle: 'circle', font: { size: 12 } }
+        },
+        tooltip: { callbacks: { label: ctx => ctx.label + ': ' + ctx.parsed + '건' } }
+      }
+    }
   });
 }
 
@@ -1915,6 +2338,26 @@ function showTeamDetail(bunbu, team) {
     okrs.forEach((okr,i)=>{
       const r=d.okrs[i]||{};
       const ib=r.issue&&r.issue!=='없음'?`<span class="issue-tag tag-${r.issue}">${r.issue}</span>`:'';
+
+      // Gauge bar for quantitative OKRs
+      let gaugeHtml = '';
+      if (okr.type === '정량' && r.checkin) {
+        const rate = parseRate(r.checkin);
+        if (rate !== null) {
+          const cls = rate >= 80 ? 'high' : rate >= 50 ? 'mid' : 'low';
+          const w = Math.min(rate, 150);
+          gaugeHtml = `<div class="gauge-bar-wrap"><div class="gauge-bar-bg"><div class="gauge-bar-fill ${cls}" style="width:${w / 1.5}%"></div></div><div class="gauge-label" style="color:${rate>=80?'var(--green)':rate>=50?'var(--orange)':'var(--red)'}">${rate}%</div></div>`;
+        }
+      }
+
+      // Grade badge for qualitative OKRs
+      let gradeBadge = '';
+      if (okr.type === '정성' && r.checkin) {
+        const gradeMap = { 'Arete': 'arete', 'EE': 'ee', 'ME': 'me', 'NI': 'ni', '체크인 보류': 'hold' };
+        const gcls = gradeMap[r.checkin] || '';
+        if (gcls) gradeBadge = `<div style="margin-top:8px"><span class="gl ${gcls}" style="font-size:13px;padding:6px 16px">${esc(r.checkin)}</span></div>`;
+      }
+
       html+=`
         <div class="okr-dr">
           ${(okr.hai||okr.major||okr.detailKpi)?`<div class="okr-categories">${okr.hai?`<span class="cat-badge hai">${esc(okr.hai)}</span>`:''}${okr.major?`<span class="cat-badge major">${esc(okr.major)}</span>`:''}${okr.detailKpi?`<span class="cat-badge detail-kpi">${esc(okr.detailKpi)}</span>`:''}</div>`:''}
@@ -1928,6 +2371,8 @@ function showTeamDetail(bunbu, team) {
             ${r.comment?`<div class="di" style="grid-column:span 2"><span>코멘트</span><div class="dv">${esc(r.comment)}</div></div>`:''}
             ${r.issueText?`<div class="di" style="grid-column:span 2"><span>상세 이슈</span><div class="dv">${esc(r.issueText)}</div></div>`:''}
           </div>
+          ${gaugeHtml}
+          ${gradeBadge}
         </div>`;
     });
   }
