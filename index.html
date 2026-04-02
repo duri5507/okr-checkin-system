@@ -82,22 +82,21 @@ textarea:focus-visible {
   z-index: 100;
   height: 56px;
   padding: 0 40px;
-  background: #ffffff;
-  color: var(--ink);
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: none;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
 .header-title {
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.5px;
-  color: var(--ink);
+  color: white;
 }
 .header-title span {
   margin-left: 8px;
   font-size: 12px;
   font-weight: 400;
-  color: var(--muted);
+  color: rgba(255,255,255,.7);
 }
 .header-right {
   display: flex;
@@ -116,15 +115,16 @@ textarea:focus-visible {
 .conn-dot.err { background: var(--red); }
 .conn-label {
   font-size: 12px;
-  color: var(--muted);
+  color: rgba(255,255,255,.7);
 }
 .admin-btn {
   padding: 8px 16px;
-  border: 1.5px solid #e5e7eb;
+  border: 1px solid rgba(255,255,255,.3);
   border-radius: 8px;
-  background: transparent;
+  background: rgba(255,255,255,.1);
   font-size: 12px;
   font-weight: 600;
+  color: white;
   color: var(--ink);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -139,32 +139,32 @@ textarea:focus-visible {
    ============================================================ */
 .nav {
   display: flex;
-  padding: 8px 40px;
-  background: transparent;
-  border-bottom: none;
-  gap: 4px;
+  padding: 0 40px;
+  background: white;
+  border-bottom: 1px solid #f3f4f6;
+  gap: 0;
 }
 .nav-btn {
-  padding: 10px 20px;
-  margin-bottom: 0;
+  padding: 14px 20px;
+  margin-bottom: -2px;
   border: none;
-  border-bottom: none;
-  border-radius: 8px;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
   background: none;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .nav-btn:hover {
   color: var(--ink);
-  background: rgba(0,0,0,.03);
 }
 .nav-btn.active {
-  color: white;
-  background: var(--ink);
-  border-bottom-color: transparent;
+  color: var(--ink);
+  font-weight: 700;
+  border-bottom-color: var(--primary);
+  background: none;
 }
 
 /* ============================================================
@@ -358,12 +358,13 @@ label {
   margin-bottom: 20px;
 }
 .guide-box {
-  padding: 16px 20px;
+  padding: 0 4px;
   border: none;
-  border-radius: 12px;
-  background: var(--bg);
-  font-size: 13px;
+  border-radius: 0;
+  background: transparent;
+  font-size: 12px;
   line-height: 1.7;
+  color: var(--muted);
 }
 .guide-box h4 {
   display: flex;
@@ -382,11 +383,12 @@ label {
   margin-top: 8px;
 }
 .gl {
-  padding: 4px 8px;
-  border-radius: 8px;
+  padding: 3px 0;
+  border-radius: 0;
+  background: transparent !important;
   font-size: 12px;
   font-weight: 700;
-  text-align: center;
+  text-align: left;
 }
 .gl.arete { background: #fef9c3; color: #713f12; }
 .gl.ee { background: #dcfce7; color: #14532d; }
@@ -420,9 +422,9 @@ label {
   box-shadow: var(--shadow-md);
 }
 .kpi-card-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid #f3f4f6;
-  background: white;
+  padding: 20px 24px 16px;
+  border-bottom: none;
+  background: transparent;
 }
 .kpi-header-top {
   display: flex;
@@ -431,12 +433,12 @@ label {
   margin-bottom: 8px;
 }
 .okr-num {
-  padding: 4px 12px;
-  border-radius: 8px;
-  background: var(--secondary);
-  font-size: 11px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 13px;
   font-weight: 800;
-  color: white;
+  color: var(--primary);
   white-space: nowrap;
   letter-spacing: 0.3px;
 }
@@ -1171,7 +1173,7 @@ label {
 <!-- Header -->
 <div class="header">
   <div style="display:flex;align-items:center;gap:12px;">
-    <img id="companyLogo" src="logo.png" alt="HUNET" style="height:28px;">
+    <img id="companyLogo" src="logo.png" alt="HUNET" style="height:28px;filter:brightness(0) invert(1);">
     <div class="header-title">조직 성과 체크인</div>
   </div>
   <div class="header-right">
