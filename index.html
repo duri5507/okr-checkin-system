@@ -1206,7 +1206,7 @@ label {
       <option value="">전체 본부</option>
     </select>
     <label style="margin-left:8px">아레테 경영지수(HAI):</label>
-    <select id="dashHai" onchange="renderDashboard()">
+    <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()">
       <option value="">전체</option>
       <option value="비즈니스 성과">비즈니스 성과</option>
       <option value="비즈니스 혁신">비즈니스 혁신</option>
@@ -1216,18 +1216,6 @@ label {
     <label style="margin-left:8px">주요 핵심지표:</label>
     <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()">
       <option value="">전체</option>
-      <option value="매출">매출</option>
-      <option value="성장">성장</option>
-      <option value="이익">이익</option>
-      <option value="솔루션&서비스">솔루션&서비스</option>
-      <option value="R&D">R&D</option>
-      <option value="AX">AX</option>
-      <option value="고객경험">고객경험</option>
-      <option value="인재밀도">인재밀도</option>
-      <option value="조직문화">조직문화</option>
-      <option value="인사체계">인사체계</option>
-      <option value="브랜드">브랜드</option>
-      <option value="신사업&신상품">신사업&신상품</option>
     </select>
     <label style="margin-left:8px">세부 핵심지표:</label>
     <select id="dashDetail" onchange="renderDashboard()">
@@ -2091,16 +2079,39 @@ function calcTeamAvgRate(bunbu, team, data) {
 }
 
 function initDetailKpiOptions() {
+  updateMajorOptions();
   updateDetailKpiOptions();
 }
 
+function updateMajorOptions() {
+  const haiFilter = document.getElementById('dashHai').value;
+  const allMajors = new Set();
+  Object.values(OKR_DATA).forEach(teams => {
+    Object.values(teams).forEach(okrs => {
+      okrs.forEach(okr => {
+        if (okr.major && (!haiFilter || okr.hai === haiFilter)) allMajors.add(okr.major);
+      });
+    });
+  });
+  const sel = document.getElementById('dashMajor');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">전체</option>';
+  [...allMajors].sort().forEach(v => {
+    sel.innerHTML += `<option value="${esc(v)}">${esc(v)}</option>`;
+  });
+  if (prev && allMajors.has(prev)) sel.value = prev;
+}
+
 function updateDetailKpiOptions() {
+  const haiFilter = document.getElementById('dashHai').value;
   const majorFilter = document.getElementById('dashMajor').value;
   const allDetails = new Set();
   Object.values(OKR_DATA).forEach(teams => {
     Object.values(teams).forEach(okrs => {
       okrs.forEach(okr => {
-        if (okr.detailKpi && (!majorFilter || okr.major === majorFilter)) allDetails.add(okr.detailKpi);
+        if (okr.detailKpi
+          && (!haiFilter || okr.hai === haiFilter)
+          && (!majorFilter || okr.major === majorFilter)) allDetails.add(okr.detailKpi);
       });
     });
   });
