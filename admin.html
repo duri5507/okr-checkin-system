@@ -7,6 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>조직 성과 체크인 시스템 - 관리자</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 :root {
   --primary: #B91C1C;
@@ -301,6 +303,8 @@ label{display:block;margin-bottom:8px;font-size:12px;font-weight:600;color:var(-
     <label style="margin-left:8px">세부 핵심지표:</label>
     <select id="dashDetail" onchange="renderDashboard()"><option value="">전체</option></select>
     <button class="btn btn-outline btn-sm" onclick="refreshDashboard()" style="margin-left:8px"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:2px">refresh</span> 새로고침</button>
+    <button class="btn btn-outline btn-sm" onclick="exportExcel()" style="margin-left:8px"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:2px">download</span> 엑셀 다운로드</button>
+    <button class="btn btn-outline btn-sm" onclick="exportPPT()" style="margin-left:8px"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:2px">slideshow</span> PPT 다운로드</button>
   </div>
 
   <div class="insight-panel" id="insightPanel">
@@ -884,11 +888,53 @@ function renderRoundList() {
           <button class="toggle-btn ${r.active ? 'on' : 'off'}" onclick="doToggleRound('${esc(r.name)}',${!r.active})">
             ${r.active ? '<span class="material-icons-outlined" style="font-size:12px;vertical-align:middle;margin-right:2px">check_circle</span>활성' : '<span class="material-icons-outlined" style="font-size:12px;vertical-align:middle;margin-right:2px">pause_circle</span>비활성'}
           </button>
+          <button class="btn btn-outline btn-sm" onclick="showEditPeriod('${esc(r.name)}')">기간 수정</button>
           <button class="btn btn-danger btn-sm" onclick="doDeleteRound('${esc(r.name)}')">삭제</button>
+        </div>
+        <div id="editPeriod_${esc(r.name)}" style="display:none;margin-top:8px;padding:8px 12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0;">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <label style="font-size:12px;color:#64748b;">시작일</label>
+            <input type="date" id="editStart_${esc(r.name)}" style="padding:4px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;">
+            <label style="font-size:12px;color:#64748b;">종료일</label>
+            <input type="date" id="editEnd_${esc(r.name)}" style="padding:4px 8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;">
+            <button class="btn btn-primary btn-sm" onclick="doEditPeriod('${esc(r.name)}')">저장</button>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('editPeriod_${esc(r.name)}').style.display='none'">취소</button>
+          </div>
         </div>
       </div>`;
   });
   list.innerHTML = html;
+}
+
+function showEditPeriod(name) {
+  const el = document.getElementById('editPeriod_' + name);
+  if (!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  // pre-fill from existing period
+  const round = state.rounds.find(r => r.name === name);
+  if (round && round.period) {
+    const parts = round.period.split(' ~ ');
+    if (parts[0]) document.getElementById('editStart_' + name).value = parts[0].trim();
+    if (parts[1]) document.getElementById('editEnd_' + name).value = parts[1].trim();
+  }
+}
+
+async function doEditPeriod(name) {
+  const start = document.getElementById('editStart_' + name).value;
+  const end = document.getElementById('editEnd_' + name).value;
+  if (start && end && start > end) { showToast('시작일이 종료일보다 늦습니다.', 'error'); return; }
+  const period = (start && end) ? start + ' ~ ' + end : start || end || '';
+  try {
+    const res = await fetch(SB_URL + '/rounds?name=eq.' + encodeURIComponent(name), {
+      method: 'PATCH', headers: SB_HDR,
+      body: JSON.stringify({period})
+    });
+    if (!res.ok) throw new Error('수정 실패');
+    await loadRounds();
+    showToast('기간이 수정되었습니다.', 'success');
+  } catch(e) {
+    showToast('기간 수정 실패: ' + e.message, 'error');
+  }
 }
 
 function renderDashRounds() {
@@ -1292,6 +1338,159 @@ function renderDoughnutChart(allTeams, data) {
 }
 
 // ============================================================
+// EXPORT (Excel / PPT)
+// ============================================================
+function exportExcel() {
+  const round = document.getElementById('dashRound').value;
+  if (!round) { showToast('회차를 먼저 선택해주세요.', 'error'); return; }
+  const filter = document.getElementById('dashBunbu').value;
+  const data = state.checkins;
+  const rows = [];
+  Object.entries(OKR_DATA).forEach(([bunbu, teams]) => {
+    if (filter && bunbu !== filter) return;
+    Object.entries(teams).forEach(([team, okrs]) => {
+      const indices = getFilteredOkrIndices(bunbu, team);
+      const d = data[team];
+      indices.forEach(i => {
+        const okr = okrs[i];
+        const r = d && d.okrs[i] ? d.okrs[i] : {};
+        rows.push({
+          '본부': bunbu,
+          '팀': team,
+          'HAI': okr.hai || '',
+          '주요지표': okr.major || '',
+          '세부지표': okr.detailKpi || '',
+          '유형': okr.type || '',
+          '목표': okr.goal || '',
+          '핵심성과지표': okr.kr || '',
+          '성과체크인': r.checkin || '',
+          '코멘트': r.comment || '',
+          '이슈': r.issue || '',
+          '이슈상세': r.issueText || ''
+        });
+      });
+    });
+  });
+  if (!rows.length) { showToast('다운로드할 데이터가 없습니다.', 'error'); return; }
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '체크인결과');
+  const today = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `체크인결과_${round}_${today}.xlsx`);
+  showToast('엑셀 파일이 다운로드되었습니다.', 'success');
+}
+
+function exportPPT() {
+  const round = document.getElementById('dashRound').value;
+  if (!round) { showToast('회차를 먼저 선택해주세요.', 'error'); return; }
+  const filter = document.getElementById('dashBunbu').value;
+  const data = state.checkins;
+  const today = new Date().toISOString().slice(0,10);
+
+  const pptx = new PptxGenJS();
+  pptx.defineLayout({ name:'A4', width:13.33, height:7.5 });
+  pptx.layout = 'A4';
+
+  // Slide 1: Title
+  let slide = pptx.addSlide();
+  slide.addText('조직 성과 체크인 결과', { x:1, y:2.0, w:11, fontSize:32, bold:true, color:'B91C1C', align:'center' });
+  slide.addText(`${round}  |  ${today}`, { x:1, y:3.2, w:11, fontSize:18, color:'64748b', align:'center' });
+
+  // Collect data
+  const allTeams = [];
+  Object.entries(OKR_DATA).forEach(([b, teams]) => {
+    if (filter && b !== filter) return;
+    Object.keys(teams).forEach(t => {
+      const indices = getFilteredOkrIndices(b, t);
+      if (indices.length > 0) allTeams.push({bunbu:b, team:t});
+    });
+  });
+  const done = allTeams.filter(t => data[t.team]).length;
+  const allRates = [];
+  allTeams.forEach(({bunbu, team}) => {
+    const r = calcTeamAvgRate(bunbu, team, data);
+    if (r !== null) allRates.push(r);
+  });
+  const globalAvg = allRates.length ? Math.round(allRates.reduce((a,b)=>a+b,0)/allRates.length) : 0;
+
+  // Slide 2: Summary
+  slide = pptx.addSlide();
+  slide.addText('요약', { x:0.5, y:0.3, w:12, fontSize:24, bold:true, color:'B91C1C' });
+  const summaryRows = [
+    [{ text:'항목', options:{bold:true, fill:'B91C1C', color:'FFFFFF'} }, { text:'값', options:{bold:true, fill:'B91C1C', color:'FFFFFF'} }],
+    ['전체 팀 수', String(allTeams.length)],
+    ['체크인 완료', String(done)],
+    ['미완료', String(allTeams.length - done)],
+    ['평균 달성률', allRates.length ? globalAvg + '%' : '-']
+  ];
+  slide.addTable(summaryRows, { x:1, y:1.2, w:11, fontSize:14, border:{pt:0.5, color:'E2E8F0'}, colW:[5.5, 5.5], rowH:0.5 });
+
+  // Slide 3: Per-bunbu completion table
+  const rawBunbuList = filter ? [filter] : Object.keys(OKR_DATA);
+  const bunbuRows = [
+    [
+      { text:'본부', options:{bold:true, fill:'B91C1C', color:'FFFFFF'} },
+      { text:'팀 수', options:{bold:true, fill:'B91C1C', color:'FFFFFF'} },
+      { text:'완료', options:{bold:true, fill:'B91C1C', color:'FFFFFF'} },
+      { text:'완료율', options:{bold:true, fill:'B91C1C', color:'FFFFFF'} },
+      { text:'평균 달성률', options:{bold:true, fill:'B91C1C', color:'FFFFFF'} }
+    ]
+  ];
+  rawBunbuList.forEach(b => {
+    const teams = Object.keys(OKR_DATA[b]).filter(t => getFilteredOkrIndices(b, t).length > 0);
+    if (!teams.length) return;
+    const dc = teams.filter(t => data[t]).length;
+    const pct = Math.round(dc / teams.length * 100);
+    const rates = [];
+    teams.forEach(t => { const r = calcTeamAvgRate(b, t, data); if (r !== null) rates.push(r); });
+    const avg = rates.length ? Math.round(rates.reduce((a,v)=>a+v,0)/rates.length) + '%' : '-';
+    bunbuRows.push([b, String(teams.length), String(dc), pct + '%', avg]);
+  });
+  slide = pptx.addSlide();
+  slide.addText('본부별 달성률', { x:0.5, y:0.3, w:12, fontSize:24, bold:true, color:'B91C1C' });
+  slide.addTable(bunbuRows, { x:0.5, y:1.2, w:12, fontSize:12, border:{pt:0.5, color:'E2E8F0'}, colW:[3.5, 1.5, 1.5, 2, 3.5], rowH:0.45 });
+
+  // Slide 4+: Per-bunbu team detail
+  rawBunbuList.forEach(b => {
+    const teams = Object.keys(OKR_DATA[b]).filter(t => getFilteredOkrIndices(b, t).length > 0);
+    if (!teams.length) return;
+    slide = pptx.addSlide();
+    slide.addText(b, { x:0.5, y:0.3, w:12, fontSize:22, bold:true, color:'B91C1C' });
+    const tblRows = [
+      [
+        { text:'팀', options:{bold:true, fill:'B91C1C', color:'FFFFFF', fontSize:10} },
+        { text:'목표', options:{bold:true, fill:'B91C1C', color:'FFFFFF', fontSize:10} },
+        { text:'유형', options:{bold:true, fill:'B91C1C', color:'FFFFFF', fontSize:10} },
+        { text:'핵심성과지표', options:{bold:true, fill:'B91C1C', color:'FFFFFF', fontSize:10} },
+        { text:'체크인', options:{bold:true, fill:'B91C1C', color:'FFFFFF', fontSize:10} },
+        { text:'이슈', options:{bold:true, fill:'B91C1C', color:'FFFFFF', fontSize:10} }
+      ]
+    ];
+    teams.forEach(t => {
+      const okrs = OKR_DATA[b][t];
+      const d = data[t];
+      const indices = getFilteredOkrIndices(b, t);
+      indices.forEach(i => {
+        const okr = okrs[i];
+        const r = d && d.okrs[i] ? d.okrs[i] : {};
+        tblRows.push([
+          { text: t, options:{fontSize:9} },
+          { text: okr.goal || '', options:{fontSize:9} },
+          { text: okr.type || '', options:{fontSize:9} },
+          { text: okr.kr || '', options:{fontSize:9} },
+          { text: r.checkin || '-', options:{fontSize:9} },
+          { text: r.issue || '-', options:{fontSize:9} }
+        ]);
+      });
+    });
+    slide.addTable(tblRows, { x:0.3, y:1.0, w:12.7, fontSize:10, border:{pt:0.5, color:'E2E8F0'}, colW:[1.8, 3.0, 0.8, 3.0, 2.0, 2.1], rowH:0.35, autoPage:true });
+  });
+
+  pptx.writeFile({ fileName: `체크인결과_${round}_${today}.pptx` });
+  showToast('PPT 파일이 다운로드되었습니다.', 'success');
+}
+
+// ============================================================
 // TEAM DETAIL
 // ============================================================
 function showTeamDetail(bunbu, team) {
@@ -1327,7 +1526,7 @@ function showTeamDetail(bunbu, team) {
       html+=`
         <div class="okr-dr">
           ${(okr.hai||okr.major||okr.detailKpi)?`<div class="okr-categories">${okr.hai?`<span class="cat-badge hai">${esc(okr.hai)}</span>`:''}${okr.major?`<span class="cat-badge major">${esc(okr.major)}</span>`:''}${okr.detailKpi?`<span class="cat-badge detail-kpi">${esc(okr.detailKpi)}</span>`:''}</div>`:''}
-          <div class="okr-dh"><span class="okr-num">OKR ${i+1}</span><span class="badge ${okr.type==='정량'?'q':'s'}">${okr.type}</span>${ib}</div>
+          <div class="okr-dh"><span class="okr-num">${i+1}. 목표(Objective)</span><span class="badge ${okr.type==='정량'?'q':'s'}">${okr.type}</span>${ib}</div>
           <div class="okr-obj">${esc(okr.goal)}</div>
           <div class="okr-kr"><span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;margin-right:4px">push_pin</span>${esc(okr.kr)}</div>
           ${okr.detail?`<div class="okr-krd"><span class="material-icons-outlined" style="font-size:12px;vertical-align:middle;margin-right:4px">chat</span>${esc(okr.detail)}</div>`:''}

@@ -1882,6 +1882,11 @@ function selectRound(name) {
   document.getElementById('selBunbu').value = '';
   document.getElementById('selTeam').innerHTML = '<option value="">-- 팀 선택 --</option>';
   document.getElementById('prevCheckinNotice').style.display = 'none';
+  if (window.innerWidth <= 768) {
+    setTimeout(() => {
+      document.getElementById('teamSelectCard').scrollIntoView({behavior:'smooth', block:'start'});
+    }, 100);
+  }
 }
 
 // ============================================================
@@ -2512,7 +2517,7 @@ function showTeamDetail(bunbu, team) {
       html+=`
         <div class="okr-dr">
           ${(okr.hai||okr.major||okr.detailKpi)?`<div class="okr-categories">${okr.hai?`<span class="cat-badge hai">${esc(okr.hai)}</span>`:''}${okr.major?`<span class="cat-badge major">${esc(okr.major)}</span>`:''}${okr.detailKpi?`<span class="cat-badge detail-kpi">${esc(okr.detailKpi)}</span>`:''}</div>`:''}
-          <div class="okr-dh"><span class="okr-num">OKR ${i+1}</span><span class="badge ${okr.type==='정량'?'q':'s'}">${okr.type}</span>${ib}</div>
+          <div class="okr-dh"><span class="okr-num">${i+1}. 목표(Objective)</span><span class="badge ${okr.type==='정량'?'q':'s'}">${okr.type}</span>${ib}</div>
           <div class="okr-obj">${esc(okr.goal)}</div>
           <div class="okr-kr"><span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;margin-right:4px">push_pin</span>${esc(okr.kr)}</div>
           ${okr.detail?`<div class="okr-krd"><span class="material-icons-outlined" style="font-size:12px;vertical-align:middle;margin-right:4px">chat</span>${esc(okr.detail)}</div>`:''}
