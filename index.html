@@ -143,6 +143,9 @@ textarea:focus-visible {
   background: white;
   border-bottom: 1px solid #f3f4f6;
   gap: 0;
+  position: sticky;
+  top: 56px;
+  z-index: 99;
 }
 .nav-btn {
   padding: 14px 20px;
@@ -189,7 +192,7 @@ textarea:focus-visible {
 }
 .checkin-sidebar {
   position: sticky;
-  top: 80px;
+  top: 110px;
 }
 .checkin-main { min-width: 0; }
 
@@ -231,8 +234,8 @@ textarea:focus-visible {
 .summary-card {
   padding: 20px;
   border: none;
-  border-left: 3px solid var(--accent);
-  border-radius: 12px;
+  border-left: none;
+  border-radius: 14px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
@@ -240,9 +243,10 @@ textarea:focus-visible {
 .summary-card:hover {
   box-shadow: var(--shadow-md);
 }
-.summary-card.green { border-left-color: var(--green); }
-.summary-card.orange { border-left-color: var(--orange); }
-.summary-card.red { border-left-color: var(--red); }
+.summary-card.green .summary-icon { color: var(--green); }
+.summary-card.orange .summary-icon { color: var(--orange); }
+.summary-card.red .summary-icon { color: var(--red); }
+.summary-icon { font-size: 28px; margin-bottom: 8px; color: var(--accent); }
 .summary-num {
   font-size: 28px;
   font-weight: 800;
@@ -358,13 +362,13 @@ label {
   margin-bottom: 20px;
 }
 .guide-box {
-  padding: 0 4px;
+  padding: 16px 20px;
   border: none;
-  border-radius: 0;
-  background: transparent;
+  border-radius: 14px;
+  background: #fafafa;
   font-size: 12px;
   line-height: 1.7;
-  color: var(--muted);
+  color: var(--ink);
 }
 .guide-box h4 {
   display: flex;
@@ -423,8 +427,8 @@ label {
 }
 .kpi-card-header {
   padding: 20px 24px 16px;
-  border-bottom: none;
-  background: transparent;
+  border-bottom: 1px solid #f3f4f6;
+  background: #fafafa;
 }
 .kpi-header-top {
   display: flex;
@@ -1317,11 +1321,11 @@ label {
 
   <!-- Summary Cards (5 columns) -->
   <div class="summary-grid-5">
-    <div class="summary-card"><div class="summary-num" id="dTotal">-</div><div class="summary-label">전체 팀 수</div></div>
-    <div class="summary-card green"><div class="summary-num" id="dDone">-</div><div class="summary-label">체크인 완료</div></div>
-    <div class="summary-card orange"><div class="summary-num" id="dPending">-</div><div class="summary-label">체크인 미완료</div></div>
-    <div class="summary-card red"><div class="summary-num" id="dIssue">-</div><div class="summary-label">이슈 있는 팀</div></div>
-    <div class="summary-card purple"><div class="summary-num" id="dAvgRate">-</div><div class="summary-label">평균 달성률</div></div>
+    <div class="summary-card"><span class="material-icons-outlined summary-icon">groups</span><div class="summary-num" id="dTotal">-</div><div class="summary-label">전체 팀 수</div></div>
+    <div class="summary-card green"><span class="material-icons-outlined summary-icon">check_circle</span><div class="summary-num" id="dDone">-</div><div class="summary-label">체크인 완료</div></div>
+    <div class="summary-card orange"><span class="material-icons-outlined summary-icon">hourglass_empty</span><div class="summary-num" id="dPending">-</div><div class="summary-label">체크인 미완료</div></div>
+    <div class="summary-card red"><span class="material-icons-outlined summary-icon">warning</span><div class="summary-num" id="dIssue">-</div><div class="summary-label">이슈 있는 팀</div></div>
+    <div class="summary-card purple"><span class="material-icons-outlined summary-icon" style="color:var(--purple)">trending_up</span><div class="summary-num" id="dAvgRate">-</div><div class="summary-label">평균 달성률</div></div>
   </div>
 
   <!-- Chart Area -->
