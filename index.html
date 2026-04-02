@@ -2060,6 +2060,8 @@ async function submitCheckin() {
   okrs.forEach((okr, i) => {
     const el = document.getElementById('ci_'+i);
     if (el) el.style.borderColor = '';
+    const cmtEl = document.getElementById('comment_'+i);
+    if (cmtEl) cmtEl.style.borderColor = '';
     const it = document.getElementById('detText_'+i);
     if (it) it.style.borderColor = '';
   });
@@ -2076,6 +2078,14 @@ async function submitCheckin() {
     if (!ci) {
       errorCount++;
       if (el) { el.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=el; }
+    }
+    // 코멘트 필수
+    const cmtEl = document.getElementById('comment_'+i);
+    if (!cmt) {
+      errorCount++;
+      if (cmtEl) { cmtEl.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=cmtEl; }
+    } else {
+      if (cmtEl) cmtEl.style.borderColor='';
     }
     // 이슈 선택 시 상세 필수
     if (iss!=='없음' && !det) {
@@ -2311,12 +2321,15 @@ function renderDashboard() {
     document.getElementById('ic'+(i+1)).textContent=ic[k];
   });
 
-  // Bunbu progress
-  const bunbuList = filter ? [filter] : Object.keys(OKR_DATA);
+  // Bunbu progress (카테고리 필터 반영 - 해당 OKR이 있는 팀만)
+  const rawBunbuList = filter ? [filter] : Object.keys(OKR_DATA);
+  const bunbuList = [];
   const prog = document.getElementById('bunbuProgress');
   prog.innerHTML = '';
-  bunbuList.forEach(b=>{
-    const teams=Object.keys(OKR_DATA[b]);
+  rawBunbuList.forEach(b=>{
+    const teams=Object.keys(OKR_DATA[b]).filter(t => getFilteredOkrIndices(b, t).length > 0);
+    if (teams.length === 0) return;
+    bunbuList.push(b);
     const dc=teams.filter(t=>data[t]).length;
     const pct=Math.round(dc/teams.length*100);
     prog.innerHTML+=`
