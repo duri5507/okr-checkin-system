@@ -2089,9 +2089,11 @@ async function submitCheckin() {
     result.push({checkin:ci, comment:cmt, issue:iss, issueText:det});
   });
 
-  if (firstErrorEl) {
-    firstErrorEl.scrollIntoView({behavior:'smooth',block:'center'});
-    setTimeout(() => firstErrorEl.focus(), 400);
+  if (errorCount > 0) {
+    if (firstErrorEl) {
+      firstErrorEl.scrollIntoView({behavior:'smooth',block:'center'});
+      setTimeout(() => firstErrorEl.focus(), 400);
+    }
     showToast(`미입력 항목이 ${errorCount}건 있습니다. 해당 항목으로 이동합니다.`, 'error');
     return;
   }
