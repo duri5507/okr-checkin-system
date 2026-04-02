@@ -931,9 +931,14 @@ label {
 /* ============================================================
    RESPONSIVE: Mobile
    ============================================================ */
+/* ============================================================
+   RESPONSIVE: Tablet (768px)
+   ============================================================ */
 @media (max-width: 768px) {
   .header { padding: 0 16px; }
-  .nav { padding: 0 16px; }
+  .header-title { font-size: 15px; }
+  .nav { padding: 0 12px; overflow-x: auto; white-space: nowrap; }
+  .nav-btn { padding: 12px 16px; font-size: 13px; }
   .section { padding: 16px; }
   .checkin-layout { grid-template-columns: 1fr; }
   .checkin-sidebar { position: static; }
@@ -943,11 +948,46 @@ label {
   .kpi-body { grid-template-columns: 1fr; }
   .issue-summary { grid-template-columns: repeat(3,1fr); }
   .guide-row { grid-template-columns: 1fr; }
+  .filter-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+  .filter-bar label { margin-left: 0 !important; }
+  .filter-bar select { width: 100%; }
+  .card { padding: 16px; }
+  .kpi-card-header { padding: 12px 16px; }
+  .kpi-body { padding: 12px 16px; }
+  .progress-label { min-width: 80px; font-size: 11px; }
+  .modal { width: 95%; padding: 20px; max-height: 92vh; }
 
   /* Touch targets: 44px minimum */
   .btn { min-height: 44px; }
   select, input[type=text], textarea { min-height: 44px; }
   .nav-btn { min-height: 44px; }
+}
+
+/* ============================================================
+   RESPONSIVE: Mobile (480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .header { height: 52px; }
+  .header-title { font-size: 14px; }
+  #companyLogo { height: 22px !important; }
+  .conn-label { display: none; }
+  .section { padding: 12px; }
+  .summary-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .summary-card { padding: 14px; }
+  .summary-num { font-size: 24px; }
+  .team-grid { grid-template-columns: 1fr; }
+  .issue-summary { grid-template-columns: repeat(3,1fr); gap: 6px; }
+  .issue-box { padding: 10px; }
+  .issue-box-num { font-size: 18px; }
+  .guide-box { padding: 12px; font-size: 12px; }
+  .guide-grade { grid-template-columns: 60px 1fr; gap: 4px 8px; }
+  .round-card { padding: 8px 10px; }
+  .kpi-header-top { flex-wrap: wrap; gap: 6px; }
+  .goal-text { font-size: 13px; }
+  .okr-num { font-size: 10px; padding: 2px 8px; }
+  .submit-row { flex-direction: column; }
+  .submit-row .btn { width: 100%; }
+  .add-okr-btn { padding: 14px; font-size: 13px; }
 }
 
 /* OKR Category Badges */
@@ -1095,6 +1135,18 @@ label {
   .insight-panel { grid-template-columns: repeat(2, 1fr); }
   .summary-grid-5 { grid-template-columns: repeat(2, 1fr); }
   .chart-grid { grid-template-columns: 1fr; }
+  .chart-container { min-height: 220px; }
+  .chart-card { padding: 16px; }
+  .insight-num { font-size: 22px; }
+  .insight-card { padding: 14px; }
+}
+@media (max-width: 480px) {
+  .insight-panel { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .summary-grid-5 { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .insight-card { padding: 12px; }
+  .insight-num { font-size: 20px; }
+  .insight-icon { width: 28px; height: 28px; border-radius: 8px; }
+  .chart-container { min-height: 200px; }
 }
 </style>
 </head>
