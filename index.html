@@ -1782,9 +1782,10 @@ function renderDashRounds() {
   const sel = document.getElementById('dashRound');
   const prev = sel.value;
   sel.innerHTML = '<option value="">-- 회차 선택 --</option>';
-  state.rounds.forEach(r => sel.innerHTML += `<option value="${esc(r.name)}">${esc(r.name)}</option>`);
-  if (prev && state.rounds.find(r=>r.name===prev)) sel.value = prev;
-  else if (state.rounds.length) sel.value = state.rounds[state.rounds.length-1].name;
+  const activeRounds = state.rounds.filter(r => r.active);
+  activeRounds.forEach(r => sel.innerHTML += `<option value="${esc(r.name)}">${esc(r.name)}</option>`);
+  if (prev && activeRounds.find(r=>r.name===prev)) sel.value = prev;
+  else if (activeRounds.length) sel.value = activeRounds[activeRounds.length-1].name;
 }
 
 function setConnStatus(ok) {
