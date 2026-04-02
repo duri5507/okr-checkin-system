@@ -1747,11 +1747,25 @@ async function apiGetCheckins(round) {
 }
 
 async function apiSubmitCheckin(payload) {
-  const res = await fetch(SB_URL + '/checkins', {
-    method: 'POST', headers: {...SB_HDR, 'Prefer': 'resolution=merge-duplicates,return=minimal'},
-    body: JSON.stringify({round: payload.round, bunbu: payload.bunbu, team: payload.team, submitted_at: payload.submittedAt, okrs: payload.okrs})
-  });
-  if (!res.ok) throw new Error('제출 실패: ' + res.status);
+  // 먼저 기존 데이터 존재 여부 확인
+  const checkRes = await fetch(SB_URL + '/checkins?round=eq.' + encodeURIComponent(payload.round) + '&team=eq.' + encodeURIComponent(payload.team) + '&select=id', {headers: SB_HDR});
+  const existing = await checkRes.json();
+
+  if (existing.length > 0) {
+    // 기존 데이터 있으면 PATCH로 업데이트
+    const res = await fetch(SB_URL + '/checkins?round=eq.' + encodeURIComponent(payload.round) + '&team=eq.' + encodeURIComponent(payload.team), {
+      method: 'PATCH', headers: SB_HDR,
+      body: JSON.stringify({bunbu: payload.bunbu, submitted_at: payload.submittedAt, okrs: payload.okrs})
+    });
+    if (!res.ok) throw new Error('수정 실패: ' + res.status);
+  } else {
+    // 신규 INSERT
+    const res = await fetch(SB_URL + '/checkins', {
+      method: 'POST', headers: SB_HDR,
+      body: JSON.stringify({round: payload.round, bunbu: payload.bunbu, team: payload.team, submitted_at: payload.submittedAt, okrs: payload.okrs})
+    });
+    if (!res.ok) throw new Error('제출 실패: ' + res.status);
+  }
   return { success: true };
 }
 
@@ -2040,25 +2054,45 @@ async function submitCheckin() {
   const okrs = [...OKR_DATA[state.bunbu][state.team], ...extraOkrs];
   const result = [];
   let firstErrorEl = null;
+  let errorCount = 0;
 
+  // 먼저 모든 에러 표시 초기화
+  okrs.forEach((okr, i) => {
+    const el = document.getElementById('ci_'+i);
+    if (el) el.style.borderColor = '';
+    const it = document.getElementById('detText_'+i);
+    if (it) it.style.borderColor = '';
+  });
+
+  // 검증
   okrs.forEach((okr, i) => {
     const el  = document.getElementById('ci_'+i);
     const ci  = (el?.value||'').trim();
     const cmt = (document.getElementById('comment_'+i)?.value||'').trim();
     const iss = document.getElementById('issue_'+i)?.value||'없음';
     const det = (document.getElementById('detText_'+i)?.value||'').trim();
-    if (!ci) { if(el) { el.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=el; } }
-    else      { if(el) el.style.borderColor=''; }
-    if (iss!=='없음'&&!det) {
-      const it=document.getElementById('detText_'+i);
-      if(it) { it.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=it; }
+
+    // 성과 체크인 필수
+    if (!ci) {
+      errorCount++;
+      if (el) { el.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=el; }
+    }
+    // 이슈 선택 시 상세 필수
+    if (iss!=='없음' && !det) {
+      errorCount++;
+      const it = document.getElementById('detText_'+i);
+      // 상세 이슈 영역이 숨겨져 있으면 보이게 처리
+      const detWrap = document.getElementById('det_'+i);
+      if (detWrap) detWrap.classList.add('show');
+      if (it) { it.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=it; }
     }
     result.push({checkin:ci, comment:cmt, issue:iss, issueText:det});
   });
+
   if (firstErrorEl) {
     firstErrorEl.scrollIntoView({behavior:'smooth',block:'center'});
-    firstErrorEl.focus();
-    showToast('미입력 항목이 있습니다. 해당 항목으로 이동했습니다.', 'error');
+    setTimeout(() => firstErrorEl.focus(), 400);
+    showToast(`미입력 항목이 ${errorCount}건 있습니다. 해당 항목으로 이동합니다.`, 'error');
     return;
   }
 
