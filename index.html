@@ -2535,7 +2535,7 @@ function showTeamDetail(bunbu, team) {
 // HELPERS
 // ============================================================
 function esc(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function showLoading(v, msg) {
   document.getElementById('loadingOverlay').classList.toggle('show',v);
