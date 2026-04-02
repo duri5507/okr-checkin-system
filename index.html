@@ -1205,7 +1205,7 @@ label {
     <select id="dashBunbu" onchange="renderDashboard()">
       <option value="">전체 본부</option>
     </select>
-    <label style="margin-left:8px">HAI:</label>
+    <label style="margin-left:8px">아레테 경영지수(HAI):</label>
     <select id="dashHai" onchange="renderDashboard()">
       <option value="">전체</option>
       <option value="비즈니스 성과">비즈니스 성과</option>
@@ -1950,20 +1950,38 @@ function showAddOkrForm() {
   document.getElementById('addOkrForm').style.display = 'block';
 }
 
+function collectCurrentInputs() {
+  const baseOkrs = OKR_DATA[state.bunbu][state.team];
+  const allOkrs = [...baseOkrs, ...extraOkrs];
+  const okrs = [];
+  allOkrs.forEach((okr, i) => {
+    okrs.push({
+      checkin: (document.getElementById('ci_'+i)?.value||'').trim(),
+      comment: (document.getElementById('comment_'+i)?.value||'').trim(),
+      issue: document.getElementById('issue_'+i)?.value||'없음',
+      issueText: (document.getElementById('detText_'+i)?.value||'').trim()
+    });
+  });
+  return {okrs};
+}
+
 function addExtraOkr() {
   const type = document.getElementById('newOkrType').value;
   const goal = document.getElementById('newOkrGoal').value.trim();
   const kr = document.getElementById('newOkrKr').value.trim();
   const detail = document.getElementById('newOkrDetail').value.trim();
   if (!goal || !kr) { showToast('목표와 핵심성과지표를 입력해주세요.', 'error'); return; }
-  extraOkrs.push({type, goal, kr, detail});
-  renderOkrForm(state.bunbu, state.team, state.checkins[state.team] || null);
+  const currentData = collectCurrentInputs();
+  extraOkrs.push({type, goal, kr, detail, hai:'', major:'', detailKpi:''});
+  renderOkrForm(state.bunbu, state.team, currentData);
   showToast('신규 목표가 추가되었습니다.', 'success');
 }
 
 function removeExtraOkr(idx) {
+  const currentData = collectCurrentInputs();
   extraOkrs.splice(idx, 1);
-  renderOkrForm(state.bunbu, state.team, state.checkins[state.team] || null);
+  currentData.okrs.splice(OKR_DATA[state.bunbu][state.team].length + idx, 1);
+  renderOkrForm(state.bunbu, state.team, currentData);
 }
 
 function toggleDet(i) {
@@ -2104,12 +2122,17 @@ function renderDashboard() {
   const allTeams = [];
   Object.entries(OKR_DATA).forEach(([b, teams]) => {
     if (filter && b!==filter) return;
-    Object.keys(teams).forEach(t => allTeams.push({bunbu:b, team:t}));
+    Object.keys(teams).forEach(t => {
+      const indices = getFilteredOkrIndices(b, t);
+      if (indices.length > 0) allTeams.push({bunbu:b, team:t});
+    });
   });
 
   const done   = allTeams.filter(t=>data[t.team]).length;
   const issues = allTeams.filter(t=>{
-    const d=data[t.team]; return d&&d.okrs.some(k=>k.issue&&k.issue!=='없음');
+    const d=data[t.team]; if(!d) return false;
+    const indices = getFilteredOkrIndices(t.bunbu, t.team);
+    return indices.some(i => d.okrs[i] && d.okrs[i].issue && d.okrs[i].issue!=='없음');
   }).length;
 
   // Summary Cards
@@ -2164,11 +2187,12 @@ function renderDashboard() {
     issueBunbuEl.style.fontSize = '';
   }
 
-  // Issue counts
+  // Issue counts (카테고리 필터 반영)
   const ic={목표조정:0,신규목표:0,목표폐기:0,지원요청:0,기타:0};
   allTeams.forEach(t=>{
     const d=data[t.team]; if(!d) return;
-    d.okrs.forEach(k=>{ if(k.issue&&ic[k.issue]!==undefined) ic[k.issue]++; });
+    const indices = getFilteredOkrIndices(t.bunbu, t.team);
+    indices.forEach(i=>{ const k=d.okrs[i]; if(k&&k.issue&&ic[k.issue]!==undefined) ic[k.issue]++; });
   });
   ['목표조정','신규목표','목표폐기','지원요청','기타'].forEach((k,i)=>{
     document.getElementById('ic'+(i+1)).textContent=ic[k];
@@ -2203,7 +2227,8 @@ function renderDashboard() {
   }
   allTeams.forEach(({bunbu,team})=>{
     const d=data[team];
-    const iss=d?d.okrs.filter(k=>k.issue&&k.issue!=='없음'):[];
+    const indices = getFilteredOkrIndices(bunbu, team);
+    const iss=d?indices.filter(i=>d.okrs[i]&&d.okrs[i].issue&&d.okrs[i].issue!=='없음').map(i=>d.okrs[i]):[];
     const tags=[...new Set(iss.map(k=>k.issue))].map(v=>`<span class="issue-tag tag-${v}">${v}</span>`).join('');
     const avg = calcTeamAvgRate(bunbu, team, data);
     const rateHtml = avg !== null ? `<div class="team-card-rate">달성률 ${Math.round(avg)}%</div>` : '';
