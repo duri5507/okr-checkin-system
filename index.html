@@ -285,35 +285,45 @@ textarea:focus-visible {
   margin-bottom: 24px;
 }
 .summary-card {
-  padding: 24px;
+  background: #f2f4f6;
   border: none;
-  border-left: none;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: none;
   transition: all 0.2s ease;
 }
 .summary-card:hover {
-  box-shadow: 0 4px 20px -4px rgba(0,0,0,.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+.summary-icon-wrap {
+  background: white;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 .summary-card.green .summary-icon { color: var(--green); }
 .summary-card.orange .summary-icon { color: var(--orange); }
-.summary-card.red .summary-icon { color: var(--red); }
-.summary-icon { font-size: 28px; margin-bottom: 8px; color: #002046; }
+.summary-card.red .summary-icon { color: #ba1a1a; }
+.summary-icon { font-size: 24px; margin: 0; color: #002046; }
+.summary-info {}
 .summary-num {
   font-family: 'Manrope', sans-serif;
-  font-size: 36px;
-  font-weight: 800;
-  color: #002046;
-  letter-spacing: -1px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #191c1e;
 }
 .summary-label {
-  margin-top: 8px;
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-weight: 500;
   color: #44474e;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* ============================================================
@@ -665,29 +675,29 @@ label {
 }
 .progress-bar-bg {
   flex: 1;
-  height: 8px;
+  height: 10px;
   overflow: hidden;
-  border-radius: 4px;
-  background: #eceef0;
+  border-radius: 999px;
+  background: #f2f4f6;
 }
 .progress-bar-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 999px;
   background: #002046;
   transition: width .6s ease;
 }
 .progress-pct {
-  min-width: 36px;
-  font-size: 12px;
-  font-weight: 700;
+  min-width: 40px;
+  font-size: 14px;
+  font-weight: 600;
   color: #002046;
   text-align: right;
 }
 .progress-label {
   min-width: 132px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-light);
+  font-size: 14px;
+  font-weight: 700;
+  color: #191c1e;
 }
 
 /* ============================================================
@@ -695,33 +705,34 @@ label {
    ============================================================ */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(2,1fr);
   gap: 16px;
 }
 .team-card {
-  padding: 16px;
+  padding: 24px;
   border: 1px solid rgba(196,198,207,.1);
   border-radius: 12px;
   background: #ffffff;
   box-shadow: 0 1px 3px rgba(0,0,0,.04);
   cursor: pointer;
   transition: all 0.2s ease;
+  border-left: none;
 }
 .team-card:hover {
   box-shadow: 0 4px 20px -4px rgba(0,0,0,.05);
   transform: translateY(-2px);
 }
-.team-card.done { border-left: 4px solid var(--green); }
-.team-card.pending { border-left: 4px solid #eceef0; }
+.team-card.done {}
+.team-card.pending {}
 .team-card-name {
   margin-bottom: 4px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--ink);
 }
 .team-card-bunbu {
-  font-size: 11px;
-  color: var(--muted);
+  font-size: 12px;
+  color: #44474e;
 }
 .team-card-status {
   display: flex;
@@ -729,14 +740,18 @@ label {
   margin-top: 12px;
 }
 .sdot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-right: 8px;
-  border-radius: 50%;
+  display: none;
 }
-.sdot.g { background: var(--green); }
-.sdot.gr { background: #cbd5e1; }
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.status-badge.done-badge { background: rgba(0,32,70,.1); color: #002046; }
+.status-badge.pending-badge { background: rgba(80,95,118,.1); color: #505f76; }
+.status-badge.issue-badge { background: rgba(186,26,26,.1); color: #ba1a1a; }
 .status-text {
   font-size: 12px;
   font-weight: 600;
@@ -801,12 +816,33 @@ label {
 .filter-bar {
   display: flex;
   align-items: center;
+  gap: 0;
+  background: #f2f4f6;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
 }
-.filter-bar select { width: auto; min-width: 152px; }
+.filter-bar select { width: auto; min-width: 120px; background: transparent; border: none; font-size: 13px; font-weight: 600; padding: 4px 0; min-height: auto; color: #191c1e; }
+.filter-bar select:focus { box-shadow: none; border-color: transparent; }
 .filter-bar label { margin: 0; white-space: nowrap; }
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-right: 1px solid rgba(196,198,207,.3);
+}
+.filter-group:last-child { border-right: none; }
+.filter-group label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #44474e;
+  margin: 0;
+  white-space: nowrap;
+}
 
 /* ============================================================
    COMPONENT: Notices
@@ -1036,9 +1072,10 @@ label {
   .kpi-body { grid-template-columns: 1fr; }
   .issue-summary { grid-template-columns: repeat(3,1fr); }
   .guide-row { grid-template-columns: 1fr; }
-  .filter-bar { flex-direction: column; align-items: stretch; gap: 8px; }
-  .filter-bar label { margin-left: 0 !important; }
-  .filter-bar select { width: 100%; }
+  .filter-bar { flex-wrap: wrap; }
+  .filter-group { border-right: none; border-bottom: 1px solid rgba(196,198,207,.2); }
+  .filter-group:last-child { border-bottom: none; }
+  .filter-bar select { width: auto; }
   .card { padding: 16px; }
   .kpi-card-header { padding: 12px 16px; }
   .kpi-body { padding: 12px 16px; }
@@ -1131,51 +1168,89 @@ label {
   margin-bottom: 24px;
 }
 .insight-card {
-  padding: 20px;
-  border-radius: 12px;
   background: #ffffff;
   border: 1px solid rgba(196,198,207,.1);
-  box-shadow: 0 4px 20px -4px rgba(0,0,0,.05);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 160px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
   transition: all 0.2s ease;
 }
 .insight-card:hover {
-  box-shadow: 0 6px 24px -4px rgba(0,0,0,.08);
+  box-shadow: 0 4px 20px -4px rgba(0,0,0,.05);
 }
-.insight-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #f2f4f6;
-  margin-bottom: 10px;
-  color: #002046;
+.insight-card .insight-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #44474e;
+  margin-bottom: 8px;
 }
-.insight-num {
+.insight-card .insight-num {
   font-family: 'Manrope', sans-serif;
-  font-size: 28px;
+  font-size: 40px;
   font-weight: 800;
   color: #002046;
-  letter-spacing: -1px;
+  letter-spacing: -0.02em;
 }
-.insight-label {
-  margin-top: 4px;
+.insight-card .insight-sub {
   font-size: 12px;
-  color: var(--muted);
+  color: #74777f;
+  margin-top: 8px;
 }
+.insight-card.at-risk {
+  border-left: 4px solid #ba1a1a;
+}
+.insight-card.navy {
+  background: linear-gradient(155deg, #002046 0%, #1b365d 100%);
+  color: white;
+  border: none;
+}
+.insight-card.navy .insight-label { color: rgba(255,255,255,.7); }
+.insight-card.navy .insight-num { color: white; }
+.insight-card.navy .insight-sub { color: rgba(255,255,255,.5); }
+/* Mini progress bar inside insight card */
+.insight-progress-bg {
+  height: 6px;
+  border-radius: 999px;
+  background: #f2f4f6;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.insight-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #002046;
+  transition: width .6s ease;
+}
+.insight-card.navy .insight-progress-bg { background: rgba(255,255,255,.15); }
+.insight-card.navy .insight-progress-fill { background: rgba(255,255,255,.7); }
 
 /* ============================================================
-   COMPONENT: Summary grid 5 columns
+   COMPONENT: Summary grid 4 columns (dashboard)
    ============================================================ */
 .summary-grid-5 {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
 .summary-grid-5 .summary-card { margin: 0; }
-.summary-card.purple { border-left-color: var(--purple); }
+.summary-card.purple .summary-icon { color: var(--purple); }
+
+/* ============================================================
+   COMPONENT: Dashboard grid (2:1)
+   ============================================================ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
 
 /* ============================================================
    COMPONENT: Chart area
@@ -1209,13 +1284,8 @@ label {
 }
 
 /* ============================================================
-   COMPONENT: Category filter
+   COMPONENT: Category filter (merged into filter-bar above)
    ============================================================ */
-.filter-bar .filter-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
 
 /* ============================================================
    COMPONENT: Gauge bar in modal
@@ -1270,16 +1340,18 @@ label {
   .chart-grid { grid-template-columns: 1fr; }
   .chart-container { min-height: 220px; }
   .chart-card { padding: 16px; }
-  .insight-num { font-size: 22px; }
-  .insight-card { padding: 14px; }
+  .insight-card .insight-num { font-size: 28px; }
+  .insight-card { padding: 16px; min-height: 120px; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 480px) {
   .insight-panel { grid-template-columns: 1fr 1fr; gap: 8px; }
   .summary-grid-5 { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .insight-card { padding: 12px; }
-  .insight-num { font-size: 20px; }
-  .insight-icon { width: 28px; height: 28px; border-radius: 8px; }
+  .insight-card { padding: 12px; min-height: 100px; }
+  .insight-card .insight-num { font-size: 24px; }
   .chart-container { min-height: 200px; }
+  .team-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -1433,29 +1505,41 @@ label {
 
 <!-- ===== CHECKIN ===== -->
 <div class="section" id="section-checkin">
+      <div style="margin-bottom:24px;">
+        <h1 style="font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;color:#002046;letter-spacing:-0.5px;margin-bottom:4px;">Check-in Submission</h1>
+        <p style="font-size:13px;color:#74777f;">Submit your team's OKR performance check-in</p>
+      </div>
+
       <div class="mobile-round-select" style="display:none;">
         <label>회차 선택</label>
         <select id="mobileRoundSelect" onchange="mobileSelectRound()">
           <option value="">-- 회차 선택 --</option>
         </select>
       </div>
-      <div class="guide-row">
-        <div class="guide-box quan">
-          <h4><span class="material-icons-outlined mi">straighten</span> 정량 지표 입력 방법</h4>
-          <ul>
-            <li>달성률 → <b>85%</b>, <b>120%</b> 등 퍼센트로 작성</li>
-            <li>수치 → <b>17방</b>, <b>250억</b>, <b>1,200개</b> 등 실제 수치로 작성</li>
-            <li>현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b>로 입력</li>
-          </ul>
-        </div>
-        <div class="guide-box qual">
-          <h4><span class="material-icons-outlined mi">star</span> 정성 지표 등급 기준</h4>
-          <div class="guide-grade">
-            <span class="gl arete">Arete</span><span class="gd">누구나 인정할 만큼 탁월한 성과 창출</span>
-            <span class="gl ee">EE</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>초과</b></span>
-            <span class="gl me">ME</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>충족</b></span>
-            <span class="gl ni">NI</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준 <b>미만</b></span>
-            <span class="gl hold">보류</span><span class="gd">현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b> 선택</span>
+
+      <!-- Check-in Guide -->
+      <div style="margin-bottom:24px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#44474e;margin-bottom:12px;">CHECK-IN GUIDE</div>
+        <div class="guide-row">
+          <div class="guide-box quan" style="position:relative;padding-left:52px;">
+            <div style="position:absolute;left:16px;top:16px;width:28px;height:28px;border-radius:50%;background:#002046;color:white;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;">1</div>
+            <h4><span class="material-icons-outlined mi">straighten</span> 정량 지표 입력</h4>
+            <ul>
+              <li>달성률 → <b>85%</b>, <b>120%</b> 등 퍼센트로 작성</li>
+              <li>수치 → <b>17방</b>, <b>250억</b>, <b>1,200개</b> 등 실제 수치로 작성</li>
+              <li>현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b>로 입력</li>
+            </ul>
+          </div>
+          <div class="guide-box qual" style="position:relative;padding-left:52px;">
+            <div style="position:absolute;left:16px;top:16px;width:28px;height:28px;border-radius:50%;background:#002046;color:white;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;">2</div>
+            <h4><span class="material-icons-outlined mi">star</span> 정성 지표 등급</h4>
+            <div class="guide-grade">
+              <span class="gl arete">Arete</span><span class="gd">누구나 인정할 만큼 탁월한 성과 창출</span>
+              <span class="gl ee">EE</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>초과</b></span>
+              <span class="gl me">ME</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>충족</b></span>
+              <span class="gl ni">NI</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준 <b>미만</b></span>
+              <span class="gl hold">보류</span><span class="gd">현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b> 선택</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1494,89 +1578,149 @@ label {
 
 <!-- ===== DASHBOARD ===== -->
 <div class="section" id="section-dashboard">
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <label>회차:</label>
-    <select id="dashRound" onchange="renderDashboard()">
-      <option value="">-- 회차 선택 --</option>
-    </select>
-    <label style="margin-left:8px">본부:</label>
-    <select id="dashBunbu" onchange="renderDashboard()">
-      <option value="">전체 본부</option>
-    </select>
-    <label style="margin-left:8px">아레테 경영지수(HAI):</label>
-    <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()">
-      <option value="">전체</option>
-      <option value="비즈니스 성과">비즈니스 성과</option>
-      <option value="비즈니스 혁신">비즈니스 혁신</option>
-      <option value="고객행복">고객행복</option>
-      <option value="PWC">PWC</option>
-    </select>
-    <label style="margin-left:8px">주요 핵심지표:</label>
-    <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()">
-      <option value="">전체</option>
-    </select>
-    <label style="margin-left:8px">세부 핵심지표:</label>
-    <select id="dashDetail" onchange="renderDashboard()">
-      <option value="">전체</option>
-    </select>
-    <button class="btn btn-outline btn-sm" onclick="refreshDashboard()" style="margin-left:8px"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:2px">refresh</span> 새로고침</button>
+  <!-- Title + Filter Bar -->
+  <div style="margin-bottom:8px;">
+    <h1 style="font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;color:#002046;letter-spacing:-0.5px;margin-bottom:4px;">Dashboard</h1>
+    <p style="font-size:13px;color:#74777f;">Performance overview and check-in analytics</p>
   </div>
 
-  <!-- Insight Panel -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>ROUND</label>
+      <select id="dashRound" onchange="renderDashboard()">
+        <option value="">-- 회차 선택 --</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>DIVISION</label>
+      <select id="dashBunbu" onchange="renderDashboard()">
+        <option value="">전체 본부</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>HAI</label>
+      <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()">
+        <option value="">전체</option>
+        <option value="비즈니스 성과">비즈니스 성과</option>
+        <option value="비즈니스 혁신">비즈니스 혁신</option>
+        <option value="고객행복">고객행복</option>
+        <option value="PWC">PWC</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>MAJOR KPI</label>
+      <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()">
+        <option value="">전체</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>DETAIL KPI</label>
+      <select id="dashDetail" onchange="renderDashboard()">
+        <option value="">전체</option>
+      </select>
+    </div>
+    <div class="filter-group" style="border-right:none;">
+      <button class="btn btn-outline btn-sm" onclick="refreshDashboard()" style="border:none;background:transparent;padding:4px 8px;"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;">refresh</span></button>
+    </div>
+  </div>
+
+  <!-- Insight Panel (Bento 4 cards) -->
   <div class="insight-panel" id="insightPanel">
     <div class="insight-card">
-      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">check_circle</span></div>
-      <div class="insight-num" id="insightRate">-</div>
-      <div class="insight-label">체크인 완료율</div>
+      <div>
+        <div class="insight-label">COMPLETION RATE</div>
+        <div class="insight-num" id="insightRate">-</div>
+      </div>
+      <div class="insight-progress-bg"><div class="insight-progress-fill" id="insightRateBar" style="width:0%"></div></div>
     </div>
     <div class="insight-card">
-      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">speed</span></div>
-      <div class="insight-num" id="insightAvg">-</div>
-      <div class="insight-label">평균 달성률 (정량)</div>
+      <div>
+        <div class="insight-label">AVG. ACHIEVEMENT</div>
+        <div class="insight-num" id="insightAvg">-</div>
+      </div>
+      <div class="insight-sub" id="insightAvgSub">vs. previous period</div>
     </div>
-    <div class="insight-card">
-      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">emoji_events</span></div>
-      <div class="insight-num" id="insightHigh">-</div>
-      <div class="insight-label">고성과 팀 (80%+)</div>
+    <div class="insight-card at-risk">
+      <div>
+        <div class="insight-label">AT RISK TARGETS</div>
+        <div class="insight-num" id="insightIssueCount">-</div>
+      </div>
+      <div class="insight-sub" id="insightIssueSub">teams with issues</div>
     </div>
-    <div class="insight-card">
-      <div class="insight-icon"><span class="material-icons-outlined" style="font-size:20px">report_problem</span></div>
-      <div class="insight-num" id="insightIssueBunbu">-</div>
-      <div class="insight-label">이슈 집중 본부</div>
+    <div class="insight-card navy">
+      <div>
+        <div class="insight-label">HIGH PERFORMERS</div>
+        <div class="insight-num" id="insightHigh">-</div>
+      </div>
+      <div class="insight-sub">teams above 80% achievement</div>
     </div>
   </div>
 
-  <!-- Summary Cards (5 columns) -->
+  <!-- Summary Grid (4 icon+number cards) -->
   <div class="summary-grid-5">
-    <div class="summary-card"><span class="material-icons-outlined summary-icon">groups</span><div class="summary-num" id="dTotal">-</div><div class="summary-label">전체 팀 수</div></div>
-    <div class="summary-card green"><span class="material-icons-outlined summary-icon">check_circle</span><div class="summary-num" id="dDone">-</div><div class="summary-label">체크인 완료</div></div>
-    <div class="summary-card orange"><span class="material-icons-outlined summary-icon">hourglass_empty</span><div class="summary-num" id="dPending">-</div><div class="summary-label">체크인 미완료</div></div>
-    <div class="summary-card red"><span class="material-icons-outlined summary-icon">warning</span><div class="summary-num" id="dIssue">-</div><div class="summary-label">이슈 있는 팀</div></div>
-    <div class="summary-card purple"><span class="material-icons-outlined summary-icon" style="color:var(--purple)">trending_up</span><div class="summary-num" id="dAvgRate">-</div><div class="summary-label">평균 달성률</div></div>
+    <div class="summary-card">
+      <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">groups</span></div>
+      <div class="summary-info">
+        <div class="summary-label">Total Teams</div>
+        <div class="summary-num" id="dTotal">-</div>
+      </div>
+    </div>
+    <div class="summary-card green">
+      <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">check_circle</span></div>
+      <div class="summary-info">
+        <div class="summary-label">Completed</div>
+        <div class="summary-num" id="dDone">-</div>
+      </div>
+    </div>
+    <div class="summary-card orange">
+      <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">hourglass_empty</span></div>
+      <div class="summary-info">
+        <div class="summary-label">Pending</div>
+        <div class="summary-num" id="dPending">-</div>
+      </div>
+    </div>
+    <div class="summary-card red">
+      <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">warning</span></div>
+      <div class="summary-info">
+        <div class="summary-label">Issues</div>
+        <div class="summary-num" id="dIssue">-</div>
+      </div>
+    </div>
   </div>
 
-  <!-- Chart Area -->
-  <div class="chart-grid">
-    <div class="chart-card">
-      <div class="chart-card-title"><span class="material-icons-outlined mi">bar_chart</span> 본부별 평균 달성률</div>
-      <div class="chart-container"><canvas id="chartBarBunbu"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-title"><span class="material-icons-outlined mi">donut_large</span> 정성 등급 분포</div>
-      <div class="chart-container"><canvas id="chartDoughnut"></canvas></div>
-    </div>
-  </div>
+  <!-- Dashboard Grid: Left (Progress + Teams) / Right (Donut + Trend) -->
+  <div class="dashboard-grid">
+    <div>
+      <!-- Department Progress Ranking -->
+      <div class="card">
+        <div class="card-title"><span class="material-icons-outlined mi">bar_chart</span> Department Progress Ranking</div>
+        <div id="bunbuProgress"></div>
+      </div>
 
-  <!-- Bunbu Progress -->
-  <div class="card">
-    <div class="card-title"><span class="material-icons-outlined mi">business</span> 본부별 체크인 현황</div>
-    <div id="bunbuProgress"></div>
+      <!-- High-Priority Teams -->
+      <div class="card">
+        <div class="card-title"><span class="material-icons-outlined mi">groups</span> Team Check-in Status</div>
+        <div class="team-grid" id="teamGrid"></div>
+      </div>
+    </div>
+    <div>
+      <!-- Grade Distribution (Donut) -->
+      <div class="chart-card" style="margin-bottom:24px;">
+        <div class="chart-card-title"><span class="material-icons-outlined mi">donut_large</span> Grade Distribution</div>
+        <div class="chart-container" style="min-height:260px;"><canvas id="chartDoughnut"></canvas></div>
+      </div>
+
+      <!-- Achievement Trend (Bar) -->
+      <div class="chart-card">
+        <div class="chart-card-title"><span class="material-icons-outlined mi">trending_up</span> Achievement Trend</div>
+        <div class="chart-container" style="min-height:260px;"><canvas id="chartBarBunbu"></canvas></div>
+      </div>
+    </div>
   </div>
 
   <!-- Issue Summary -->
   <div class="card">
-    <div class="card-title"><span class="material-icons-outlined mi">warning</span> 이슈 현황</div>
+    <div class="card-title"><span class="material-icons-outlined mi">warning</span> Issue Summary</div>
     <div class="issue-summary">
       <div class="issue-box"><div class="issue-box-num" id="ic1">-</div><div class="issue-box-label">목표조정</div></div>
       <div class="issue-box"><div class="issue-box-num" id="ic2">-</div><div class="issue-box-label">신규목표</div></div>
@@ -1584,12 +1728,6 @@ label {
       <div class="issue-box"><div class="issue-box-num" id="ic4">-</div><div class="issue-box-label">지원요청</div></div>
       <div class="issue-box"><div class="issue-box-num" id="ic5">-</div><div class="issue-box-label">기타</div></div>
     </div>
-  </div>
-
-  <!-- Team Grid -->
-  <div class="card">
-    <div class="card-title"><span class="material-icons-outlined mi">groups</span> 팀별 체크인 현황</div>
-    <div class="team-grid" id="teamGrid"></div>
   </div>
 </div>
 
@@ -2649,11 +2787,14 @@ function renderDashboard() {
     if (r !== null) allRates.push(r);
   });
   const globalAvg = allRates.length ? Math.round(allRates.reduce((a,b)=>a+b,0)/allRates.length) : 0;
-  document.getElementById('dAvgRate').textContent = allRates.length ? globalAvg + '%' : '-';
+  const dAvgEl = document.getElementById('dAvgRate');
+  if (dAvgEl) dAvgEl.textContent = allRates.length ? globalAvg + '%' : '-';
 
   // Insight Panel
   const completionRate = allTeams.length ? Math.round(done / allTeams.length * 100) : 0;
   document.getElementById('insightRate').textContent = allTeams.length ? completionRate + '%' : '-';
+  const rateBar = document.getElementById('insightRateBar');
+  if (rateBar) rateBar.style.width = completionRate + '%';
   document.getElementById('insightAvg').textContent = allRates.length ? globalAvg + '%' : '-';
 
   // High performance teams (avg >= 80%)
@@ -2661,32 +2802,12 @@ function renderDashboard() {
     const r = calcTeamAvgRate(bunbu, team, data);
     return r !== null && r >= 80;
   }).length;
-  document.getElementById('insightHigh').textContent = highTeams + '개';
+  document.getElementById('insightHigh').textContent = highTeams;
 
-  // Issue concentrated bunbu
-  const bunbuIssueCount = {};
-  allTeams.forEach(({bunbu, team}) => {
-    const d = data[team];
-    if (!d) return;
-    d.okrs.forEach(k => {
-      if (k.issue && k.issue !== '없음') {
-        bunbuIssueCount[bunbu] = (bunbuIssueCount[bunbu] || 0) + 1;
-      }
-    });
-  });
-  let topIssueBunbu = '-';
-  let topIssueCount = 0;
-  Object.entries(bunbuIssueCount).forEach(([b, c]) => {
-    if (c > topIssueCount) { topIssueBunbu = b; topIssueCount = c; }
-  });
-  const issueBunbuEl = document.getElementById('insightIssueBunbu');
-  if (topIssueCount > 0) {
-    issueBunbuEl.textContent = topIssueBunbu.replace('본부','').replace('실','');
-    issueBunbuEl.style.fontSize = '18px';
-  } else {
-    issueBunbuEl.textContent = '-';
-    issueBunbuEl.style.fontSize = '';
-  }
+  // At risk / issue count
+  document.getElementById('insightIssueCount').textContent = issues;
+  const issueSub = document.getElementById('insightIssueSub');
+  if (issueSub) issueSub.textContent = issues + ' teams with issues';
 
   // Issue counts (카테고리 필터 반영)
   const ic={목표조정:0,신규목표:0,목표폐기:0,지원요청:0,기타:0};
@@ -2733,20 +2854,27 @@ function renderDashboard() {
     const d=data[team];
     const indices = getFilteredOkrIndices(bunbu, team);
     const iss=d?indices.filter(i=>d.okrs[i]&&d.okrs[i].issue&&d.okrs[i].issue!=='없음').map(i=>d.okrs[i]):[];
+    const hasIssue = iss.length > 0;
     const tags=[...new Set(iss.map(k=>k.issue))].map(v=>`<span class="issue-tag tag-${v}">${v}</span>`).join('');
     const avg = calcTeamAvgRate(bunbu, team, data);
-    const rateHtml = avg !== null ? `<div class="team-card-rate">달성률 ${Math.round(avg)}%</div>` : '';
+    const rateHtml = avg !== null ? `<div class="team-card-rate">Achievement ${Math.round(avg)}%</div>` : '';
+    const statusBadge = d
+      ? (hasIssue
+        ? '<span class="status-badge issue-badge">ISSUE</span>'
+        : '<span class="status-badge done-badge">DONE</span>')
+      : '<span class="status-badge pending-badge">PENDING</span>';
     grid.innerHTML+=`
       <div class="team-card ${d?'done':'pending'}" onclick="showTeamDetail('${esc(bunbu)}','${esc(team)}')">
-        <div class="team-card-name">${team}</div>
-        <div class="team-card-bunbu">${bunbu}</div>
-        <div class="team-card-status">
-          <span class="sdot ${d?'g':'gr'}"></span>
-          <span class="status-text">${d?'<span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;margin-right:2px">check_circle</span>완료':'<span class="material-icons-outlined" style="font-size:14px;vertical-align:middle;margin-right:2px">hourglass_empty</span>미완료'}</span>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+          <div>
+            <div class="team-card-name">${team}</div>
+            <div class="team-card-bunbu">${bunbu}</div>
+          </div>
+          ${statusBadge}
         </div>
         ${rateHtml}
-        ${d?`<div style="font-size:11px;color:#94a3b8;margin-top:4px">${d.submittedAt}</div>`:''}
-        ${tags?`<div class="issue-tags">${tags}</div>`:''}
+        ${d?`<div style="font-size:11px;color:#94a3b8;margin-top:6px">${d.submittedAt}</div>`:''}
+        ${tags?`<div class="issue-tags" style="margin-top:10px">${tags}</div>`:''}
       </div>`;
   });
 }
@@ -2757,8 +2885,6 @@ function renderDashboard() {
 function renderBarChart(bunbuList, data) {
   const labels = [];
   const values = [];
-  const colors = [];
-  const palette = ['#B91C1C','#DC2626','#EF4444','#f97316','#f59e0b','#22c55e','#8b5cf6'];
   bunbuList.forEach((b, idx) => {
     const teams = Object.keys(OKR_DATA[b]);
     const rates = [];
@@ -2769,8 +2895,13 @@ function renderBarChart(bunbuList, data) {
     const avg = rates.length ? Math.round(rates.reduce((a,c)=>a+c,0)/rates.length) : 0;
     labels.push(b.replace('본부','').replace('실',''));
     values.push(avg);
-    colors.push(palette[idx % palette.length]);
   });
+
+  // Find max value index to highlight
+  let maxIdx = 0;
+  values.forEach((v, i) => { if (v > values[maxIdx]) maxIdx = i; });
+  const bgColors = values.map((v, i) => i === maxIdx ? '#002046' : '#f2f4f6');
+  const bdColors = values.map((v, i) => i === maxIdx ? '#002046' : '#e5e7eb');
 
   if (chartBarBunbu) { chartBarBunbu.destroy(); chartBarBunbu = null; }
   const ctx = document.getElementById('chartBarBunbu');
@@ -2782,23 +2913,23 @@ function renderBarChart(bunbuList, data) {
       datasets: [{
         label: '평균 달성률 (%)',
         data: values,
-        backgroundColor: colors.map(c => c + 'CC'),
-        borderColor: colors,
-        borderWidth: 1,
-        borderRadius: 6
+        backgroundColor: bgColors,
+        borderColor: bdColors,
+        borderWidth: 0,
+        borderRadius: 4,
+        barThickness: 20
       }]
     },
     options: {
-      indexAxis: 'y',
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ctx.parsed.x + '%' } }
+        tooltip: { callbacks: { label: ctx => ctx.parsed.y + '%' } }
       },
       scales: {
-        x: { beginAtZero: true, max: 150, ticks: { callback: v => v + '%' }, grid: { color: '#f1f5f9' } },
-        y: { grid: { display: false } }
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { beginAtZero: true, max: 150, ticks: { callback: v => v + '%', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,.04)' } }
       }
     }
   });
@@ -2824,8 +2955,8 @@ function renderDoughnutChart(allTeams, data) {
   if (!ctx) return;
   const labels = Object.keys(dist);
   const values = Object.values(dist);
-  const bgColors = ['#fef9c3','#dcfce7','#dbeafe','#fee2e2','#f1f5f9'];
-  const bdColors = ['#fde68a','#bbf7d0','#93c5fd','#fca5a5','#cbd5e1'];
+  const bgColors = ['#002046','#1b365d','#465f88','#ba1a1a','#c4c6cf'];
+  const bdColors = ['#002046','#1b365d','#465f88','#ba1a1a','#c4c6cf'];
 
   chartDoughnut = new Chart(ctx, {
     type: 'doughnut',
