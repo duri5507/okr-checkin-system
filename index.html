@@ -2401,20 +2401,26 @@ function toggleGuide() {
   }
 }
 
-function updateHomeStatus() {
+async function updateHomeStatus() {
   const activeRound = state.rounds.find(r => r.active);
   if (activeRound) {
     document.getElementById('homeRoundName').textContent = activeRound.name;
-  }
-  // 전체 팀 수
-  let totalTeams = 0;
-  Object.values(OKR_DATA).forEach(teams => { totalTeams += Object.keys(teams).length; });
-  document.getElementById('homeTotalTeams').textContent = totalTeams + '개';
-
-  // 완료율 (체크인 데이터가 있으면)
-  const doneCount = Object.keys(state.checkins).length;
-  if (totalTeams > 0 && doneCount > 0) {
-    document.getElementById('homeCompRate').textContent = Math.round(doneCount / totalTeams * 100) + '%';
+    // 활성 회차의 체크인 데이터 가져오기
+    try {
+      const data = await apiGetCheckins(activeRound.name);
+      const doneCount = Object.keys(data || {}).length;
+      let totalTeams = 0;
+      Object.values(OKR_DATA).forEach(teams => { totalTeams += Object.keys(teams).length; });
+      document.getElementById('homeTotalTeams').textContent = totalTeams + '개';
+      document.getElementById('homeCompRate').textContent = totalTeams > 0 ? Math.round(doneCount / totalTeams * 100) + '%' : '-';
+    } catch(e) {
+      document.getElementById('homeCompRate').textContent = '-';
+    }
+  } else {
+    let totalTeams = 0;
+    Object.values(OKR_DATA).forEach(teams => { totalTeams += Object.keys(teams).length; });
+    document.getElementById('homeTotalTeams').textContent = totalTeams + '개';
+    document.getElementById('homeCompRate').textContent = '-';
   }
 }
 
