@@ -30,10 +30,10 @@
   --subtle: #74777f;
   --border: #c4c6cf;
   --surface: #ffffff;
-  --surface-container: #eceef0;
-  --surface-container-low: #f2f4f6;
+  --surface-container: #FFE8E8;
+  --surface-container-low: #FFF5F5;
   --surface-container-lowest: #ffffff;
-  --bg: #f7f9fb;
+  --bg: #FFF8F8;
 
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0,0,0,.04);
@@ -89,7 +89,7 @@ textarea:focus-visible {
   z-index: 100;
   height: 64px;
   padding: 0 40px;
-  background: #f7f9fb;
+  background: #FFFAFA;
   color: #191c1e;
   border-bottom: 1px solid rgba(196,198,207,.2);
   box-shadow: none;
@@ -149,7 +149,7 @@ textarea:focus-visible {
 .nav {
   display: flex;
   padding: 0 40px;
-  background: #f7f9fb;
+  background: #FFFAFA;
   border-bottom: 1px solid rgba(196,198,207,.2);
   gap: 0;
   position: sticky;
@@ -202,8 +202,8 @@ textarea:focus-visible {
 .lnb {
   width: 256px;
   min-width: 256px;
-  background: #eceef0;
-  border-right: 1px solid transparent;
+  background: #FFF0F0;
+  border-right: 1px solid rgba(230,0,18,.06);
   padding: 24px 0 24px 16px;
   position: sticky;
   top: 114px;
@@ -224,16 +224,18 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(196,198,207,.2);
-  border-radius: 8px;
-  background: white;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(230,0,18,.08);
+  color: #E60012;
   cursor: pointer;
-  margin: 0 auto 16px;
+  margin: 0 0 16px 4px;
   transition: all 0.2s;
 }
-.lnb.collapsed .lnb-toggle { margin: 0 auto; }
+.lnb-toggle:hover { background: rgba(230,0,18,.15); }
+.lnb.collapsed .lnb-toggle { margin: 0 auto 0 auto; }
 
 .lnb-nav {
   display: flex;
@@ -289,7 +291,7 @@ textarea:focus-visible {
   margin-bottom: 24px;
 }
 .summary-card {
-  background: #f2f4f6;
+  background: #FFF5F5;
   border: none;
   border-radius: 8px;
   padding: 16px;
@@ -349,13 +351,13 @@ textarea:focus-visible {
   box-shadow: none;
 }
 .round-card:hover {
-  background: rgba(255,255,255,.5);
+  background: rgba(255,255,255,.7);
 }
 .round-card.selected {
   background: #ffffff;
-  color: #191c1e;
+  color: #E60012;
   font-weight: 700;
-  box-shadow: 0 0 0 2px #E60012;
+  box-shadow: none;
 }
 .round-card .r-title {
   font-size: 13px;
@@ -437,7 +439,7 @@ label {
   padding: 16px 20px;
   border: none;
   border-radius: 8px;
-  background: #f2f4f6;
+  background: #FFF5F5;
   font-size: 12px;
   line-height: 1.7;
   color: var(--ink);
@@ -500,7 +502,7 @@ label {
 .kpi-card-header {
   padding: 20px 24px 16px;
   border-bottom: 1px solid rgba(196,198,207,.1);
-  background: #f2f4f6;
+  background: #FFF5F5;
 }
 .kpi-header-top {
   display: flex;
@@ -682,7 +684,7 @@ label {
   height: 10px;
   overflow: hidden;
   border-radius: 999px;
-  background: #f2f4f6;
+  background: #FFF5F5;
 }
 .progress-bar-fill {
   height: 100%;
@@ -821,7 +823,7 @@ label {
   display: flex;
   align-items: center;
   gap: 0;
-  background: #f2f4f6;
+  background: #FFF5F5;
   border-radius: 12px;
   padding: 4px;
   margin-bottom: 24px;
@@ -927,7 +929,7 @@ label {
   padding: 16px;
   border: 1px solid rgba(196,198,207,.1);
   border-radius: 12px;
-  background: #f7f9fb;
+  background: #FFFAFA;
 }
 .okr-dh {
   display: flex;
@@ -1128,13 +1130,13 @@ label {
 .cat-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:6px;letter-spacing:0.3px;border:none;}
 .cat-badge.hai{background:#FEE2E2;color:#991b1b;}
 .cat-badge.major{background:#d0e1fb;color:#38485d;}
-.cat-badge.detail-kpi{background:#eceef0;color:#44474e;}
+.cat-badge.detail-kpi{background:#FFE8E8;color:#44474e;}
 
 /* Checkin Table */
 .checkin-table-wrap { overflow-x: auto; margin-bottom: 20px; }
 .checkin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .checkin-table th {
-  background: #f2f4f6;
+  background: #FFF5F5;
   padding: 10px 12px;
   text-align: left;
   font-weight: 700;
@@ -1152,7 +1154,7 @@ label {
   border-bottom: 1px solid rgba(196,198,207,.1);
   vertical-align: top;
 }
-.checkin-table tr:hover { background: #f7f9fb; }
+.checkin-table tr:hover { background: #FFFAFA; }
 .checkin-table input, .checkin-table select, .checkin-table textarea {
   font-size: 12px;
   padding: 6px 8px;
@@ -1221,7 +1223,7 @@ label {
 .insight-progress-bg {
   height: 6px;
   border-radius: 999px;
-  background: #f2f4f6;
+  background: #FFF5F5;
   margin-top: 12px;
   overflow: hidden;
 }
@@ -1537,7 +1539,7 @@ label {
       <!-- 매핑 테이블 -->
       <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;">핵심성과지표 분포</h4>
       <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:24px;">
-        <thead><tr style="background:#f2f4f6;"><th style="padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid rgba(196,198,207,.2);">HAI</th><th style="padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid rgba(196,198,207,.2);">주요 핵심지표</th><th style="padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid rgba(196,198,207,.2);">세부 핵심지표</th></tr></thead>
+        <thead><tr style="background:#FFF5F5;"><th style="padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid rgba(196,198,207,.2);">HAI</th><th style="padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid rgba(196,198,207,.2);">주요 핵심지표</th><th style="padding:8px 10px;text-align:left;font-weight:600;border-bottom:2px solid rgba(196,198,207,.2);">세부 핵심지표</th></tr></thead>
         <tbody>
           <tr><td style="padding:6px 10px;border-bottom:1px solid #f5f5f5;">비즈니스 성과</td><td style="padding:6px 10px;border-bottom:1px solid #f5f5f5;">매출</td><td style="padding:6px 10px;border-bottom:1px solid #f5f5f5;">매출 / 업셀링 / 영업활동</td></tr>
           <tr><td style="padding:6px 10px;border-bottom:1px solid #f5f5f5;">비즈니스 성과</td><td style="padding:6px 10px;border-bottom:1px solid #f5f5f5;">이익</td><td style="padding:6px 10px;border-bottom:1px solid #f5f5f5;">공헌이익 / 당기순이익 / 손익관리 / 재무관리</td></tr>
@@ -2971,7 +2973,7 @@ function renderBarChart(bunbuList, data) {
   // Find max value index to highlight
   let maxIdx = 0;
   values.forEach((v, i) => { if (v > values[maxIdx]) maxIdx = i; });
-  const bgColors = values.map((v, i) => i === maxIdx ? '#E60012' : '#f2f4f6');
+  const bgColors = values.map((v, i) => i === maxIdx ? '#E60012' : '#FFF5F5');
   const bdColors = values.map((v, i) => i === maxIdx ? '#E60012' : '#e5e7eb');
 
   if (chartBarBunbu) { chartBarBunbu.destroy(); chartBarBunbu = null; }
