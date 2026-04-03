@@ -191,8 +191,17 @@ textarea:focus-visible {
 }
 .section.active { display: block; }
 #section-checkin { padding: 32px 40px; }
-#teamSelectCard { text-align: center !important; }
-#teamSelectCard > div:first-child { display: inline-flex !important; justify-content: center; }
+#teamSelectCard {
+  padding: 16px 0;
+  text-align: center;
+}
+.team-select-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
 /* ============================================================
    LAYOUT: App body (LNB + Main)
@@ -1668,25 +1677,25 @@ label {
       <h4 style="font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px;"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="6" fill="#E60012" opacity="0.12"/><path d="M7 11L10 14L15 8" stroke="#E60012" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> 체크인 등급 기준</h4>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <div style="padding:24px;border-radius:12px;background:#FFF5F5;border:1px solid #f0e0e0;">
-          <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;">정량 지표</div>
-          <div style="font-size:12px;color:#44474e;line-height:1.6;margin-bottom:16px;">달성률(%) 또는 실적 수치를 입력한 후, 성과 수준에 맞는 등급을 선택합니다.</div>
-          <div style="display:flex;flex-direction:column;gap:0;border:1px solid #e8e8e8;border-radius:8px;overflow:hidden;">
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">Arete</span><span style="font-size:12px;color:#74777f;">탁월한 성과</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">EE</span><span style="font-size:12px;color:#74777f;">기대 초과</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">ME</span><span style="font-size:12px;color:#74777f;">기대 충족</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">NI</span><span style="font-size:12px;color:#74777f;">기대 미만</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;"><span style="font-size:13px;font-weight:800;color:#94a3b8;width:50px;">보류</span><span style="font-size:12px;color:#74777f;">체크인 보류</span></div>
+          <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:14px;">정량 지표</div>
+          <div style="font-size:14px;color:#44474e;line-height:1.6;margin-bottom:16px;">달성률(%) 또는 실적 수치를 입력한 후, 성과 수준에 맞는 등급을 선택합니다.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">Arete</span><span style="font-size:14px;color:#74777f;">탁월한 성과</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">EE</span><span style="font-size:14px;color:#74777f;">기대 초과</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">ME</span><span style="font-size:14px;color:#74777f;">기대 충족</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">NI</span><span style="font-size:14px;color:#74777f;">기대 미만</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:#94a3b8;width:56px;">보류</span><span style="font-size:14px;color:#74777f;">체크인 보류</span></div>
           </div>
         </div>
         <div style="padding:24px;border-radius:12px;background:#FFF5F5;border:1px solid #f0e0e0;">
-          <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;">정성 지표</div>
-          <div style="font-size:12px;color:#44474e;line-height:1.6;margin-bottom:16px;">정성적으로 판단하여 등급을 선택합니다.</div>
-          <div style="display:flex;flex-direction:column;gap:0;border:1px solid #e8e8e8;border-radius:8px;overflow:hidden;">
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">Arete</span><span style="font-size:12px;color:#74777f;">탁월한 성과</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">EE</span><span style="font-size:12px;color:#74777f;">기대 초과</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">ME</span><span style="font-size:12px;color:#74777f;">기대 충족</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #e8e8e8;background:#fff;"><span style="font-size:13px;font-weight:800;color:var(--ink);width:50px;">NI</span><span style="font-size:12px;color:#74777f;">기대 미만</span></div>
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;"><span style="font-size:13px;font-weight:800;color:#94a3b8;width:50px;">보류</span><span style="font-size:12px;color:#74777f;">체크인 보류</span></div>
+          <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:14px;">정성 지표</div>
+          <div style="font-size:14px;color:#44474e;line-height:1.6;margin-bottom:16px;">정성적으로 판단하여 등급을 선택합니다.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">Arete</span><span style="font-size:14px;color:#74777f;">탁월한 성과</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">EE</span><span style="font-size:14px;color:#74777f;">기대 초과</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">ME</span><span style="font-size:14px;color:#74777f;">기대 충족</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:var(--ink);width:56px;">NI</span><span style="font-size:14px;color:#74777f;">기대 미만</span></div>
+            <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:15px;font-weight:800;color:#94a3b8;width:56px;">보류</span><span style="font-size:14px;color:#74777f;">체크인 보류</span></div>
           </div>
         </div>
       </div>
@@ -1704,8 +1713,8 @@ label {
         </select>
       </div>
 
-      <div id="teamSelectCard" style="display:none;padding:16px 0;text-align:center;">
-        <div style="display:inline-flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center;">
+      <div id="teamSelectCard" style="display:none;">
+        <div class="team-select-inner">
           <div style="display:flex;align-items:center;gap:8px;">
             <label style="font-size:13px;font-weight:600;color:#44474e;white-space:nowrap;">본부</label>
             <select id="selBunbu" onchange="onBunbuChange()" style="min-width:200px;">
