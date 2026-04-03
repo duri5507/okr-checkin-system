@@ -1494,21 +1494,23 @@ label {
   </div>
 
   <!-- 현황 카드 3개 -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;" id="homeStatusCards">
-    <div class="card" style="text-align:center;padding:16px;">
-      <span class="material-icons-outlined" style="font-size:24px;color:#E60012;margin-bottom:4px;">event</span>
-      <div style="font-size:16px;font-weight:800;color:var(--ink);" id="homeRoundName">-</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px;">현재 회차</div>
+  <div style="display:flex;gap:16px;margin-bottom:24px;justify-content:center;" id="homeStatusCards">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="material-icons-outlined" style="font-size:16px;color:var(--ink);">event</span>
+      <span style="font-size:13px;color:var(--muted);">현재 회차</span>
+      <span style="font-size:13px;font-weight:700;color:var(--ink);" id="homeRoundName">-</span>
     </div>
-    <div class="card" style="text-align:center;padding:16px;">
-      <span class="material-icons-outlined" style="font-size:24px;color:var(--green);margin-bottom:4px;">check_circle</span>
-      <div style="font-size:16px;font-weight:800;color:var(--ink);" id="homeCompRate">-</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px;">전체 완료율</div>
+    <div style="width:1px;background:rgba(196,198,207,.3);"></div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="material-icons-outlined" style="font-size:16px;color:var(--ink);">check_circle</span>
+      <span style="font-size:13px;color:var(--muted);">전체 완료율</span>
+      <span style="font-size:13px;font-weight:700;color:var(--ink);" id="homeCompRate">-</span>
     </div>
-    <div class="card" style="text-align:center;padding:16px;">
-      <span class="material-icons-outlined" style="font-size:24px;color:var(--orange);margin-bottom:4px;">groups</span>
-      <div style="font-size:16px;font-weight:800;color:var(--ink);" id="homeTotalTeams">-</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px;">참여 팀</div>
+    <div style="width:1px;background:rgba(196,198,207,.3);"></div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="material-icons-outlined" style="font-size:16px;color:var(--ink);">groups</span>
+      <span style="font-size:13px;color:var(--muted);">참여 팀</span>
+      <span style="font-size:13px;font-weight:700;color:var(--ink);" id="homeTotalTeams">-</span>
     </div>
   </div>
 
