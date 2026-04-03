@@ -12,17 +12,18 @@
    DESIGN TOKENS
    ============================================================ */
 :root {
-  --primary: #002046;
-  --primary-container: #1b365d;
-  --secondary: #505f76;
-  --accent: #465f88;
+  --primary: #E60012;
+  --primary-dark: #C4000F;
+  --primary-container: #FEE2E2;
+  --secondary: #6B7280;
+  --accent: #DC2626;
   --green: #22c55e;
   --orange: #f59e0b;
   --red: #ba1a1a;
   --purple: #8b5cf6;
   --tertiary: #4b0003;
 
-  /* Neutral palette (navy clean) */
+  /* Neutral palette */
   --ink: #191c1e;
   --ink-light: #374151;
   --muted: #44474e;
@@ -41,7 +42,7 @@
   --shadow-hover: 0 6px 16px rgba(0,0,0,.08);
 
   /* Focus */
-  --focus-ring: 0 0 0 3px rgba(0,32,70,.1);
+  --focus-ring: 0 0 0 3px rgba(230,0,18,.1);
   --focus-outline: 2px solid var(--primary);
 }
 
@@ -99,7 +100,7 @@ textarea:focus-visible {
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.05em;
-  color: #002046;
+  color: #191c1e;
 }
 .header-title span {
   margin-left: 8px;
@@ -170,12 +171,12 @@ textarea:focus-visible {
   transition: all 0.2s ease;
 }
 .nav-btn:hover {
-  color: #002046;
+  color: #191c1e;
 }
 .nav-btn.active {
-  color: #002046;
+  color: #191c1e;
   font-weight: 600;
-  border-bottom-color: #002046;
+  border-bottom-color: #E60012;
   background: none;
 }
 
@@ -209,27 +210,30 @@ textarea:focus-visible {
   height: calc(100vh - 114px);
   overflow-y: auto;
   flex-shrink: 0;
+  transition: width 0.2s ease, min-width 0.2s ease, padding 0.2s ease;
 }
-
-.lnb-header {
-  padding: 0 16px;
-  margin-bottom: 24px;
+.lnb.collapsed {
+  width: 48px;
+  min-width: 48px;
+  padding: 24px 0;
+  overflow: hidden;
 }
-
-.lnb-title {
-  font-family: 'Manrope', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: #002046;
-  margin-bottom: 2px;
+.lnb.collapsed .lnb-nav,
+.lnb.collapsed .no-rounds { display: none; }
+.lnb-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(196,198,207,.2);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  margin: 0 auto 16px;
+  transition: all 0.2s;
 }
-
-.lnb-subtitle {
-  font-size: 12px;
-  color: #44474e;
-}
+.lnb.collapsed .lnb-toggle { margin: 0 auto; }
 
 .lnb-nav {
   display: flex;
@@ -310,7 +314,7 @@ textarea:focus-visible {
 .summary-card.green .summary-icon { color: var(--green); }
 .summary-card.orange .summary-icon { color: var(--orange); }
 .summary-card.red .summary-icon { color: #ba1a1a; }
-.summary-icon { font-size: 24px; margin: 0; color: #002046; }
+.summary-icon { font-size: 24px; margin: 0; color: #191c1e; }
 .summary-info {}
 .summary-num {
   font-family: 'Manrope', sans-serif;
@@ -349,9 +353,9 @@ textarea:focus-visible {
 }
 .round-card.selected {
   background: #ffffff;
-  color: #002046;
+  color: #191c1e;
   font-weight: 700;
-  box-shadow: none;
+  box-shadow: 0 0 0 2px #E60012;
 }
 .round-card .r-title {
   font-size: 13px;
@@ -370,7 +374,7 @@ textarea:focus-visible {
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 4px;
-  background: #002046;
+  background: #E60012;
   color: white;
   margin-left: auto;
   white-space: nowrap;
@@ -396,8 +400,8 @@ textarea {
 select:focus,
 input:focus,
 textarea:focus {
-  border-color: #002046;
-  box-shadow: 0 0 0 3px rgba(0,32,70,.08);
+  border-color: #E60012;
+  box-shadow: 0 0 0 3px rgba(230,0,18,.1);
 }
 textarea {
   resize: vertical;
@@ -507,7 +511,7 @@ label {
 .okr-num {
   padding: 4px 12px;
   border-radius: 8px;
-  background: #002046;
+  background: #E60012;
   font-family: 'Manrope', sans-serif;
   font-size: 13px;
   font-weight: 800;
@@ -529,7 +533,7 @@ label {
   font-weight: 700;
   white-space: nowrap;
 }
-.badge.q { background: #d6e3ff; color: #002046; }
+.badge.q { background: #FEE2E2; color: #991b1b; }
 .badge.s { background: #f3e8ff; color: #7c3aed; }
 .kr-section {
   margin-top: 8px;
@@ -616,11 +620,11 @@ label {
   transform: translateY(0);
 }
 .btn-primary {
-  background: #002046;
+  background: #E60012;
   color: white;
 }
 .btn-primary:hover {
-  background: #1b365d;
+  background: #C4000F;
 }
 .btn-primary:disabled {
   background: var(--subtle);
@@ -628,11 +632,11 @@ label {
   transform: none;
 }
 .btn-accent {
-  background: #002046;
+  background: #E60012;
   color: white;
 }
 .btn-accent:hover {
-  background: #1b365d;
+  background: #C4000F;
 }
 .btn-success {
   background: var(--green);
@@ -683,14 +687,14 @@ label {
 .progress-bar-fill {
   height: 100%;
   border-radius: 999px;
-  background: #002046;
+  background: #E60012;
   transition: width .6s ease;
 }
 .progress-pct {
   min-width: 40px;
   font-size: 14px;
   font-weight: 600;
-  color: #002046;
+  color: #E60012;
   text-align: right;
 }
 .progress-label {
@@ -749,7 +753,7 @@ label {
   font-size: 11px;
   font-weight: 700;
 }
-.status-badge.done-badge { background: rgba(0,32,70,.1); color: #002046; }
+.status-badge.done-badge { background: rgba(230,0,18,.1); color: #E60012; }
 .status-badge.pending-badge { background: rgba(80,95,118,.1); color: #505f76; }
 .status-badge.issue-badge { background: rgba(186,26,26,.1); color: #ba1a1a; }
 .status-text {
@@ -802,7 +806,7 @@ label {
   font-family: 'Manrope', sans-serif;
   font-size: 24px;
   font-weight: 800;
-  color: #002046;
+  color: #191c1e;
 }
 .issue-box-label {
   margin-top: 4px;
@@ -1122,7 +1126,7 @@ label {
 /* OKR Category Badges */
 .okr-categories{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
 .cat-badge{font-size:10px;font-weight:500;padding:2px 8px;border-radius:6px;letter-spacing:0.3px;border:none;}
-.cat-badge.hai{background:#d6e3ff;color:#002046;}
+.cat-badge.hai{background:#FEE2E2;color:#991b1b;}
 .cat-badge.major{background:#d0e1fb;color:#38485d;}
 .cat-badge.detail-kpi{background:#eceef0;color:#44474e;}
 
@@ -1194,7 +1198,7 @@ label {
   font-family: 'Manrope', sans-serif;
   font-size: 40px;
   font-weight: 800;
-  color: #002046;
+  color: #191c1e;
   letter-spacing: -0.02em;
 }
 .insight-card .insight-sub {
@@ -1206,7 +1210,7 @@ label {
   border-left: 4px solid #ba1a1a;
 }
 .insight-card.navy {
-  background: linear-gradient(155deg, #002046 0%, #1b365d 100%);
+  background: linear-gradient(155deg, #E60012 0%, #C4000F 100%);
   color: white;
   border: none;
 }
@@ -1224,7 +1228,7 @@ label {
 .insight-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: #002046;
+  background: #E60012;
   transition: width .6s ease;
 }
 .insight-card.navy .insight-progress-bg { background: rgba(255,255,255,.15); }
@@ -1353,6 +1357,76 @@ label {
   .chart-container { min-height: 200px; }
   .team-grid { grid-template-columns: 1fr; }
 }
+/* ============================================================
+   COMPONENT: OKR Row (card-row hybrid for checkin form)
+   ============================================================ */
+.okr-row {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 0;
+  background: white;
+  border: 1px solid rgba(196,198,207,.1);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.okr-row-num {
+  background: #E60012;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding: 16px 0;
+}
+.okr-row-content {
+  padding: 16px 20px;
+}
+.okr-row-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.okr-row-header .goal-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #191c1e;
+}
+.okr-row-header .kr-text {
+  font-size: 12px;
+  color: #44474e;
+}
+.okr-row-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.okr-row-inputs .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.okr-row-inputs label {
+  font-size: 10px;
+  margin: 0;
+}
+.okr-row-inputs input,
+.okr-row-inputs select,
+.okr-row-inputs textarea {
+  font-size: 13px;
+  padding: 8px 10px;
+  min-height: 36px;
+}
+.okr-row-inputs textarea {
+  min-height: 36px;
+  height: 36px;
+}
 </style>
 </head>
 <body>
@@ -1380,10 +1454,9 @@ label {
 
 <div class="app-body">
   <aside class="lnb" id="lnbSidebar">
-    <div class="lnb-header">
-      <p class="lnb-title">FISCAL CYCLES</p>
-      <p class="lnb-subtitle">Select active round</p>
-    </div>
+    <button class="lnb-toggle" onclick="toggleLnb()" id="lnbToggle">
+      <span class="material-icons-outlined" id="lnbToggleIcon">chevron_left</span>
+    </button>
     <nav class="lnb-nav" id="roundGrid">
       <!-- 회차 카드들이 여기에 렌더링됨 -->
     </nav>
@@ -1399,7 +1472,7 @@ label {
   <!-- 히어로 영역 -->
   <div style="text-align:center;padding:48px 20px 32px;">
     <img src="logo.png" alt="HUNET" style="height:40px;margin-bottom:16px;">
-    <h2 style="font-family:'Manrope',sans-serif;font-size:24px;font-weight:800;color:#002046;letter-spacing:-0.5px;">조직 성과 체크인</h2>
+    <h2 style="font-family:'Manrope',sans-serif;font-size:24px;font-weight:800;color:#191c1e;letter-spacing:-0.5px;">조직 성과 체크인</h2>
     <p style="color:var(--muted);margin-top:8px;font-size:14px;" id="homeRoundInfo">현재 진행 중인 회차를 확인해주세요.</p>
     <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;">
       <button class="btn btn-accent" onclick="showSection('checkin',document.querySelectorAll('.nav-btn')[1])" style="padding:14px 32px;font-size:15px;">
@@ -1414,7 +1487,7 @@ label {
   <!-- 현황 카드 3개 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;" id="homeStatusCards">
     <div class="card" style="text-align:center;padding:24px;">
-      <span class="material-icons-outlined" style="font-size:32px;color:#002046;margin-bottom:8px;">event</span>
+      <span class="material-icons-outlined" style="font-size:32px;color:#E60012;margin-bottom:8px;">event</span>
       <div style="font-size:20px;font-weight:800;color:var(--ink);" id="homeRoundName">-</div>
       <div style="font-size:12px;color:var(--muted);margin-top:4px;">현재 회차</div>
     </div>
@@ -1443,8 +1516,8 @@ label {
       <!-- HAI 설명 4카드 -->
       <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;">아레테 경영지수(HAI)</h4>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px;">
-        <div style="padding:14px;border-radius:10px;background:#d6e3ff;">
-          <div style="font-weight:700;font-size:13px;color:#002046;">비즈니스 성과</div>
+        <div style="padding:14px;border-radius:10px;background:#FEE2E2;">
+          <div style="font-weight:700;font-size:13px;color:#991b1b;">비즈니스 성과</div>
           <div style="font-size:11px;color:var(--muted);margin-top:2px;">양적 성장을 넘어 질적 성장을 동반한 지속 가능한 비즈니스 구축</div>
         </div>
         <div style="padding:14px;border-radius:10px;background:#eff6ff;">
@@ -1506,8 +1579,7 @@ label {
 <!-- ===== CHECKIN ===== -->
 <div class="section" id="section-checkin">
       <div style="margin-bottom:24px;">
-        <h1 style="font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;color:#002046;letter-spacing:-0.5px;margin-bottom:4px;">Check-in Submission</h1>
-        <p style="font-size:13px;color:#74777f;">Submit your team's OKR performance check-in</p>
+        <h1 style="font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;color:#191c1e;letter-spacing:-0.5px;margin-bottom:4px;">체크인 입력</h1>
       </div>
 
       <div class="mobile-round-select" style="display:none;">
@@ -1515,33 +1587,6 @@ label {
         <select id="mobileRoundSelect" onchange="mobileSelectRound()">
           <option value="">-- 회차 선택 --</option>
         </select>
-      </div>
-
-      <!-- Check-in Guide -->
-      <div style="margin-bottom:24px;">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#44474e;margin-bottom:12px;">CHECK-IN GUIDE</div>
-        <div class="guide-row">
-          <div class="guide-box quan" style="position:relative;padding-left:52px;">
-            <div style="position:absolute;left:16px;top:16px;width:28px;height:28px;border-radius:50%;background:#002046;color:white;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;">1</div>
-            <h4><span class="material-icons-outlined mi">straighten</span> 정량 지표 입력</h4>
-            <ul>
-              <li>달성률 → <b>85%</b>, <b>120%</b> 등 퍼센트로 작성</li>
-              <li>수치 → <b>17방</b>, <b>250억</b>, <b>1,200개</b> 등 실제 수치로 작성</li>
-              <li>현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b>로 입력</li>
-            </ul>
-          </div>
-          <div class="guide-box qual" style="position:relative;padding-left:52px;">
-            <div style="position:absolute;left:16px;top:16px;width:28px;height:28px;border-radius:50%;background:#002046;color:white;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-size:13px;font-weight:800;">2</div>
-            <h4><span class="material-icons-outlined mi">star</span> 정성 지표 등급</h4>
-            <div class="guide-grade">
-              <span class="gl arete">Arete</span><span class="gd">누구나 인정할 만큼 탁월한 성과 창출</span>
-              <span class="gl ee">EE</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>초과</b></span>
-              <span class="gl me">ME</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준을 <b>충족</b></span>
-              <span class="gl ni">NI</span><span class="gd">목표한 성과와 조직/비즈니스 기여도가 기대 수준 <b>미만</b></span>
-              <span class="gl hold">보류</span><span class="gd">현재 시점에 체크인이 어려운 경우 → <b>체크인 보류</b> 선택</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="card" id="teamSelectCard" style="display:none">
@@ -1570,7 +1615,7 @@ label {
       <div id="addOkrArea"></div>
       <div class="submit-row">
         <button class="btn btn-outline" onclick="resetForm()">초기화</button>
-        <button class="btn btn-accent" id="submitBtn" onclick="submitCheckin()"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px">check_circle</span> 체크인 제출</button>
+        <button class="btn btn-accent" id="submitBtn" onclick="submitCheckin()"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">check_circle</span> 체크인 제출</button>
       </div>
     </div>
   </div>
@@ -1580,25 +1625,24 @@ label {
 <div class="section" id="section-dashboard">
   <!-- Title + Filter Bar -->
   <div style="margin-bottom:8px;">
-    <h1 style="font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;color:#002046;letter-spacing:-0.5px;margin-bottom:4px;">Dashboard</h1>
-    <p style="font-size:13px;color:#74777f;">Performance overview and check-in analytics</p>
+    <h1 style="font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;color:#191c1e;letter-spacing:-0.5px;margin-bottom:4px;">대시보드</h1>
   </div>
 
   <div class="filter-bar">
     <div class="filter-group">
-      <label>ROUND</label>
+      <label>회차</label>
       <select id="dashRound" onchange="renderDashboard()">
         <option value="">-- 회차 선택 --</option>
       </select>
     </div>
     <div class="filter-group">
-      <label>DIVISION</label>
+      <label>본부</label>
       <select id="dashBunbu" onchange="renderDashboard()">
         <option value="">전체 본부</option>
       </select>
     </div>
     <div class="filter-group">
-      <label>HAI</label>
+      <label>아레테 경영지수(HAI)</label>
       <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()">
         <option value="">전체</option>
         <option value="비즈니스 성과">비즈니스 성과</option>
@@ -1608,13 +1652,13 @@ label {
       </select>
     </div>
     <div class="filter-group">
-      <label>MAJOR KPI</label>
+      <label>주요 핵심지표</label>
       <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()">
         <option value="">전체</option>
       </select>
     </div>
     <div class="filter-group">
-      <label>DETAIL KPI</label>
+      <label>세부 핵심지표</label>
       <select id="dashDetail" onchange="renderDashboard()">
         <option value="">전체</option>
       </select>
@@ -1628,31 +1672,31 @@ label {
   <div class="insight-panel" id="insightPanel">
     <div class="insight-card">
       <div>
-        <div class="insight-label">COMPLETION RATE</div>
+        <div class="insight-label">체크인 완료율</div>
         <div class="insight-num" id="insightRate">-</div>
       </div>
       <div class="insight-progress-bg"><div class="insight-progress-fill" id="insightRateBar" style="width:0%"></div></div>
     </div>
     <div class="insight-card">
       <div>
-        <div class="insight-label">AVG. ACHIEVEMENT</div>
+        <div class="insight-label">평균 달성률</div>
         <div class="insight-num" id="insightAvg">-</div>
       </div>
-      <div class="insight-sub" id="insightAvgSub">vs. previous period</div>
+      <div class="insight-sub" id="insightAvgSub"></div>
     </div>
     <div class="insight-card at-risk">
       <div>
-        <div class="insight-label">AT RISK TARGETS</div>
+        <div class="insight-label">이슈 대상</div>
         <div class="insight-num" id="insightIssueCount">-</div>
       </div>
-      <div class="insight-sub" id="insightIssueSub">teams with issues</div>
+      <div class="insight-sub" id="insightIssueSub">이슈가 있는 팀</div>
     </div>
     <div class="insight-card navy">
       <div>
-        <div class="insight-label">HIGH PERFORMERS</div>
+        <div class="insight-label">고성과 팀</div>
         <div class="insight-num" id="insightHigh">-</div>
       </div>
-      <div class="insight-sub">teams above 80% achievement</div>
+      <div class="insight-sub">달성률 80% 이상 팀</div>
     </div>
   </div>
 
@@ -1661,28 +1705,28 @@ label {
     <div class="summary-card">
       <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">groups</span></div>
       <div class="summary-info">
-        <div class="summary-label">Total Teams</div>
+        <div class="summary-label">전체 팀</div>
         <div class="summary-num" id="dTotal">-</div>
       </div>
     </div>
     <div class="summary-card green">
       <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">check_circle</span></div>
       <div class="summary-info">
-        <div class="summary-label">Completed</div>
+        <div class="summary-label">완료</div>
         <div class="summary-num" id="dDone">-</div>
       </div>
     </div>
     <div class="summary-card orange">
       <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">hourglass_empty</span></div>
       <div class="summary-info">
-        <div class="summary-label">Pending</div>
+        <div class="summary-label">미완료</div>
         <div class="summary-num" id="dPending">-</div>
       </div>
     </div>
     <div class="summary-card red">
       <div class="summary-icon-wrap"><span class="material-icons-outlined summary-icon">warning</span></div>
       <div class="summary-info">
-        <div class="summary-label">Issues</div>
+        <div class="summary-label">이슈</div>
         <div class="summary-num" id="dIssue">-</div>
       </div>
     </div>
@@ -1693,26 +1737,26 @@ label {
     <div>
       <!-- Department Progress Ranking -->
       <div class="card">
-        <div class="card-title"><span class="material-icons-outlined mi">bar_chart</span> Department Progress Ranking</div>
+        <div class="card-title"><span class="material-icons-outlined mi">bar_chart</span> 본부별 달성 현황</div>
         <div id="bunbuProgress"></div>
       </div>
 
       <!-- High-Priority Teams -->
       <div class="card">
-        <div class="card-title"><span class="material-icons-outlined mi">groups</span> Team Check-in Status</div>
+        <div class="card-title"><span class="material-icons-outlined mi">groups</span> 팀별 체크인 현황</div>
         <div class="team-grid" id="teamGrid"></div>
       </div>
     </div>
     <div>
       <!-- Grade Distribution (Donut) -->
       <div class="chart-card" style="margin-bottom:24px;">
-        <div class="chart-card-title"><span class="material-icons-outlined mi">donut_large</span> Grade Distribution</div>
+        <div class="chart-card-title"><span class="material-icons-outlined mi">donut_large</span> 등급 분포</div>
         <div class="chart-container" style="min-height:260px;"><canvas id="chartDoughnut"></canvas></div>
       </div>
 
       <!-- Achievement Trend (Bar) -->
       <div class="chart-card">
-        <div class="chart-card-title"><span class="material-icons-outlined mi">trending_up</span> Achievement Trend</div>
+        <div class="chart-card-title"><span class="material-icons-outlined mi">trending_up</span> 달성 추이</div>
         <div class="chart-container" style="min-height:260px;"><canvas id="chartBarBunbu"></canvas></div>
       </div>
     </div>
@@ -1720,7 +1764,7 @@ label {
 
   <!-- Issue Summary -->
   <div class="card">
-    <div class="card-title"><span class="material-icons-outlined mi">warning</span> Issue Summary</div>
+    <div class="card-title"><span class="material-icons-outlined mi">warning</span> 이슈 현황</div>
     <div class="issue-summary">
       <div class="issue-box"><div class="issue-box-num" id="ic1">-</div><div class="issue-box-label">목표조정</div></div>
       <div class="issue-box"><div class="issue-box-num" id="ic2">-</div><div class="issue-box-label">신규목표</div></div>
@@ -2164,6 +2208,16 @@ function cacheSet(key, val) { try { localStorage.setItem('okr_cache_'+key, JSON.
 function cacheGet(key) { try { return JSON.parse(localStorage.getItem('okr_cache_'+key)); } catch(e){ return null; } }
 
 // ============================================================
+// LNB TOGGLE
+// ============================================================
+function toggleLnb() {
+  const lnb = document.getElementById('lnbSidebar');
+  const icon = document.getElementById('lnbToggleIcon');
+  lnb.classList.toggle('collapsed');
+  icon.textContent = lnb.classList.contains('collapsed') ? 'chevron_right' : 'chevron_left';
+}
+
+// ============================================================
 // INIT
 // ============================================================
 async function init() {
@@ -2223,6 +2277,10 @@ function renderRounds() {
   }
   grid.style.display = 'flex';
   noMsg.style.display = 'none';
+  // 활성 회차 자동 선택
+  if (!state.round && active.length) {
+    selectRound(active[0].name);
+  }
   active.forEach(r => {
     const sel = state.round === r.name;
     grid.innerHTML += `
@@ -2395,37 +2453,26 @@ function renderOkrForm(bunbu, team, prevData) {
   const gradeOpts = ['Arete','EE','ME','NI','체크인 보류'];
   const iopts = ['없음','목표조정','신규목표','목표폐기','지원요청','기타'];
 
-  let html = '<div class="checkin-table-wrap"><table class="checkin-table"><thead><tr>';
-  html += '<th>#</th>';
-  html += '<th>HAI/주요/세부</th>';
-  html += '<th>목표(Objective)</th>';
-  html += '<th>핵심성과지표(KR)</th>';
-  html += '<th>① 성과 체크인</th>';
-  html += '<th>② 등급</th>';
-  html += '<th>③ 코멘트</th>';
-  html += '<th>④ 이슈</th>';
-  html += '<th>⑤ 이슈 상세</th>';
-  html += '<th></th>';
-  html += '</tr></thead><tbody>';
+  let html = '';
 
   allOkrs.forEach((okr, i) => {
     const prev = prevData ? prevData.okrs[i] : null;
     const isQ = okr.type === '정량';
     const isExtra = i >= baseOkrs.length;
+    const num = String(i+1).padStart(2,'0');
 
-    // Categories cell
-    let catHtml = '<div class="cat-badges">';
-    if (okr.hai) catHtml += `<span class="cat-badge hai">${esc(okr.hai)}</span>`;
-    if (okr.major) catHtml += `<span class="cat-badge major">${esc(okr.major)}</span>`;
-    if (okr.detailKpi) catHtml += `<span class="cat-badge detail-kpi">${esc(okr.detailKpi)}</span>`;
-    catHtml += '</div>';
+    // Category badges
+    let catBadges = '';
+    if (okr.hai) catBadges += `<span class="cat-badge hai">${esc(okr.hai)}</span>`;
+    if (okr.major) catBadges += `<span class="cat-badge major">${esc(okr.major)}</span>`;
+    if (okr.detailKpi) catBadges += `<span class="cat-badge detail-kpi">${esc(okr.detailKpi)}</span>`;
 
-    // Checkin input cell
+    // Checkin input
     let ciHtml = '';
     if (isQ) {
       const prevIsHold = prev && prev.checkin === '체크인 보류';
       ciHtml = `
-        <div style="display:flex;gap:6px;align-items:center;">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px;">
           <label style="font-size:11px;display:flex;align-items:center;gap:3px;margin:0;cursor:pointer;">
             <input type="radio" name="ciMode_${i}" value="input" ${!prevIsHold?'checked':''} onchange="toggleCiMode(${i})"> 수치 입력
           </label>
@@ -2433,40 +2480,62 @@ function renderOkrForm(bunbu, team, prevData) {
             <input type="radio" name="ciMode_${i}" value="hold" ${prevIsHold?'checked':''} onchange="toggleCiMode(${i})"> 체크인 보류
           </label>
         </div>
-        <input type="text" id="ci_${i}" placeholder="85%, 17방 등" style="margin-top:4px;${prevIsHold?'background:#f5f5f5;':''}" value="${prev?esc(prev.checkin):''}">`;
+        <input type="text" id="ci_${i}" placeholder="85%, 17방 등" style="${prevIsHold?'background:#f5f5f5;':''}" value="${prev?esc(prev.checkin):''}">`;
     } else {
       ciHtml = `<select id="ci_${i}"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
     }
 
-    // Grade cell (for both types)
+    // Grade
     const prevGrade = prev ? (prev.grade || '') : '';
     const gradeHtml = `<select id="grade_${i}"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prevGrade===g?' selected':''}>${g}</option>`).join('')}</select>`;
 
-    // Issue cell
-    const issueHtml = `<select id="issue_${i}" onchange="toggleDet(${i})" style="min-width:90px;">${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}</select>`;
+    // Issue
+    const issueHtml = `<select id="issue_${i}" onchange="toggleDet(${i})">${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}</select>`;
 
-    // Issue detail cell
+    // Issue detail
     const showDet = prev && prev.issue && prev.issue !== '없음';
-    const detHtml = `<div id="det_${i}" style="display:${showDet?'block':'none'}"><textarea id="detText_${i}" placeholder="이슈 상세 내용">${prev?esc(prev.issueText):''}</textarea></div><div id="detPlaceholder_${i}" style="display:${showDet?'none':'block'};color:var(--subtle);font-size:11px;">&mdash;</div>`;
+    const detHtml = `<div id="det_${i}" style="display:${showDet?'block':'none'}"><textarea id="detText_${i}" placeholder="이슈 상세 내용">${prev?esc(prev.issueText):''}</textarea></div>`;
 
     // Delete button for extra OKR
-    const deleteHtml = isExtra ? `<button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:16px" onclick="removeExtraOkr(${i - baseOkrs.length})">✕</button>` : '';
+    const deleteHtml = isExtra ? `<div style="display:flex;justify-content:flex-end;margin-top:8px;"><button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;font-weight:600;" onclick="removeExtraOkr(${i - baseOkrs.length})">삭제</button></div>` : '';
 
-    html += `<tr>
-      <td style="white-space:nowrap;font-weight:700;color:var(--primary);font-size:12px;">${i+1} <span class="badge ${isQ?'q':'s'}" style="font-size:9px;padding:2px 6px;">${okr.type}</span></td>
-      <td>${catHtml}</td>
-      <td style="min-width:160px;font-size:12px;font-weight:600;line-height:1.4;">${esc(okr.goal)}</td>
-      <td style="min-width:180px;font-size:12px;line-height:1.4;">${esc(okr.kr)}${okr.detail?`<div style="font-size:10px;color:#64748b;margin-top:2px;">└ ${esc(okr.detail)}</div>`:''}</td>
-      <td style="min-width:150px;">${ciHtml}</td>
-      <td style="min-width:110px;">${gradeHtml}</td>
-      <td style="min-width:160px;"><textarea id="comment_${i}" placeholder="코멘트 작성">${prev?esc(prev.comment):''}</textarea></td>
-      <td style="min-width:100px;">${issueHtml}</td>
-      <td style="min-width:140px;">${detHtml}</td>
-      <td>${deleteHtml}</td>
-    </tr>`;
+    html += `<div class="okr-row">
+      <div class="okr-row-num">${num} <span style="font-size:10px;font-weight:600;">${okr.type}</span></div>
+      <div class="okr-row-content">
+        <div class="okr-row-header">
+          ${catBadges}
+        </div>
+        <div class="okr-row-header" style="margin-bottom:4px;">
+          <div class="goal-text">${esc(okr.goal)}</div>
+        </div>
+        <div style="font-size:12px;color:#44474e;margin-bottom:12px;">KR: ${esc(okr.kr)}${okr.detail?`<div style="font-size:11px;color:#64748b;margin-top:2px;">└ ${esc(okr.detail)}</div>`:''}</div>
+        <div class="okr-row-inputs">
+          <div class="field-group">
+            <label>① 성과 체크인</label>
+            ${ciHtml}
+          </div>
+          <div class="field-group">
+            <label>② 등급</label>
+            ${gradeHtml}
+          </div>
+          <div class="field-group">
+            <label>③ 코멘트</label>
+            <textarea id="comment_${i}" placeholder="코멘트 작성">${prev?esc(prev.comment):''}</textarea>
+          </div>
+          <div class="field-group">
+            <label>④ 이슈</label>
+            ${issueHtml}
+          </div>
+          <div class="field-group" id="det_wrap_${i}" style="display:${showDet?'flex':'none'}">
+            <label>⑤ 이슈 상세</label>
+            ${detHtml}
+          </div>
+        </div>
+        ${deleteHtml}
+      </div>
+    </div>`;
   });
 
-  html += '</tbody></table></div>';
   list.innerHTML = html;
 
   // 정량 OKR의 체크인 보류 상태 복원
@@ -2544,8 +2613,10 @@ function toggleDet(i) {
   const v = document.getElementById('issue_'+i).value;
   const show = v && v !== '없음';
   const detEl = document.getElementById('det_'+i);
+  const wrapEl = document.getElementById('det_wrap_'+i);
   const phEl = document.getElementById('detPlaceholder_'+i);
   if (detEl) detEl.style.display = show ? 'block' : 'none';
+  if (wrapEl) wrapEl.style.display = show ? 'flex' : 'none';
   if (phEl) phEl.style.display = show ? 'none' : 'block';
 }
 
@@ -2807,7 +2878,7 @@ function renderDashboard() {
   // At risk / issue count
   document.getElementById('insightIssueCount').textContent = issues;
   const issueSub = document.getElementById('insightIssueSub');
-  if (issueSub) issueSub.textContent = issues + ' teams with issues';
+  if (issueSub) issueSub.textContent = issues + '개 팀에 이슈';
 
   // Issue counts (카테고리 필터 반영)
   const ic={목표조정:0,신규목표:0,목표폐기:0,지원요청:0,기타:0};
@@ -2857,12 +2928,12 @@ function renderDashboard() {
     const hasIssue = iss.length > 0;
     const tags=[...new Set(iss.map(k=>k.issue))].map(v=>`<span class="issue-tag tag-${v}">${v}</span>`).join('');
     const avg = calcTeamAvgRate(bunbu, team, data);
-    const rateHtml = avg !== null ? `<div class="team-card-rate">Achievement ${Math.round(avg)}%</div>` : '';
+    const rateHtml = avg !== null ? `<div class="team-card-rate">달성률 ${Math.round(avg)}%</div>` : '';
     const statusBadge = d
       ? (hasIssue
-        ? '<span class="status-badge issue-badge">ISSUE</span>'
-        : '<span class="status-badge done-badge">DONE</span>')
-      : '<span class="status-badge pending-badge">PENDING</span>';
+        ? '<span class="status-badge issue-badge">이슈</span>'
+        : '<span class="status-badge done-badge">완료</span>')
+      : '<span class="status-badge pending-badge">미완료</span>';
     grid.innerHTML+=`
       <div class="team-card ${d?'done':'pending'}" onclick="showTeamDetail('${esc(bunbu)}','${esc(team)}')">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
@@ -2900,8 +2971,8 @@ function renderBarChart(bunbuList, data) {
   // Find max value index to highlight
   let maxIdx = 0;
   values.forEach((v, i) => { if (v > values[maxIdx]) maxIdx = i; });
-  const bgColors = values.map((v, i) => i === maxIdx ? '#002046' : '#f2f4f6');
-  const bdColors = values.map((v, i) => i === maxIdx ? '#002046' : '#e5e7eb');
+  const bgColors = values.map((v, i) => i === maxIdx ? '#E60012' : '#f2f4f6');
+  const bdColors = values.map((v, i) => i === maxIdx ? '#E60012' : '#e5e7eb');
 
   if (chartBarBunbu) { chartBarBunbu.destroy(); chartBarBunbu = null; }
   const ctx = document.getElementById('chartBarBunbu');
@@ -2955,8 +3026,8 @@ function renderDoughnutChart(allTeams, data) {
   if (!ctx) return;
   const labels = Object.keys(dist);
   const values = Object.values(dist);
-  const bgColors = ['#002046','#1b365d','#465f88','#ba1a1a','#c4c6cf'];
-  const bdColors = ['#002046','#1b365d','#465f88','#ba1a1a','#c4c6cf'];
+  const bgColors = ['#E60012','#fbbf24','#22c55e','#3b82f6','#c4c6cf'];
+  const bdColors = ['#E60012','#fbbf24','#22c55e','#3b82f6','#c4c6cf'];
 
   chartDoughnut = new Chart(ctx, {
     type: 'doughnut',
