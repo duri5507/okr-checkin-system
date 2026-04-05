@@ -209,6 +209,27 @@ textarea:focus-visible {
   border: 1px solid #aaa;
 }
 
+.kr-tooltip-wrap .kr-tooltip {
+  display: none;
+  position: absolute;
+  left: 24px;
+  top: -4px;
+  background: #333;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 400;
+  padding: 8px 12px;
+  border-radius: 6px;
+  white-space: normal;
+  width: 280px;
+  line-height: 1.5;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+.kr-tooltip-wrap:hover .kr-tooltip {
+  display: block;
+}
+
 /* ============================================================
    LAYOUT: App body (LNB + Main)
    ============================================================ */
@@ -2678,8 +2699,15 @@ function renderOkrForm(bunbu, team, prevData) {
     // Delete button for extra OKR
     const deleteHtml = isExtra ? `<div style="display:flex;justify-content:flex-end;margin-top:8px;"><button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;font-weight:600;" onclick="removeExtraOkr(${i - baseOkrs.length})">삭제</button></div>` : '';
 
+    const typeBadge = isQ
+      ? `<span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#EFF6FF;color:#1e40af;font-size:10px;font-weight:700;">정량</span>`
+      : `<span style="display:inline-block;padding:2px 8px;border-radius:4px;background:#FEF9EF;color:#92700c;font-size:10px;font-weight:700;">정성</span>`;
+    const detailTooltip = okr.detail
+      ? `<span style="position:relative;display:inline-flex;align-items:center;margin-left:4px;cursor:help;" class="kr-tooltip-wrap"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e0e0e0;color:#555;font-size:10px;font-weight:700;">?</span><span class="kr-tooltip">${esc(okr.detail)}</span></span>`
+      : '';
+
     html += `<div class="okr-row">
-      <div class="okr-row-num">${num} <span style="font-size:10px;font-weight:600;">${okr.type}</span></div>
+      <div class="okr-row-num">${num}</div>
       <div class="okr-row-content">
         <div class="okr-row-header">
           ${catBadges}
@@ -2687,7 +2715,7 @@ function renderOkrForm(bunbu, team, prevData) {
         <div class="okr-row-header" style="margin-bottom:4px;">
           <div class="goal-text">${esc(okr.goal)}</div>
         </div>
-        <div style="font-size:12px;color:#44474e;margin-bottom:12px;">KR: ${esc(okr.kr)}${okr.detail?`<div style="font-size:11px;color:#64748b;margin-top:2px;">└ ${esc(okr.detail)}</div>`:''}</div>
+        <div style="font-size:12px;color:#44474e;margin-bottom:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">KR: ${esc(okr.kr)} ${typeBadge}${detailTooltip}</div>
         <div class="okr-row-inputs">
           <div class="field-group">
             <label>① 성과 체크인</label>
