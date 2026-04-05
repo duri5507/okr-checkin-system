@@ -2677,6 +2677,7 @@ function showSection(name, btn) {
   const lnbTitle = document.getElementById('lnbTitle');
   if (lnbTitle) lnbTitle.textContent = (name === 'dashboard') ? '대시보드' : '체크인 입력';
   if (name==='dashboard') refreshDashboard();
+  window.scrollTo(0, 0);
   location.hash = name;
 }
 
