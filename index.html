@@ -682,16 +682,19 @@ label {
    COMPONENT: Add OKR button
    ============================================================ */
 .add-okr-btn {
-  padding: 16px 24px;
+  padding: 12px 24px;
   border: 2px dashed #E60012;
-  border-radius: 0;
+  border-radius: 8px;
   background: #FFF5F5;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #E60012;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
 }
 .add-okr-btn:hover {
   background: #FDEAEA;
@@ -1861,10 +1864,12 @@ label {
     <div class="card">
       <div class="card-title" id="kpiSectionTitle"></div>
       <div class="kpi-list" id="kpiList"></div>
-      <div id="addOkrArea"></div>
-      <div class="submit-row">
-        <button class="btn btn-outline" onclick="resetForm()">초기화</button>
-        <button class="btn btn-accent" id="submitBtn" onclick="submitCheckin()"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">check_circle</span> 체크인 제출</button>
+      <div class="submit-row" style="flex-direction:column;gap:10px;">
+        <div id="addOkrArea" style="width:100%;"></div>
+        <div style="display:flex;gap:10px;width:100%;">
+          <button class="btn btn-outline" onclick="resetForm()" style="flex:1;">초기화</button>
+          <button class="btn btn-accent" id="submitBtn" onclick="submitCheckin()" style="flex:1;"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">check_circle</span> 체크인 제출</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2885,7 +2890,7 @@ function renderOkrForm(bunbu, team, prevData) {
 
   // 신규목표 추가 버튼 (addOkrArea는 페이지네이션 마지막 페이지에서만 보임)
   document.getElementById('addOkrArea').innerHTML = `
-    <div class="add-okr-btn" onclick="showAddOkrForm()" style="margin-top:16px;"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px">add_circle</span> 신규목표 추가</div>
+    <div class="add-okr-btn" onclick="showAddOkrForm()"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px">add_circle</span> 신규목표 추가</div>
     <div id="addOkrForm" style="display:none;margin-top:12px;padding:16px;background:#f8fafc;border-radius:10px;border:1px dashed #cbd5e1;">
       <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px">신규 목표 생성</div>
       <div style="display:flex;gap:12px;margin-bottom:10px">
