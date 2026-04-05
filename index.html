@@ -2708,16 +2708,15 @@ function renderOkrForm(bunbu, team, prevData) {
     let ciHtml = '';
     if (isQ) {
       const prevIsHold = prev && prev.checkin === '체크인 보류';
-      ciHtml = `
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px;">
-          <label style="font-size:11px;display:flex;align-items:center;gap:3px;margin:0;cursor:pointer;">
+      ciHtml = `<input type="text" id="ci_${i}" placeholder="85%, 17방 등" style="${prevIsHold?'background:#f5f5f5;':''}" value="${prev?esc(prev.checkin):''}" onchange="checkOkrDone(${i})" onblur="checkOkrDone(${i})">
+        <div style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+          <label style="font-size:10px;display:flex;align-items:center;gap:2px;margin:0;cursor:pointer;color:#74777f;">
             <input type="radio" name="ciMode_${i}" value="input" ${!prevIsHold?'checked':''} onchange="toggleCiMode(${i})"> 수치 입력
           </label>
-          <label style="font-size:11px;display:flex;align-items:center;gap:3px;margin:0;cursor:pointer;">
+          <label style="font-size:10px;display:flex;align-items:center;gap:2px;margin:0;cursor:pointer;color:#74777f;">
             <input type="radio" name="ciMode_${i}" value="hold" ${prevIsHold?'checked':''} onchange="toggleCiMode(${i})"> 체크인 보류
           </label>
-        </div>
-        <input type="text" id="ci_${i}" placeholder="85%, 17방 등" style="${prevIsHold?'background:#f5f5f5;':''}" value="${prev?esc(prev.checkin):''}" onchange="checkOkrDone(${i})" onblur="checkOkrDone(${i})">`;
+        </div>`;
     } else {
       ciHtml = `<select id="ci_${i}" onchange="checkOkrDone(${i})"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
     }
