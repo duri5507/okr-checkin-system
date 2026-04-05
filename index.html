@@ -195,9 +195,6 @@ textarea:focus-visible {
 }
 #teamSelectCard {
   padding: 24px 0;
-  position: relative;
-  left: 50%;
-  transform: translateX(calc(-50% - 128px));
 }
 .team-select-inner {
   display: flex;
@@ -205,6 +202,8 @@ textarea:focus-visible {
   gap: 40px;
   flex-wrap: wrap;
   justify-content: center;
+  width: calc(100vw - 256px);
+  margin-left: calc(-24px);
 }
 .team-select-inner select {
   border: 1px solid #aaa;
