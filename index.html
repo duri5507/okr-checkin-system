@@ -932,42 +932,38 @@ label {
    COMPONENT: Filter bar
    ============================================================ */
 .filter-bar {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
   background: transparent;
   padding: 0;
   margin-bottom: 24px;
-  flex-wrap: wrap;
 }
 .filter-bar select {
-  width: auto;
-  min-width: 100px;
+  width: 100%;
+  min-width: 0;
   background: transparent;
   border: none;
   font-size: 13px;
   font-weight: 600;
-  padding: 6px 28px 6px 8px;
+  padding: 6px 28px 6px 12px;
   min-height: auto;
   color: #191c1e;
   cursor: pointer;
+  border-radius: 0;
 }
 .filter-bar select:focus { box-shadow: none; border-color: transparent; }
-.filter-bar select option { padding: 8px 16px; }
 .filter-bar label { margin: 0; white-space: nowrap; }
 .filter-group {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 20px;
+  padding: 12px 16px;
   background: #FDEAEA;
+  border-radius: 8px;
   border: none;
-  flex: 1;
-  justify-content: center;
-  min-width: 0;
 }
-.filter-group + .filter-group { margin-left: 8px; }
-.filter-group:last-child { flex: 0; background: transparent; padding: 12px 8px; margin-left: 8px; }
+.filter-group:last-child { background: transparent; padding: 12px 4px; justify-content: center; }
 .filter-group label {
   font-size: 10px;
   font-weight: 700;
