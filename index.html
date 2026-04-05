@@ -934,25 +934,40 @@ label {
 .filter-bar {
   display: flex;
   align-items: stretch;
-  gap: 12px;
+  gap: 0;
   background: transparent;
   padding: 0;
   margin-bottom: 24px;
   flex-wrap: wrap;
 }
-.filter-bar select { width: auto; min-width: 120px; background: white; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; font-weight: 600; padding: 6px 32px 6px 10px; min-height: auto; color: #191c1e; }
-.filter-bar select:focus { box-shadow: none; border-color: #E60012; }
+.filter-bar select {
+  width: auto;
+  min-width: 100px;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 28px 6px 8px;
+  min-height: auto;
+  color: #191c1e;
+  cursor: pointer;
+}
+.filter-bar select:focus { box-shadow: none; border-color: transparent; }
+.filter-bar select option { padding: 8px 16px; }
 .filter-bar label { margin: 0; white-space: nowrap; }
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
+  gap: 8px;
+  padding: 12px 20px;
   background: #FDEAEA;
-  border-radius: 8px;
   border: none;
+  flex: 1;
+  justify-content: center;
+  min-width: 0;
 }
-.filter-group:last-child { background: transparent; padding: 10px 4px; }
+.filter-group + .filter-group { margin-left: 8px; }
+.filter-group:last-child { flex: 0; background: transparent; padding: 12px 8px; margin-left: 8px; }
 .filter-group label {
   font-size: 10px;
   font-weight: 700;
