@@ -944,9 +944,9 @@ label {
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
-  background: #FDEAEA;
-  border: 1px solid rgba(230,0,18,.1);
-  border-radius: 10px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
 }
 .filter-group:last-child { background: transparent; border: none; padding: 10px 4px; }
 .filter-group label {
@@ -1896,19 +1896,19 @@ label {
   <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
     <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:transparent;">
       <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">회차</label>
-      <select id="dashRound" onchange="renderDashboard()" style="border:1px solid #E60012;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
+      <select id="dashRound" onchange="renderDashboard()" style="border:1px solid #e8a0a0;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">-- 회차 선택 --</option>
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:transparent;">
       <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">본부</label>
-      <select id="dashBunbu" onchange="renderDashboard()" style="border:1px solid #E60012;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
+      <select id="dashBunbu" onchange="renderDashboard()" style="border:1px solid #e8a0a0;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체 본부</option>
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:transparent;">
       <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">아레테 경영지수(HAI)</label>
-      <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()" style="border:1px solid #E60012;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
+      <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()" style="border:1px solid #e8a0a0;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체</option>
         <option value="비즈니스 성과">비즈니스 성과</option>
         <option value="비즈니스 혁신">비즈니스 혁신</option>
@@ -1918,13 +1918,13 @@ label {
     </div>
     <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:transparent;">
       <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">주요 핵심지표</label>
-      <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()" style="border:1px solid #E60012;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
+      <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()" style="border:1px solid #e8a0a0;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체</option>
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:transparent;">
       <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">세부 핵심지표</label>
-      <select id="dashDetail" onchange="renderDashboard()" style="border:1px solid #E60012;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
+      <select id="dashDetail" onchange="renderDashboard()" style="border:1px solid #e8a0a0;border-radius:8px;background:#fff;font-size:13px;font-weight:600;padding:6px 28px 6px 10px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체</option>
       </select>
     </div>
