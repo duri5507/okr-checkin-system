@@ -1546,6 +1546,18 @@ label {
   flex-direction: column;
   gap: 4px;
 }
+.okr-row-fields .field-group > label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #44474e;
+  margin: 0;
+}
+.okr-row-fields input[type=text],
+.okr-row-fields select,
+.okr-row-fields textarea {
+  font-size: 12px;
+  padding: 8px 10px;
+}
 .okr-row-inputs label {
   font-size: 10px;
   margin: 0;
@@ -2753,8 +2765,8 @@ function renderOkrForm(bunbu, team, prevData) {
       <div class="okr-row-header-bar" onclick="toggleOkrRow(${i})">
         <span class="material-icons-outlined okr-toggle">chevron_right</span>
         <div class="okr-title">
-          <div style="font-size:13px;font-weight:600;color:#74777f;margin-bottom:3px;">목표(Objective) : ${esc(okr.goal)}</div>
-          <div style="font-size:13px;font-weight:800;color:#191c1e;display:flex;align-items:center;gap:6px;">핵심성과지표(Key Result) : ${esc(okr.kr)} ${typeBadge}${detailTooltip}</div>
+          <div style="font-size:14px;font-weight:600;color:#74777f;margin-bottom:3px;">목표(Objective) : ${esc(okr.goal)}</div>
+          <div style="font-size:14px;font-weight:800;color:#191c1e;display:flex;align-items:center;gap:6px;">핵심성과지표(Key Result) : ${esc(okr.kr)} ${typeBadge}${detailTooltip}</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">${catBadges}</div>
         ${statusBadge}
@@ -3020,7 +3032,7 @@ async function submitCheckin() {
 
 function resetForm() {
   if (!confirm('입력한 내용을 초기화하겠습니까?')) return;
-  renderOkrForm(state.bunbu, state.team, state.checkins[state.team]||null);
+  renderOkrForm(state.bunbu, state.team, null);
 }
 
 // ============================================================
