@@ -191,13 +191,13 @@ textarea:focus-visible {
 }
 .section.active { display: block; }
 #section-checkin {
-  padding: 32px 40px;
+  padding: 32px 24px;
 }
 #teamSelectCard {
   padding: 24px 0;
-  margin-left: -128px;
-  display: flex;
-  justify-content: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(calc(-50% - 128px));
 }
 .team-select-inner {
   display: flex;
