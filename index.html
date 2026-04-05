@@ -193,6 +193,9 @@ textarea:focus-visible {
 #section-checkin {
   padding: 32px 60px 32px 24px;
 }
+#section-dashboard {
+  padding: 24px 40px;
+}
 #teamSelectCard {
   padding: 24px 0;
 }
@@ -1661,7 +1664,7 @@ label {
       <button class="lnb-toggle" onclick="toggleLnb()" id="lnbToggle" style="margin:0;flex-shrink:0;">
         <span class="material-icons-outlined" id="lnbToggleIcon">chevron_left</span>
       </button>
-      <div class="lnb-header-title" style="font-family:'Manrope',sans-serif;font-size:14px;font-weight:800;color:#E60012;letter-spacing:-0.3px;">체크인 입력</div>
+      <div class="lnb-header-title" id="lnbTitle" style="font-family:'Manrope',sans-serif;font-size:14px;font-weight:800;color:#E60012;letter-spacing:-0.3px;">체크인 입력</div>
     </div>
     <nav class="lnb-nav" id="roundGrid">
       <!-- 회차 카드들이 여기에 렌더링됨 -->
@@ -2669,6 +2672,8 @@ function showSection(name, btn) {
   }
   const lnb = document.getElementById('lnbSidebar');
   if (lnb) lnb.style.display = (name === 'home') ? 'none' : '';
+  const lnbTitle = document.getElementById('lnbTitle');
+  if (lnbTitle) lnbTitle.textContent = (name === 'dashboard') ? '대시보드' : '체크인 입력';
   if (name==='dashboard') refreshDashboard();
   location.hash = name;
 }
