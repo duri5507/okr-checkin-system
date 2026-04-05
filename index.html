@@ -2639,6 +2639,7 @@ function selectRound(name) {
     cacheSet(cacheKey, state.checkins);
     renderLnbCheckins();
   }).catch(() => {});
+  sessionStorage.setItem('okr_round', name);
   document.getElementById('teamSelectCard').style.display = 'block';
   document.getElementById('kpiSection').style.display = 'none';
   document.getElementById('selBunbu').value = '';
@@ -2659,6 +2660,8 @@ function onBunbuChange() {
   const sel = document.getElementById('selTeam');
   sel.innerHTML = '<option value="">-- 팀 선택 --</option>';
   if (!bunbu) return;
+  sessionStorage.setItem('okr_bunbu', bunbu);
+  sessionStorage.removeItem('okr_team');
   Object.keys(OKR_DATA[bunbu]||{}).forEach(t=>sel.innerHTML+=`<option value="${t}">${t}</option>`);
   document.getElementById('kpiSection').style.display = 'none';
 }
@@ -2669,6 +2672,8 @@ async function onTeamChange() {
   if (!bunbu||!team) return;
   state.bunbu = bunbu;
   state.team  = team;
+  sessionStorage.setItem('okr_bunbu', bunbu);
+  sessionStorage.setItem('okr_team', team);
   extraOkrs = [];
 
   // 캐시 먼저, 서버는 백그라운드
@@ -3473,6 +3478,23 @@ init().then(() => {
   const hash = location.hash.replace('#','');
   if (hash && ['home','checkin','dashboard'].includes(hash)) {
     showSection(hash);
+  }
+  // 체크인 입력 상태 복원
+  if (hash === 'checkin') {
+    const savedRound = sessionStorage.getItem('okr_round');
+    const savedBunbu = sessionStorage.getItem('okr_bunbu');
+    const savedTeam = sessionStorage.getItem('okr_team');
+    if (savedRound && state.rounds.find(r => r.name === savedRound)) {
+      selectRound(savedRound);
+      if (savedBunbu) {
+        document.getElementById('selBunbu').value = savedBunbu;
+        onBunbuChange();
+        if (savedTeam) {
+          document.getElementById('selTeam').value = savedTeam;
+          onTeamChange();
+        }
+      }
+    }
   }
 });
 </script>
