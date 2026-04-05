@@ -2980,7 +2980,7 @@ function showOkrPage(page) {
     row.style.display = (idx >= start && idx < end) ? '' : 'none';
   });
   renderOkrPagination();
-  document.getElementById('kpiSection').scrollIntoView({behavior:'smooth',block:'start'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function syncGrade(i) {
