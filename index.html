@@ -489,6 +489,15 @@ textarea {
   outline: none;
   transition: all 0.2s ease;
 }
+select {
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2374777f' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
 select:focus,
 input:focus,
 textarea:focus {
@@ -2603,10 +2612,17 @@ function showSection(name, btn) {
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('section-'+name).classList.add('active');
-  if (btn) btn.classList.add('active');
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const btns = document.querySelectorAll('.nav-btn');
+    const idx = name==='home'?0:name==='checkin'?1:2;
+    if (btns[idx]) btns[idx].classList.add('active');
+  }
   const lnb = document.getElementById('lnbSidebar');
   if (lnb) lnb.style.display = (name === 'home') ? 'none' : '';
   if (name==='dashboard') refreshDashboard();
+  location.hash = name;
 }
 
 // ============================================================
@@ -3453,7 +3469,12 @@ function showToast(msg, type='') {
 if (new URLSearchParams(location.search).get('admin') === 'true') {
   document.getElementById('adminLink').style.display = 'inline-block';
 }
-init();
+init().then(() => {
+  const hash = location.hash.replace('#','');
+  if (hash && ['home','checkin','dashboard'].includes(hash)) {
+    showSection(hash);
+  }
+});
 </script>
 </body>
 </html>
