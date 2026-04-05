@@ -2767,10 +2767,10 @@ function renderOkrForm(bunbu, team, prevData) {
               <label>성과 체크인</label>
               ${ciHtml}
             </div>
-            <div class="field-group">
+            ${isQ ? `<div class="field-group">
               <label>등급</label>
               ${gradeHtml}
-            </div>
+            </div>` : `<input type="hidden" id="grade_${i}" value="">`}
             <div class="field-group">
               <label>코멘트</label>
               <textarea id="comment_${i}" placeholder="코멘트 작성" onchange="checkOkrDone(${i})" onblur="checkOkrDone(${i})">${prev?esc(prev.comment):''}</textarea>
@@ -2872,9 +2872,9 @@ function checkOkrDone(i) {
   const comment = document.getElementById('comment_'+i);
   const issue = document.getElementById('issue_'+i);
   const row = document.getElementById('okrRow_'+i);
-  if (!ci || !grade || !row) return;
+  if (!ci || !row) return;
   const ciVal = ci.value.trim();
-  const gradeVal = grade.value;
+  const gradeVal = grade ? grade.value : ciVal;
   const commentVal = comment ? comment.value.trim() : '';
   const issueVal = issue ? issue.value : '';
   const badge = row.querySelector('.okr-status');
@@ -2932,7 +2932,9 @@ async function submitCheckin() {
   okrs.forEach((okr, i) => {
     const el  = document.getElementById('ci_'+i);
     const ci  = (el?.value||'').trim();
-    const grade = (document.getElementById('grade_'+i)?.value||'').trim();
+    const isQuant = okr.type === '정량';
+    const grEl = document.getElementById('grade_'+i);
+    const grade = isQuant ? (grEl?.value||'').trim() : ci;
     const cmt = (document.getElementById('comment_'+i)?.value||'').trim();
     const iss = document.getElementById('issue_'+i)?.value||'';
     const det = (document.getElementById('detText_'+i)?.value||'').trim();
@@ -2945,9 +2947,8 @@ async function submitCheckin() {
       errorCount++; hasError = true;
       if (el) { el.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=el; }
     }
-    // 등급 필수
-    const grEl = document.getElementById('grade_'+i);
-    if (!grade) {
+    // 등급 필수 (정량만)
+    if (isQuant && !grade) {
       errorCount++; hasError = true;
       if (grEl) { grEl.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=grEl; }
     }
