@@ -1462,8 +1462,8 @@ label {
    ============================================================ */
 .okr-row {
   background: white;
-  border: 1px solid rgba(196,198,207,.15);
-  border-radius: 12px;
+  border: 1px solid #bbb;
+  border-radius: 0;
   overflow: hidden;
   margin-bottom: 12px;
 }
@@ -2684,7 +2684,7 @@ function toggleCiMode(i) {
 function renderOkrForm(bunbu, team, prevData) {
   const baseOkrs = OKR_DATA[bunbu][team];
   const allOkrs = [...baseOkrs, ...extraOkrs];
-  document.getElementById('kpiSectionTitle').innerHTML = `<span class="material-icons-outlined mi">assignment</span> ${esc(team)} — OKR 성과 체크인 (${esc(state.round)})`;
+  document.getElementById('kpiSectionTitle').innerHTML = `<span class="material-icons-outlined mi">assignment</span> ${esc(team)}`;
 
   const list = document.getElementById('kpiList');
   const gradeOpts = ['Arete','EE','ME','NI','체크인 보류'];
@@ -2755,8 +2755,8 @@ function renderOkrForm(bunbu, team, prevData) {
       <div class="okr-row-header-bar" onclick="toggleOkrRow(${i})">
         <span class="material-icons-outlined okr-toggle">chevron_right</span>
         <div class="okr-title">
-          <div style="font-size:14px;font-weight:700;color:#191c1e;margin-bottom:3px;">목표(Objective) : ${esc(okr.goal)}</div>
-          <div style="font-size:12px;color:#44474e;display:flex;align-items:center;gap:4px;">핵심성과지표(Key Result) : ${esc(okr.kr)}${detailTooltip}</div>
+          <div style="font-size:13px;font-weight:600;color:#74777f;margin-bottom:3px;">목표(Objective) : ${esc(okr.goal)}</div>
+          <div style="font-size:14px;font-weight:800;color:#191c1e;display:flex;align-items:center;gap:4px;">핵심성과지표(Key Result) : ${esc(okr.kr)}${detailTooltip}</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">${catBadges} ${typeBadge}</div>
         ${statusBadge}
@@ -2924,9 +2924,12 @@ async function submitCheckin() {
     if (grEl) grEl.style.borderColor = '';
     const cmtEl = document.getElementById('comment_'+i);
     if (cmtEl) cmtEl.style.borderColor = '';
+    const issEl = document.getElementById('issue_'+i);
+    if (issEl) issEl.style.borderColor = '';
     const it = document.getElementById('detText_'+i);
     if (it) it.style.borderColor = '';
   });
+  let firstErrorRow = null;
 
   // 검증
   okrs.forEach((okr, i) => {
@@ -2937,21 +2940,24 @@ async function submitCheckin() {
     const iss = document.getElementById('issue_'+i)?.value||'';
     const det = (document.getElementById('detText_'+i)?.value||'').trim();
 
+    const row = document.getElementById('okrRow_'+i);
+    let hasError = false;
+
     // 성과 체크인 필수
     if (!ci) {
-      errorCount++;
+      errorCount++; hasError = true;
       if (el) { el.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=el; }
     }
     // 등급 필수
     const grEl = document.getElementById('grade_'+i);
     if (!grade) {
-      errorCount++;
+      errorCount++; hasError = true;
       if (grEl) { grEl.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=grEl; }
     }
     // 코멘트 필수
     const cmtEl = document.getElementById('comment_'+i);
     if (!cmt) {
-      errorCount++;
+      errorCount++; hasError = true;
       if (cmtEl) { cmtEl.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=cmtEl; }
     } else {
       if (cmtEl) cmtEl.style.borderColor='';
@@ -2959,21 +2965,25 @@ async function submitCheckin() {
     // 이슈 필수 선택
     const issEl = document.getElementById('issue_'+i);
     if (!iss) {
-      errorCount++;
+      errorCount++; hasError = true;
       if (issEl) { issEl.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=issEl; }
     } else {
       if (issEl) issEl.style.borderColor='';
     }
     // 이슈 선택 시 상세 필수
     if (iss && iss!=='없음' && !det) {
-      errorCount++;
+      errorCount++; hasError = true;
       const it = document.getElementById('detText_'+i);
-      // 상세 이슈 영역이 숨겨져 있으면 보이게 처리
       const detWrap = document.getElementById('det_'+i);
       if (detWrap) detWrap.style.display = 'block';
-      const phEl = document.getElementById('detPlaceholder_'+i);
-      if (phEl) phEl.style.display = 'none';
+      const wrapEl = document.getElementById('det_wrap_'+i);
+      if (wrapEl) wrapEl.style.display = 'flex';
       if (it) { it.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=it; }
+    }
+    // 에러 있는 행 자동 열기
+    if (hasError && row) {
+      row.classList.add('open');
+      if (!firstErrorRow) firstErrorRow = row;
     }
     result.push({checkin:ci, grade:grade, comment:cmt, issue:iss, issueText:det});
   });
