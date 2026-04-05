@@ -2730,7 +2730,7 @@ function renderOkrForm(bunbu, team, prevData) {
           </label>
         </div>`;
     } else {
-      ciHtml = `<select id="ci_${i}" onchange="checkOkrDone(${i})"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
+      ciHtml = `<select id="ci_${i}" onchange="syncGrade(${i});checkOkrDone(${i})"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
     }
 
     // Grade
@@ -2876,6 +2876,12 @@ function removeExtraOkr(idx) {
 function toggleOkrRow(i) {
   const row = document.getElementById('okrRow_'+i);
   if (row) row.classList.toggle('open');
+}
+
+function syncGrade(i) {
+  const ci = document.getElementById('ci_'+i);
+  const grade = document.getElementById('grade_'+i);
+  if (ci && grade) grade.value = ci.value;
 }
 
 function checkOkrDone(i) {
