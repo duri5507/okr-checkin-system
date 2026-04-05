@@ -2693,10 +2693,12 @@ function toggleCiMode(i) {
     // 등급도 체크인 보류로 자동 설정
     const gradeEl = document.getElementById('grade_'+i);
     if (gradeEl) gradeEl.value = '체크인 보류';
+    checkOkrDone(i);
   } else {
     el.value = '';
     el.disabled = false;
     el.style.background = 'white';
+    checkOkrDone(i);
   }
 }
 
@@ -2736,14 +2738,14 @@ function renderOkrForm(bunbu, team, prevData) {
             <input type="radio" name="ciMode_${i}" value="hold" ${prevIsHold?'checked':''} onchange="toggleCiMode(${i})"> 체크인 보류
           </label>
         </div>
-        <input type="text" id="ci_${i}" placeholder="85%, 17방 등" style="${prevIsHold?'background:#f5f5f5;':''}" value="${prev?esc(prev.checkin):''}">`;
+        <input type="text" id="ci_${i}" placeholder="85%, 17방 등" style="${prevIsHold?'background:#f5f5f5;':''}" value="${prev?esc(prev.checkin):''}" onchange="checkOkrDone(${i})" onblur="checkOkrDone(${i})">`;
     } else {
-      ciHtml = `<select id="ci_${i}"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
+      ciHtml = `<select id="ci_${i}" onchange="checkOkrDone(${i})"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prev&&prev.checkin===g?' selected':''}>${g}</option>`).join('')}</select>`;
     }
 
     // Grade
     const prevGrade = prev ? (prev.grade || '') : '';
-    const gradeHtml = `<select id="grade_${i}"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prevGrade===g?' selected':''}>${g}</option>`).join('')}</select>`;
+    const gradeHtml = `<select id="grade_${i}" onchange="checkOkrDone(${i})"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prevGrade===g?' selected':''}>${g}</option>`).join('')}</select>`;
 
     // Issue
     const issueHtml = `<select id="issue_${i}" onchange="toggleDet(${i})">${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}</select>`;
@@ -2890,6 +2892,22 @@ function removeExtraOkr(idx) {
 function toggleOkrRow(i) {
   const row = document.getElementById('okrRow_'+i);
   if (row) row.classList.toggle('open');
+}
+
+function checkOkrDone(i) {
+  const ci = document.getElementById('ci_'+i);
+  const grade = document.getElementById('grade_'+i);
+  const row = document.getElementById('okrRow_'+i);
+  if (!ci || !grade || !row) return;
+  const ciVal = ci.value.trim();
+  const gradeVal = grade.value;
+  const badge = row.querySelector('.okr-status');
+  if (ciVal && gradeVal) {
+    if (badge) { badge.className = 'okr-status done'; badge.textContent = '작성완료'; }
+    setTimeout(() => row.classList.remove('open'), 300);
+  } else {
+    if (badge) { badge.className = 'okr-status pending'; badge.textContent = '미작성'; }
+  }
 }
 
 function toggleDet(i) {
