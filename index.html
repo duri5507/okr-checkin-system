@@ -673,22 +673,21 @@ label {
    COMPONENT: Add OKR button
    ============================================================ */
 .add-okr-btn {
-  padding: 20px;
-  border: 1.5px dashed rgba(196,198,207,.4);
-  border-radius: 12px;
-  background: var(--surface);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--muted);
+  padding: 16px 24px;
+  border: 2px dashed #E60012;
+  border-radius: 0;
+  background: #FFF5F5;
+  font-size: 15px;
+  font-weight: 700;
+  color: #E60012;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .add-okr-btn:hover {
-  border-color: var(--border);
-  background: var(--surface-container-low);
-  color: var(--ink);
-  transform: translateY(-1px);
+  background: #FDEAEA;
+  border-color: #c0392b;
+  color: #c0392b;
 }
 
 /* ============================================================
@@ -1539,7 +1538,7 @@ label {
 }
 .okr-row-fields .fields-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
 }
 .okr-row-fields .field-group {
@@ -2756,9 +2755,9 @@ function renderOkrForm(bunbu, team, prevData) {
         <span class="material-icons-outlined okr-toggle">chevron_right</span>
         <div class="okr-title">
           <div style="font-size:13px;font-weight:600;color:#74777f;margin-bottom:3px;">목표(Objective) : ${esc(okr.goal)}</div>
-          <div style="font-size:14px;font-weight:800;color:#191c1e;display:flex;align-items:center;gap:4px;">핵심성과지표(Key Result) : ${esc(okr.kr)}${detailTooltip}</div>
+          <div style="font-size:13px;font-weight:800;color:#191c1e;display:flex;align-items:center;gap:6px;">핵심성과지표(Key Result) : ${esc(okr.kr)} ${typeBadge}${detailTooltip}</div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">${catBadges} ${typeBadge}</div>
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">${catBadges}</div>
         ${statusBadge}
         ${deleteHtml}
       </div>
