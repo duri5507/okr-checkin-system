@@ -1586,6 +1586,11 @@ label {
   justify-content: center;
   gap: 4px;
   margin: 20px 0;
+  position: relative;
+}
+.okr-pagination .okr-add-wrap {
+  position: absolute;
+  right: 0;
 }
 .okr-pagination button {
   min-width: 32px;
@@ -1864,11 +1869,10 @@ label {
     <div class="card">
       <div class="card-title" id="kpiSectionTitle"></div>
       <div class="kpi-list" id="kpiList"></div>
-      <div class="submit-row" style="flex-direction:column;gap:10px;">
-        <div id="addOkrArea" style="width:100%;"></div>
-        <div style="display:flex;gap:10px;width:100%;">
-          <button class="btn btn-outline" onclick="resetForm()" style="flex:1;">초기화</button>
-          <button class="btn btn-accent" id="submitBtn" onclick="submitCheckin()" style="flex:1;"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">check_circle</span> 체크인 제출</button>
+      <div id="addOkrArea"></div>
+      <div class="submit-row">
+        <button class="btn btn-outline" onclick="resetForm()">초기화</button>
+        <button class="btn btn-accent" id="submitBtn" onclick="submitCheckin()"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px;">check_circle</span> 체크인 제출</button>
         </div>
       </div>
     </div>
@@ -2888,9 +2892,8 @@ function renderOkrForm(bunbu, team, prevData) {
   renderOkrPagination();
   showOkrPage(1);
 
-  // 신규목표 추가 버튼 (addOkrArea는 페이지네이션 마지막 페이지에서만 보임)
+  // 신규목표 추가 폼
   document.getElementById('addOkrArea').innerHTML = `
-    <div class="add-okr-btn" onclick="showAddOkrForm()"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px">add_circle</span> 신규목표 추가</div>
     <div id="addOkrForm" style="display:none;margin-top:12px;padding:16px;background:#f8fafc;border-radius:10px;border:1px dashed #cbd5e1;">
       <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px">신규 목표 생성</div>
       <div style="display:flex;gap:12px;margin-bottom:10px">
@@ -2963,12 +2966,14 @@ function renderOkrPagination() {
     paginEl.className = 'okr-pagination';
     document.getElementById('kpiList').after(paginEl);
   }
-  if (totalPages <= 1) { paginEl.innerHTML = ''; return; }
+  const addBtn = `<div class="okr-add-wrap"><div class="add-okr-btn" onclick="showAddOkrForm()" style="padding:8px 20px;font-size:13px;"><span class="material-icons-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px">add_circle</span> 신규목표 추가</div></div>`;
+  if (totalPages <= 1) { paginEl.innerHTML = addBtn; return; }
   let html = `<button onclick="showOkrPage(${state.okrPage-1})" ${state.okrPage<=1?'disabled':''}>‹</button>`;
   for (let p = 1; p <= totalPages; p++) {
     html += `<button onclick="showOkrPage(${p})" class="${p===state.okrPage?'active':''}">${p}</button>`;
   }
   html += `<button onclick="showOkrPage(${state.okrPage+1})" ${state.okrPage>=totalPages?'disabled':''}>›</button>`;
+  html += addBtn;
   paginEl.innerHTML = html;
 }
 
