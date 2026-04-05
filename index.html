@@ -1461,19 +1461,80 @@ label {
    COMPONENT: OKR Row (card-row hybrid for checkin form)
    ============================================================ */
 .okr-row {
-  display: flex;
-  gap: 0;
   background: white;
   border: 1px solid rgba(196,198,207,.15);
   border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+}
+.okr-row-header-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.okr-row-header-bar:hover {
+  background: #fafafa;
+}
+.okr-row-header-bar .okr-toggle {
+  font-size: 18px;
+  color: #94a3b8;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.okr-row.open .okr-toggle {
+  transform: rotate(90deg);
+}
+.okr-row-header-bar .okr-title {
+  flex: 1;
+  min-width: 0;
+}
+.okr-row-header-bar .goal-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #191c1e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.okr-row-header-bar .kr-text {
+  font-size: 12px;
+  color: #74777f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.okr-row-header-bar .okr-status {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.okr-status.done {
+  background: #ECFDF5;
+  color: #166534;
+}
+.okr-status.pending {
+  background: #FFF5F5;
+  color: #E60012;
+}
+.okr-row-body {
+  display: none;
+  border-top: 1px solid rgba(196,198,207,.12);
+}
+.okr-row.open .okr-row-body {
+  display: flex;
 }
 .okr-row-info {
   flex: 0 0 280px;
   padding: 20px;
   background: #fafafa;
-  border-right: 1px solid rgba(196,198,207,.15);
+  border-right: 1px solid rgba(196,198,207,.12);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2701,36 +2762,52 @@ function renderOkrForm(bunbu, team, prevData) {
       ? `<span style="position:relative;display:inline-flex;align-items:center;margin-left:4px;cursor:help;" class="kr-tooltip-wrap"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e0e0e0;color:#555;font-size:10px;font-weight:700;">?</span><span class="kr-tooltip">${esc(okr.detail)}</span></span>`
       : '';
 
-    html += `<div class="okr-row">
-      <div class="okr-row-info">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${catBadges} ${typeBadge}</div>
-        <div class="goal-text">${esc(okr.goal)}</div>
-        <div class="kr-text" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">KR: ${esc(okr.kr)}${detailTooltip}</div>
-        ${deleteHtml}
-      </div>
-      <div class="okr-row-fields">
-        <div class="fields-row">
-          <div class="field-group">
-            <label>성과 체크인</label>
-            ${ciHtml}
-          </div>
-          <div class="field-group">
-            <label>등급</label>
-            ${gradeHtml}
-          </div>
-          <div class="field-group">
-            <label>코멘트</label>
-            <textarea id="comment_${i}" placeholder="코멘트 작성">${prev?esc(prev.comment):''}</textarea>
-          </div>
+    const isDone = prev && prev.checkin && prev.grade;
+    const statusBadge = isDone
+      ? `<span class="okr-status done">작성완료</span>`
+      : `<span class="okr-status pending">미작성</span>`;
+    const openClass = isDone ? '' : ' open';
+
+    html += `<div class="okr-row${openClass}" id="okrRow_${i}">
+      <div class="okr-row-header-bar" onclick="toggleOkrRow(${i})">
+        <span class="material-icons-outlined okr-toggle">chevron_right</span>
+        <div class="okr-title">
+          <div class="goal-text">${esc(okr.goal)}</div>
+          <div class="kr-text">KR: ${esc(okr.kr)}</div>
         </div>
-        <div class="fields-row">
-          <div class="field-group">
-            <label>이슈</label>
-            ${issueHtml}
+        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">${catBadges} ${typeBadge}</div>
+        ${statusBadge}
+      </div>
+      <div class="okr-row-body">
+        <div class="okr-row-info">
+          <div class="goal-text">${esc(okr.goal)}</div>
+          <div class="kr-text" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">KR: ${esc(okr.kr)}${detailTooltip}</div>
+          ${deleteHtml}
+        </div>
+        <div class="okr-row-fields">
+          <div class="fields-row">
+            <div class="field-group">
+              <label>성과 체크인</label>
+              ${ciHtml}
+            </div>
+            <div class="field-group">
+              <label>등급</label>
+              ${gradeHtml}
+            </div>
+            <div class="field-group">
+              <label>코멘트</label>
+              <textarea id="comment_${i}" placeholder="코멘트 작성">${prev?esc(prev.comment):''}</textarea>
+            </div>
           </div>
-          <div class="field-group" id="det_wrap_${i}" style="display:${showDet?'flex':'none'}">
-            <label>이슈 상세</label>
-            ${detHtml}
+          <div class="fields-row">
+            <div class="field-group">
+              <label>이슈</label>
+              ${issueHtml}
+            </div>
+            <div class="field-group" id="det_wrap_${i}" style="display:${showDet?'flex':'none'}">
+              <label>이슈 상세</label>
+              ${detHtml}
+            </div>
           </div>
         </div>
       </div>
@@ -2808,6 +2885,11 @@ function removeExtraOkr(idx) {
   extraOkrs.splice(idx, 1);
   currentData.okrs.splice(OKR_DATA[state.bunbu][state.team].length + idx, 1);
   renderOkrForm(state.bunbu, state.team, currentData);
+}
+
+function toggleOkrRow(i) {
+  const row = document.getElementById('okrRow_'+i);
+  if (row) row.classList.toggle('open');
 }
 
 function toggleDet(i) {
