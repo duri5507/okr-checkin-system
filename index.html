@@ -1893,22 +1893,22 @@ label {
 
 <!-- ===== DASHBOARD ===== -->
 <div class="section" id="section-dashboard">
-  <div class="filter-bar">
-    <div class="filter-group">
-      <label>회차</label>
-      <select id="dashRound" onchange="renderDashboard()">
+  <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:#FDEAEA;border-radius:10px;">
+      <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">회차</label>
+      <select id="dashRound" onchange="renderDashboard()" style="border:none;background:transparent;font-size:13px;font-weight:600;padding:4px 28px 4px 4px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">-- 회차 선택 --</option>
       </select>
     </div>
-    <div class="filter-group">
-      <label>본부</label>
-      <select id="dashBunbu" onchange="renderDashboard()">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:#FDEAEA;border-radius:10px;">
+      <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">본부</label>
+      <select id="dashBunbu" onchange="renderDashboard()" style="border:none;background:transparent;font-size:13px;font-weight:600;padding:4px 28px 4px 4px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체 본부</option>
       </select>
     </div>
-    <div class="filter-group">
-      <label>아레테 경영지수(HAI)</label>
-      <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:#FDEAEA;border-radius:10px;">
+      <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">아레테 경영지수(HAI)</label>
+      <select id="dashHai" onchange="updateMajorOptions();updateDetailKpiOptions();renderDashboard()" style="border:none;background:transparent;font-size:13px;font-weight:600;padding:4px 28px 4px 4px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체</option>
         <option value="비즈니스 성과">비즈니스 성과</option>
         <option value="비즈니스 혁신">비즈니스 혁신</option>
@@ -1916,20 +1916,20 @@ label {
         <option value="PWC">PWC</option>
       </select>
     </div>
-    <div class="filter-group">
-      <label>주요 핵심지표</label>
-      <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:#FDEAEA;border-radius:10px;">
+      <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">주요 핵심지표</label>
+      <select id="dashMajor" onchange="updateDetailKpiOptions();renderDashboard()" style="border:none;background:transparent;font-size:13px;font-weight:600;padding:4px 28px 4px 4px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체</option>
       </select>
     </div>
-    <div class="filter-group">
-      <label>세부 핵심지표</label>
-      <select id="dashDetail" onchange="renderDashboard()">
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:#FDEAEA;border-radius:10px;">
+      <label style="font-size:10px;font-weight:700;color:#44474e;white-space:nowrap;letter-spacing:0.1em;margin:0;">세부 핵심지표</label>
+      <select id="dashDetail" onchange="renderDashboard()" style="border:none;background:transparent;font-size:13px;font-weight:600;padding:4px 28px 4px 4px;min-height:auto;color:#191c1e;cursor:pointer;">
         <option value="">전체</option>
       </select>
     </div>
-    <div class="filter-group" style="border-right:none;">
-      <button class="btn btn-outline btn-sm" onclick="resetDashboardFilters()" style="border:none;background:transparent;padding:4px 8px;"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;">refresh</span></button>
+    <div style="display:flex;align-items:center;padding:10px 8px;">
+      <button onclick="resetDashboardFilters()" style="border:none;background:transparent;padding:4px 8px;cursor:pointer;"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;color:#44474e;">refresh</span></button>
     </div>
   </div>
 
