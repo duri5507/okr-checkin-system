@@ -1461,53 +1461,48 @@ label {
    COMPONENT: OKR Row (card-row hybrid for checkin form)
    ============================================================ */
 .okr-row {
-  display: grid;
-  grid-template-columns: 40px 1fr;
+  display: flex;
   gap: 0;
   background: white;
-  border: 1px solid rgba(196,198,207,.1);
+  border: 1px solid rgba(196,198,207,.15);
   border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
-.okr-row-num {
-  background: #E60012;
-  color: white;
+.okr-row-info {
+  flex: 0 0 280px;
+  padding: 20px;
+  background: #fafafa;
+  border-right: 1px solid rgba(196,198,207,.15);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  font-family: 'Manrope', sans-serif;
+}
+.okr-row-info .goal-text {
+  font-size: 15px;
   font-weight: 800;
-  font-size: 14px;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  padding: 16px 0;
-}
-.okr-row-content {
-  padding: 16px 20px;
-}
-.okr-row-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-.okr-row-header .goal-text {
-  font-size: 14px;
-  font-weight: 700;
   color: #191c1e;
+  margin-bottom: 8px;
+  line-height: 1.4;
 }
-.okr-row-header .kr-text {
-  font-size: 12px;
+.okr-row-info .kr-text {
+  font-size: 13px;
   color: #44474e;
+  line-height: 1.5;
 }
-.okr-row-inputs {
+.okr-row-fields {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.okr-row-fields .fields-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
 }
-.okr-row-inputs .field-group {
+.okr-row-fields .field-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -2707,38 +2702,37 @@ function renderOkrForm(bunbu, team, prevData) {
       : '';
 
     html += `<div class="okr-row">
-      <div class="okr-row-num">${num}</div>
-      <div class="okr-row-content">
-        <div class="okr-row-header">
-          ${catBadges}
-        </div>
-        <div class="okr-row-header" style="margin-bottom:4px;">
-          <div class="goal-text">${esc(okr.goal)}</div>
-        </div>
-        <div style="font-size:12px;color:#44474e;margin-bottom:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">KR: ${esc(okr.kr)} ${typeBadge}${detailTooltip}</div>
-        <div class="okr-row-inputs">
+      <div class="okr-row-info">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">${catBadges} ${typeBadge}</div>
+        <div class="goal-text">${esc(okr.goal)}</div>
+        <div class="kr-text" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">KR: ${esc(okr.kr)}${detailTooltip}</div>
+        ${deleteHtml}
+      </div>
+      <div class="okr-row-fields">
+        <div class="fields-row">
           <div class="field-group">
-            <label>① 성과 체크인</label>
+            <label>성과 체크인</label>
             ${ciHtml}
           </div>
           <div class="field-group">
-            <label>② 등급</label>
+            <label>등급</label>
             ${gradeHtml}
           </div>
           <div class="field-group">
-            <label>③ 코멘트</label>
+            <label>코멘트</label>
             <textarea id="comment_${i}" placeholder="코멘트 작성">${prev?esc(prev.comment):''}</textarea>
           </div>
+        </div>
+        <div class="fields-row">
           <div class="field-group">
-            <label>④ 이슈</label>
+            <label>이슈</label>
             ${issueHtml}
           </div>
           <div class="field-group" id="det_wrap_${i}" style="display:${showDet?'flex':'none'}">
-            <label>⑤ 이슈 상세</label>
+            <label>이슈 상세</label>
             ${detHtml}
           </div>
         </div>
-        ${deleteHtml}
       </div>
     </div>`;
   });
