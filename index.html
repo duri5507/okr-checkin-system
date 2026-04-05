@@ -2979,10 +2979,8 @@ function showOkrPage(page) {
     const idx = parseInt(row.dataset.okrIdx);
     row.style.display = (idx >= start && idx < end) ? '' : 'none';
   });
-  // 마지막 페이지에서만 신규목표 추가 버튼 표시
-  const addArea = document.getElementById('addOkrArea');
-  if (addArea) addArea.style.display = (page === totalPages) ? '' : 'none';
   renderOkrPagination();
+  document.getElementById('kpiSection').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function syncGrade(i) {
