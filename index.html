@@ -2710,6 +2710,7 @@ function renderOkrForm(bunbu, team, prevData) {
   const list = document.getElementById('kpiList');
   const gradeOpts = ['Arete','EE','ME','NI','체크인 보류'];
   const iopts = ['없음','목표조정','신규목표','목표폐기','지원요청','기타'];
+  const ioptLabel = '-- 이슈 선택 --';
 
   let html = '';
 
@@ -2748,7 +2749,7 @@ function renderOkrForm(bunbu, team, prevData) {
     const gradeHtml = `<select id="grade_${i}" onchange="checkOkrDone(${i})"><option value="">등급 선택</option>${gradeOpts.map(g=>`<option value="${g}"${prevGrade===g?' selected':''}>${g}</option>`).join('')}</select>`;
 
     // Issue
-    const issueHtml = `<select id="issue_${i}" onchange="toggleDet(${i})">${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}</select>`;
+    const issueHtml = `<select id="issue_${i}" onchange="toggleDet(${i});checkOkrDone(${i})"><option value="">${ioptLabel}</option>${iopts.map(o=>`<option value="${o}"${prev&&prev.issue===o?' selected':''}>${o}</option>`).join('')}</select>`;
 
     // Issue detail
     const showDet = prev && prev.issue && prev.issue !== '없음';
@@ -2798,7 +2799,7 @@ function renderOkrForm(bunbu, team, prevData) {
             </div>
             <div class="field-group">
               <label>코멘트</label>
-              <textarea id="comment_${i}" placeholder="코멘트 작성">${prev?esc(prev.comment):''}</textarea>
+              <textarea id="comment_${i}" placeholder="코멘트 작성" onchange="checkOkrDone(${i})" onblur="checkOkrDone(${i})">${prev?esc(prev.comment):''}</textarea>
             </div>
           </div>
           <div class="fields-row">
@@ -2897,12 +2898,17 @@ function toggleOkrRow(i) {
 function checkOkrDone(i) {
   const ci = document.getElementById('ci_'+i);
   const grade = document.getElementById('grade_'+i);
+  const comment = document.getElementById('comment_'+i);
+  const issue = document.getElementById('issue_'+i);
   const row = document.getElementById('okrRow_'+i);
   if (!ci || !grade || !row) return;
   const ciVal = ci.value.trim();
   const gradeVal = grade.value;
+  const commentVal = comment ? comment.value.trim() : '';
+  const issueVal = issue ? issue.value : '';
   const badge = row.querySelector('.okr-status');
-  if (ciVal && gradeVal) {
+  const allDone = ciVal && gradeVal && commentVal && issueVal;
+  if (allDone) {
     if (badge) { badge.className = 'okr-status done'; badge.textContent = '작성완료'; }
     setTimeout(() => row.classList.remove('open'), 300);
   } else {
@@ -2951,7 +2957,7 @@ async function submitCheckin() {
     const ci  = (el?.value||'').trim();
     const grade = (document.getElementById('grade_'+i)?.value||'').trim();
     const cmt = (document.getElementById('comment_'+i)?.value||'').trim();
-    const iss = document.getElementById('issue_'+i)?.value||'없음';
+    const iss = document.getElementById('issue_'+i)?.value||'';
     const det = (document.getElementById('detText_'+i)?.value||'').trim();
 
     // 성과 체크인 필수
@@ -2973,8 +2979,16 @@ async function submitCheckin() {
     } else {
       if (cmtEl) cmtEl.style.borderColor='';
     }
+    // 이슈 필수 선택
+    const issEl = document.getElementById('issue_'+i);
+    if (!iss) {
+      errorCount++;
+      if (issEl) { issEl.style.borderColor='var(--red)'; if(!firstErrorEl) firstErrorEl=issEl; }
+    } else {
+      if (issEl) issEl.style.borderColor='';
+    }
     // 이슈 선택 시 상세 필수
-    if (iss!=='없음' && !det) {
+    if (iss && iss!=='없음' && !det) {
       errorCount++;
       const it = document.getElementById('detText_'+i);
       // 상세 이슈 영역이 숨겨져 있으면 보이게 처리
