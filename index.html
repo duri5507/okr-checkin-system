@@ -192,9 +192,15 @@ textarea:focus-visible {
 .section.active { display: block; }
 #section-checkin { padding: 32px 40px; }
 #teamSelectCard {
+  position: fixed;
+  top: 130px;
+  left: 256px;
+  right: 0;
+  z-index: 80;
   padding: 16px 0;
   display: flex;
   justify-content: center;
+  background: rgba(255,255,255,0.95);
 }
 .team-select-inner {
   display: flex;
@@ -202,7 +208,6 @@ textarea:focus-visible {
   gap: 20px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-left: -128px;
 }
 
 /* ============================================================
