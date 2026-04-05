@@ -1528,28 +1528,7 @@ label {
   border-top: 1px solid rgba(196,198,207,.12);
 }
 .okr-row.open .okr-row-body {
-  display: flex;
-}
-.okr-row-info {
-  flex: 0 0 280px;
-  padding: 20px;
-  background: #fafafa;
-  border-right: 1px solid rgba(196,198,207,.12);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.okr-row-info .goal-text {
-  font-size: 15px;
-  font-weight: 800;
-  color: #191c1e;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-.okr-row-info .kr-text {
-  font-size: 13px;
-  color: #44474e;
-  line-height: 1.5;
+  display: block;
 }
 .okr-row-fields {
   flex: 1;
@@ -2753,7 +2732,7 @@ function renderOkrForm(bunbu, team, prevData) {
 
     // Issue detail
     const showDet = prev && prev.issue && prev.issue !== '없음';
-    const detHtml = `<div id="det_${i}" style="display:${showDet?'block':'none'}"><textarea id="detText_${i}" placeholder="이슈 상세 내용">${prev?esc(prev.issueText):''}</textarea></div>`;
+    const detHtml = `<div id="det_${i}" style="display:${showDet?'block':'none'}"><textarea id="detText_${i}" placeholder="이슈 상세 내용" onchange="checkOkrDone(${i})" onblur="checkOkrDone(${i})">${prev?esc(prev.issueText):''}</textarea></div>`;
 
     // Delete button for extra OKR
     const deleteHtml = isExtra ? `<div style="display:flex;justify-content:flex-end;margin-top:8px;"><button style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;font-weight:600;" onclick="removeExtraOkr(${i - baseOkrs.length})">삭제</button></div>` : '';
@@ -2765,7 +2744,8 @@ function renderOkrForm(bunbu, team, prevData) {
       ? `<span style="position:relative;display:inline-flex;align-items:center;margin-left:4px;cursor:help;" class="kr-tooltip-wrap"><span style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:#e0e0e0;color:#555;font-size:10px;font-weight:700;">?</span><span class="kr-tooltip">${esc(okr.detail)}</span></span>`
       : '';
 
-    const isDone = prev && prev.checkin && prev.grade;
+    const prevNeedDet = prev && prev.issue && prev.issue !== '없음';
+    const isDone = prev && prev.checkin && prev.grade && prev.comment && prev.issue && (!prevNeedDet || prev.issueText);
     const statusBadge = isDone
       ? `<span class="okr-status done">작성완료</span>`
       : `<span class="okr-status pending">미작성</span>`;
@@ -2775,19 +2755,15 @@ function renderOkrForm(bunbu, team, prevData) {
       <div class="okr-row-header-bar" onclick="toggleOkrRow(${i})">
         <span class="material-icons-outlined okr-toggle">chevron_right</span>
         <div class="okr-title">
-          <div class="goal-text">${esc(okr.goal)}</div>
-          <div class="kr-text">KR: ${esc(okr.kr)}</div>
+          <div style="font-size:14px;font-weight:700;color:#191c1e;margin-bottom:3px;">목표(Objective) : ${esc(okr.goal)}</div>
+          <div style="font-size:12px;color:#44474e;display:flex;align-items:center;gap:4px;">핵심성과지표(Key Result) : ${esc(okr.kr)}${detailTooltip}</div>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">${catBadges} ${typeBadge}</div>
         ${statusBadge}
+        ${deleteHtml}
       </div>
       <div class="okr-row-body">
-        <div class="okr-row-info">
-          <div class="goal-text">${esc(okr.goal)}</div>
-          <div class="kr-text" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">KR: ${esc(okr.kr)}${detailTooltip}</div>
-          ${deleteHtml}
-        </div>
-        <div class="okr-row-fields">
+        <div class="okr-row-fields" style="flex:1;">
           <div class="fields-row">
             <div class="field-group">
               <label>성과 체크인</label>
@@ -2801,8 +2777,6 @@ function renderOkrForm(bunbu, team, prevData) {
               <label>코멘트</label>
               <textarea id="comment_${i}" placeholder="코멘트 작성" onchange="checkOkrDone(${i})" onblur="checkOkrDone(${i})">${prev?esc(prev.comment):''}</textarea>
             </div>
-          </div>
-          <div class="fields-row">
             <div class="field-group">
               <label>이슈</label>
               ${issueHtml}
@@ -2907,7 +2881,10 @@ function checkOkrDone(i) {
   const commentVal = comment ? comment.value.trim() : '';
   const issueVal = issue ? issue.value : '';
   const badge = row.querySelector('.okr-status');
-  const allDone = ciVal && gradeVal && commentVal && issueVal;
+  const detText = document.getElementById('detText_'+i);
+  const detVal = detText ? detText.value.trim() : '';
+  const needDet = issueVal && issueVal !== '없음';
+  const allDone = ciVal && gradeVal && commentVal && issueVal && (!needDet || detVal);
   if (allDone) {
     if (badge) { badge.className = 'okr-status done'; badge.textContent = '작성완료'; }
     setTimeout(() => row.classList.remove('open'), 300);
