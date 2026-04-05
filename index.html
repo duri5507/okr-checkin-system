@@ -935,7 +935,7 @@ label {
   display: flex;
   align-items: center;
   gap: 0;
-  background: #FFF5F5;
+  background: #FDEAEA;
   border-radius: 12px;
   padding: 4px;
   margin-bottom: 24px;
@@ -1882,11 +1882,6 @@ label {
 
 <!-- ===== DASHBOARD ===== -->
 <div class="section" id="section-dashboard">
-  <!-- Title + Filter Bar -->
-  <div style="margin-bottom:8px;">
-    <h1 style="font-family:'Manrope',sans-serif;font-size:28px;font-weight:800;color:#191c1e;letter-spacing:-0.5px;margin-bottom:4px;">대시보드</h1>
-  </div>
-
   <div class="filter-bar">
     <div class="filter-group">
       <label>회차</label>
@@ -1923,7 +1918,7 @@ label {
       </select>
     </div>
     <div class="filter-group" style="border-right:none;">
-      <button class="btn btn-outline btn-sm" onclick="refreshDashboard()" style="border:none;background:transparent;padding:4px 8px;"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;">refresh</span></button>
+      <button class="btn btn-outline btn-sm" onclick="resetDashboardFilters()" style="border:none;background:transparent;padding:4px 8px;"><span class="material-icons-outlined" style="font-size:18px;vertical-align:middle;">refresh</span></button>
     </div>
   </div>
 
@@ -3246,6 +3241,14 @@ function updateDetailKpiOptions() {
     sel.innerHTML += `<option value="${esc(v)}">${esc(v)}</option>`;
   });
   if (prev && allDetails.has(prev)) sel.value = prev;
+}
+
+function resetDashboardFilters() {
+  document.getElementById('dashBunbu').value = '';
+  document.getElementById('dashHai').value = '';
+  document.getElementById('dashMajor').innerHTML = '<option value="">전체</option>';
+  document.getElementById('dashDetail').innerHTML = '<option value="">전체</option>';
+  refreshDashboard();
 }
 
 async function refreshDashboard() {
